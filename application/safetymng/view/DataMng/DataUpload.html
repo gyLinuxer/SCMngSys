@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>资料上传</title>
+    <meta charset="UTF-8">
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/PCUEditor/ueditor.config.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/PCUEditor/ueditor.all.js"> </script>
+    <style>
+        div[DTRow] {
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body class="container-fluid">
+<datalist id="QsSourceList">
+    {volist name="QsSourceList" id="v"}
+    <option value="{$v.SourceName}">{$v.CodePre}</option>
+    {/volist}
+</datalist>
+<datalist id="CorpList">
+    {volist name="CorpList" id="v"}
+    <option value="{$v.Corp}">{$v.id}</option>
+    {/volist}
+</datalist>
+<datalist id="UserList">
+    {volist name="UserList" id="v"}
+    <option value="{$v.Name}">{$v.Corp}</option>
+    {/volist}
+</datalist>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane active" id="home1" style="">
+        <form id="form1" class="form-horizontal" role="form" enctype="multipart/form-data" method="post" action="/SafetyMng/DataMng/DataUpload.html">
+            <div class="form-group" style="margin-top: 10px;">
+                <div class="col-sm-12">
+                    {eq name="Warning" value=""}<div class="alert alert-warning" role="alert"><strong>提示：</strong>任何多媒体资料(文件、图片、视频、网页等)都可以作为资料上传并保存。</div>{/eq}
+                    {neq name="Warning" value=""}<div class="alert alert-danger" role="alert"><strong>提示：</strong>{$Warning}</div>{/neq}
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="form-group">
+                    <label class="control-label col-sm-2"><a DataTypeMng>资料类型：</a></label>
+                    <div class="col-sm-3">
+                        <select class="form-control js-example-basic-multiple js-states " name="DataType" id="DataType" style="">
+                            <option ></option>
+                            {volist name="DataTypeList" id="vo"}
+                            <option value="{$vo.KeyName}" {eq name="$FailedData['DataType']" value="$vo['KeyName']" } selected {/eq}>{$vo.KeyName}</option>
+                            {/volist}
+                        </select>
+                    </div>
+
+                    <label class="control-label col-sm-2">资料编号：</label>
+                    <div class="col-lg-3 col-md-3 col-sm-3">
+                        <input name="DataCode" class="form-control" placeholder="可不填 自动编号 若填需通过唯一性检测" value="{$FailedData['DataCode']}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2">资料名称：</label>
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        <input type="text"  name="DataName" class="form-control" placeholder="必填"  value="{$FailedData['DataName']}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2">版本：</label>
+                    <div class="col-lg-3 col-md-3 col-sm-3">
+                        <input type="text"  name="DataVer" class="form-control" placeholder="必填"  value="{$FailedData['DataVer']}"/>
+                    </div>
+                    <label class="control-label col-sm-2">有效性：</label>
+                    <div class="col-lg-3 col-md-3 col-sm-3">
+                        <select class="form-control" Name="IsValid">
+                            <option {eq name="$FailedData['IsValid']" value="YES" } selected {/eq}>有效</option>
+                            <option {eq name="$FailedData['IsValid']" value="NO" } selected {/eq}>失效</option>
+                            <option {eq name="$FailedData['IsValid']" value="CK" } selected {/eq}>参考资料</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group m-form__group row">
+                    <label class="control-label col-sm-2">问题描述：</label>
+                    <div class="col-lg-8 col-md-8 col-sm-12">
+                        <textarea id="DataInfo"  name="content" >{$FailedData['content']}</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div  class="col-sm-offset-5">
+                        <button type="submit" class="btn btn-success">发布资料</button>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </form>
+
+    </div>
+
+
+</div>
+<script>
+    function PCUEditorInit(id) {
+        var editor = UE.getEditor(id,{
+            //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个
+            serverUrl: "{:url('SafetyMng/UEditorGYHelp/index')}",
+            toolbars: [
+                [
+                    'undo', //撤销
+                    'redo', //重做
+                    'bold', //加粗
+                    'indent', //首行缩进
+                    'italic', //斜体
+                    'subscript', //下标
+                    'fontborder', //字符边框
+                    'preview', //预览
+                    'horizontal', //分隔线
+                    'cleardoc', //清空文档
+                    'fontfamily', //字体
+                    'fontsize' //字号
+                ],[
+                    'simpleupload', //单图上传
+                    'insertimage', //多图上传
+                    'emotion', //表情
+                    'spechars', //特殊字符
+                    'searchreplace', //查询替换
+                    'map', //Baidu地图
+                    'insertvideo', //视频
+                    'justifyleft', //居左对齐
+                    'justifyright', //居右对齐
+                    'justifycenter', //居中对齐
+                    'justifyjustify', //两端对齐
+                    'forecolor', //字体颜色
+                    'backcolor' //背景色
+                ],[
+                    'insertorderedlist', //有序列表
+                    'insertunorderedlist', //无序列表
+                    'fullscreen', //全屏
+                    'attachment', //附件
+                    'imagecenter', //居中
+                    'background', //背景
+                    'template', //模板
+                    'scrawl', //涂鸦
+                    'inserttable', //插入表格
+                ]
+
+            ],
+            //focus时自动清空初始化时的内容
+            autoFloatEnabled:false,
+            //关闭字数统计
+            wordCount:false,
+            //关闭elementPath
+            elementPathEnabled:false,
+            //默认的编辑区域高度
+            initialFrameHeight:300
+            //更多其他参数，请参考ueditor.config.js中的配置项
+        });
+    }
+    $(function () {
+        PCUEditorInit('DataInfo');
+        $('a[QsHover]').mousedown(function(e){
+            if(3 == e.which){
+                window.open( '/SafetyMng/DataMng/showDataPage/id/'+$(this).attr('QsID'));
+            }else if(1 == e.which){
+                layer.closeAll();
+                layer.open({
+                    type: 2,
+                    title: false,
+                    closeBtn: 0, //不显示关闭按钮
+                    shade: [0],
+                    area: ['500px', '550px'],
+                    offset: 'rb', //右下角弹出
+                    shadeClose:true,
+                    anim: 2,
+                    content: '/SafetyMng/DataMng/showDataPage/id/'+$(this).attr('QsID'), //iframe的url，no代表不显示滚动条
+                    end: function(){ //此处用于演示
+
+                    }
+                });
+            }
+        });
+
+        $('a[DataTypeMng]').click(function(e){
+                layer.open({
+                    type: 2,
+                    title:'资料类型管理',
+                    shade: [0],
+                    area: ['500px', '550px'],
+                    shadeClose:true,
+                    anim: 2,
+                    content: '/SafetyMng/SysConf/showDataTypeMng', //iframe的url，no代表不显示滚动条
+                    end: function(){ //此处用于演示
+                        window.location.reload();
+                    }
+                });
+        });
+
+    });
+
+</script>
+</body>
+</html>

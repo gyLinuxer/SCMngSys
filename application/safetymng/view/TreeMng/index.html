@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>标签树管理</title>
+</head>
+<body class="container-full">
+<div class="col-sm-12" style="">
+    <div class="alert alert-success" role="alert"><strong>提示：</strong>本页面用来对系统内的标签树进行管理。</div>
+</div>
+{neq name="Warning" value=""}
+<div class="form-group">
+    <div class="col-sm-12">
+        <div class="alert alert-danger" role="alert"><strong>提示：</strong>{$Warning}</div>
+    </div>
+</div>
+{/neq}
+<form action="/SafetyMng/TreeMng/AddTree.html" method="post" enctype="application/x-www-form-urlencoded">
+    <div class="row">
+        <div class="col-sm-4" style="border-right: dashed 1px;min-height: 800px;">
+            <div class="row">
+                <div class="col-xs-3"><label class="control-label" for="TreeName">标签树名称:</label></div>
+                <div class="col-xs-6"><input id="TreeName" name="TreeName" class="form-control"/></div>
+                <div class="col-xs-3"><button type="submit" class="btn btn-sm btn-success" AddTree>增加</button></div>
+            </div>
+            <h4 style="text-align: center;margin-top: 20px;color: #ac2925;">数据库中的标签树列表</h4>
+            <div class="list-group">
+                {volist name="TreeList" id = "vo"}
+                <a href="#" class="list-group-item" Tree NodeCode = "{$vo.NodeCode}">{$vo.NodeName}</a>
+                {/volist}
+            </div>
+
+        </div>
+        <div class="col-sm-8" >
+            <div class="row">
+                <div class="col-xs-1" style="width: 100px;"><label class="control-label" for="TreeName">节点搜索:</label></div>
+                <div class="col-xs-3"><input id="NodeName"  class="form-control"/></div>
+                <div class="col-xs-1"><a Expand v="0" class="btn btn-sm btn-warning">合上</a></div>
+                <div class="col-xs-1"><a Expand v="1" class="btn btn-sm btn-primary">展开</a></div>
+
+            </div>
+            <ul id="tree" class="ztree" style="margin-top: 20px;">
+
+            </ul>
+        </div>
+        <div id="showDiv" style="display: none;">
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-xs-2">节点名称:</div>
+                <div class="col-xs-8"><input id="NewNodeName" class="form-control "/></div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+
+
+
+    var setting = {
+        view: {
+            addHoverDom: addHoverDom,
+            removeHoverDom: removeHoverDom,
+        },
+        edit: {
+            enable: true,
+            editNameSelectAll: true,
+            showRemoveBtn: showRemoveBtn,
+            showRenameBtn: true
+        },
+        data: {
+            //这个是关键不然页面不会显示
+            simpleData: {
+                enable: true,
+                idkey: "id",
+                pidKey: "pId",
+                name:'name',
+            }
+        },
+        callback: {
+            beforeDrag: beforeDrag,
+            beforeEditName: beforeEditRename,
+            beforeRemove: beforeRemove,
+            beforeRename: beforeRename,
+            onRemove: onRemove,
+            onRename:onRename
+        }
+    };
+
+    var log, className = "dark";
+    function beforeDrag(treeId, treeNodes) {
+        return false;
+    }
+
+    function beforeRemove(treeId, treeNode) {
+        layer.confirm('确定删除节点-->'+treeNode.name+'?', {
+            btn: ['确认删除', '取消'] //可以无限个按钮
+        }, function(index, layero){
+            if(treeNode.isParent){
+                layer.alert('父节点不允许被删除!');
+            }else{
+                $o =  {'NodeCode':treeNode.id};
+                $.ajax({
+                    url:"/SafetyMng/TreeMng/DelTreeNode",
+                    data: JSON.stringify($o),
+                    type:'post',
+                    dataType:"json",
+                    success:function (data,textStatus) {
+                        if(data['Ret']=='success'){
+                            var zTree = $.fn.zTree.getZTreeObj("tree");
+                            zTree.removeNode(treeNode,false);
+                            layer.close(index);
+                        }else{
+                            layer.alert('删除节点失败:'+data['msg']);
+                        }
+                    },
+                    error:function (XMLHttpRequest,textStatus,errorThrown) {
+                        layer.alert('XMLHttpRequest失败!');
+                    }
+                });
+            }
+        }, function(index){
+
+        });
+
+       return false;
+
+    }
+    function onRemove(e, treeId, treeNode) {
+        return false;
+    }
+    
+    function  beforeEditRename(treeId, treeNode) {
+        layer.prompt({title: '<修改节点名称>请输入节点新名:',value:treeNode.name, formType: 0}, function(value, index, elem){
+         if(value==''){
+            return false;
+         }
+
+            layer.confirm('确定将节点名称-->'+treeNode.name+'改为-->'+value+'?', {
+                btn: ['确定', '取消'] //可以无限个按钮
+            }, function(index, layero){
+                $o =  {'NodeCode':treeNode.id,'NewNodeName':value};
+                $.ajax({
+                    url:"/SafetyMng/TreeMng/renameTreeNode",
+                    data: JSON.stringify($o),
+                    type:'post',
+                    dataType:"json",
+                    success:function (data,textStatus) {
+                        if(data['Ret']=='success'){
+                            var zTree = $.fn.zTree.getZTreeObj("tree");
+                            treeNode.name = value;
+                            zTree.updateNode(treeNode,true);
+                            layer.closeAll();
+                        }else{
+                            layer.alert('添加节点失败:'+data['msg']);
+                        }
+                    },
+                    error:function (XMLHttpRequest,textStatus,errorThrown) {
+                        layer.alert('XMLHttpRequest失败!');
+                    }
+                });
+            });
+            });
+
+
+
+        return false;
+    }
+    function beforeRename(treeId, treeNode, newName, isCancel) {
+        return false;
+
+    }
+    function onRename(e, treeId, treeNode, isCancel) {
+        return false;
+    }
+    function showRemoveBtn(treeId, treeNode) {
+        return  !treeNode.isParent;
+    }
+    function showRenameBtn(treeId, treeNode) {
+        return !treeNode.isLastNode;
+    }
+
+    function addHoverDom(treeId, treeNode) {
+        var sObj = $("#" + treeNode.tId + "_span");
+        if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+        var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+            + "' title='add node' onfocus='this.blur();'></span>";
+        sObj.after(addStr);
+        var btn = $("#addBtn_"+treeNode.tId);
+        if (btn) btn.bind("click", function(){
+            layer.prompt({title: '<增加新节点>请输入新节点名:', formType: 0}, function(NodeName, index){
+                $o =  {'ParentCode':treeNode.id,'NewNodeName':NodeName};
+                $.ajax({
+                    url:"/SafetyMng/TreeMng/AddTreeNode",
+                    data: JSON.stringify($o),
+                    type:'post',
+                    dataType:"json",
+                    success:function (data,textStatus) {
+                        if(data['Ret']=='success'){
+                            var zTree = $.fn.zTree.getZTreeObj("tree");
+                            zTree.addNodes(treeNode, {id:data['NodeCode'], pId:data['ParentNodeCode'], name:data['NodeName']});
+                            layer.close(index);
+                        }else{
+                            layer.alert('添加节点失败:'+data['msg']);
+                        }
+                    },
+                    error:function (XMLHttpRequest,textStatus,errorThrown) {
+                        layer.alert('XMLHttpRequest失败!');
+                    }
+                });
+            });
+        });
+    };
+    function removeHoverDom(treeId, treeNode) {
+        $("#addBtn_"+treeNode.tId).unbind().remove();
+    };
+
+
+
+   var nodes  = [];
+
+    function TreeInit() {
+        $.fn.zTree.init($("#tree"), setting, nodes);
+        fuzzySearch('tree','#NodeName',null,true); //初始化模糊搜索方法
+        var zTree = $.fn.zTree.getZTreeObj("tree");
+        zTree.expandAll(true);
+    }
+
+    $(function () {
+        $('a[Tree]').click(function () {
+            $('a[Tree]').removeClass('active');
+            $(this).addClass('active');
+
+            $o =  {'TreeCode':$(this).attr('NodeCode')};
+            $.ajax({
+                url:"/SafetyMng/TreeMng/GetTreeNodeJsonData",
+                data: JSON.stringify($o),
+                type:'post',
+                dataType:"json",
+                success:function (data,textStatus) {
+                    if(data['Ret']=='Success'){
+                        nodes = data['data'];
+                        TreeInit();
+                    }else{
+                        layer.alert('获取树节点数据失败!');
+                    }
+                },
+                error:function (XMLHttpRequest,textStatus,errorThrown) {
+                    layer.alert('设置状态失败!');
+                }
+            });
+
+        });
+        $('a[Expand]').click(function () {
+            var zTree = $.fn.zTree.getZTreeObj("tree");
+            if(zTree==undefined || zTree==null){
+                return;
+            }
+            $v = $(this).attr('v');
+            if($v=='1'){
+                zTree.expandAll(true);
+            }else{
+                zTree.expandAll(false);
+            }
+
+        });
+
+        $('a[ZYSX]').click(function () {
+            layer.open({
+                type: 2,
+                title: false,
+                area: ['720px', '750px'],
+                shade: 0.8,
+                closeBtn: 0,
+                shadeClose: true,
+                content: '__PUBLIC__/BQ_ZYSX.pdf'
+            });
+        });
+    });
+</script>
+</body>
+</html>

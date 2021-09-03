@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        span[LBSpan]{
+            font-weight: bold;
+            font-size: medium;
+            color: #00A000;
+        }
+        span[CTSpan]{
+
+            text-decoration:underline;
+        }
+    </style>
+</head>
+<body class="container-full">
+<form action="/SafetyMng/CheckTask/showCheckListMng" method="post" enctype="application/x-www-form-urlencoded">
+    <div class="row">
+    <div class="col-sm-12" style="margin-top: 10px;">
+        {neq name="Warning" value=""}
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="alert alert-danger" role="alert"><strong>提示：</strong>{$Warning}</div>
+            </div>
+        </div>
+        {/neq}
+
+    </div>
+</div>
+    {php}$CT = new app\safetymng\controller\CheckTask();{/php}
+<div class="row" >
+    <div class="col-sm-1 " ><span LBSpan>检查编号:</span></div>
+    <div class="col-sm-2">
+        <span CTSpan>{$CheckInfoRow['CheckCode']}</span>
+    </div>
+    <div class="col-sm-1"><span LBSpan>任务来源:</span></div>
+    <div class="col-sm-2">
+        <span CTSpan>{$CheckInfoRow['CheckSource']}</span>
+    </div>
+    <div class="col-sm-1"><span LBSpan>检查名称:</span></div>
+    <div class="col-sm-2">
+        <span CTSpan>{$CheckInfoRow['CheckName']}</span>
+    </div>
+    <div class="col-sm-1"><span LBSpan>检查人员:</span></div>
+    <div class="col-sm-2">
+        <span CTSpan>{$CheckInfoRow['Checkers']}</span>
+    </div>
+
+</div>
+
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-sm-1"><span LBSpan>计划日期:</span></div>
+        <div class="col-sm-2">
+            <span CTSpan>{$CheckInfoRow['ScheduleDate']}</span>
+        </div>
+        <div class="col-sm-1 " ><span LBSpan>状态:</span></div>
+        <div class="col-sm-2">
+            {if condition="$CheckInfoRow.Status  eq '检查已结束' "}<label   class="label label-success">检查已结束</label>
+            {elseif condition="$CheckInfoRow.Status eq '检查已开始' "/}<label  class="label label-warning">检查已开始</label>
+            {else /} <label class="label label-default" >{$CheckInfoRow['Status']}</label>
+            {/if}
+        </div>
+        {eq name="$CheckInfoRow['Status']" value="检查已结束"}
+        <div class="col-sm-1"><span LBSpan>检查时长:</span></div>
+        <div class="col-sm-2">
+            <span CTSpan>{php} $CT = new app\safetymng\controller\CheckTask(); echo $CT->GetCheckTimeCostStr($CheckInfoRow['TotalSecondCosted']);  {/php}</span>
+        </div>
+        <div class="col-sm-1"><span LBSpan>合格率:</span></div>
+        <div class="col-sm-2">
+            <span CTSpan>{php} echo substr(strval(intval($CheckInfoRow['OkRowCnt'])/floatval($CheckInfoRow['CheckRowCnt']==0?1:$CheckInfoRow['CheckRowCnt'])*100),0,5).'%'; {/php}</span>
+        </div>
+        {/eq}
+    </div>
+
+<hr/>
+<div class="row" style="margin-top: 15px;">
+    <div class="col-sm-12" style="margin-left: 10px;">
+        <div id = "gyDiv" class="row pre-scrollable" style="overflow:scroll; width:100%;min-height: 450px;">
+            <table class="table  table-bordered bootstrap-datatable datatable table-hover responsive" style="min-width:3500px;">
+        <thead>
+        <tr>
+            <th style="width: 50px;">序号</th>
+            <th style="width: 100px;">专业名称</th>
+            <th style="width: 150px;">检查项目</th>
+
+                <th style="width: 80px;">检查结果</th>
+                <th style="width: 120px;">正向证据</th>
+                <th style="width: 100px;">检查人</th>
+                <th style="width: 130px;">检查时长</th>
+                <th style="width: 130px;">处理类型</th>
+                <th style="width: 130px;">反馈</th>
+
+            <th style="width: 100px;">判定标准编号</th>
+            <th style="width: 400px;">符合性验证标准{eq name="NeedShowCheckRowMngBtn" value="1"}<a class="btn btn-sm btn-warning" AddSecondCheckRow style="margin-left: 20px;">+</a><a class="btn btn-sm btn-danger" DelCheckRow style="margin-left: 20px;">-</a> <a class="btn btn-sm btn-success" CheckListIsOK style="margin-left: 20px;">确认添加完毕</a>{/eq}</th>
+            <th style="width: 100px;">检查标准编号</th>
+            <th style="width: 500px;">检查标准</th>
+            <th style="width: 100px;">检查方法</th>
+            <th style="width: 100px;">依据名称</th>
+            <th style="width: 100px;">依据条款</th>
+
+
+            <th style="width: 300px;">责任单位</th>
+            <th style="width: 100px;">所在数据库</th>
+            <th style="width: 100px;">单位手册</th>
+            <th >检查频次</th>
+        </thead>
+        <tbody >
+
+        {volist name="CheckList" id="vo"}
+        <tr CheckListRowId = {$vo.CheckListRowId} >
+            <td>
+                {eq name="$CheckInfoRow['Status']" value="检查单未制定"}
+                    <input type="checkbox" id="CK{$vo.CheckListRowId}" CheckListRowId = "{$vo.CheckListRowId}"/>
+                {/eq}
+                {++$xh}
+            </td>
+            <td>
+                {$vo.ProfessionName}
+            </td>
+            <td>
+                {$vo.CheckSubject}
+            </td>
+
+                <td>
+                    {if condition="$vo.IsOk eq 'YES'"}<label class="label label-success">符合</label>
+                    {elseif condition="$vo.IsOk eq 'NO'" /} <label class="label label-danger">不符合</label>
+                     {else/}       <label class="label label-default">未检查</label>
+                    {/if}
+                </td>
+                <td>
+                    {neq name="$vo.ProofID" value=""}
+                        <a LookCkProof CkDetailID="{$vo.CheckListDetailID}" CkID = "{$vo.CheckListID}">正向证据</a>
+                    {/neq}
+                </td>
+                <td>
+                    {$vo.Checker}
+                </td>
+                <td>
+                    {php} echo $CT->GetCheckTimeCostStr($vo['CostSecond']); {/php}
+                </td>
+                <td>
+                    <a href="javascript:;" showTaskCoreInfo TaskID = "{$vo.RelatedTaskID}">{$vo.DealType}</a>
+                </td>
+                <td>
+                    <span style="color: #0d7bdc;">{$vo.FeedBack}</span>
+
+                </td>
+            <td>
+                {$vo.Code2}
+            </td>
+            <td>
+                {$vo.ComplianceStandard}
+            </td>
+            <td>
+                {$vo.Code1}
+            </td>
+            <td>
+                {$vo.CheckStandard}
+            </td>
+            <td>
+                {$vo.CheckMethods}
+            </td>
+            <td>
+                {$vo.BasisName}
+            </td>
+            <td>
+                {$vo.BasisTerm}
+            </td>
+
+
+
+            <td>
+                {$vo.RelatedCorps}
+            </td>
+            <td>
+                {$vo.BaseName}
+            </td>
+            <td>
+                {$vo.InnerManual}
+            </td>
+            <td>
+                {$vo.CheckFrequency}
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</div>
+    </div>
+</div>
+
+</form>
+<script>
+    $CheckListID = {$CheckListID};
+    $(function () {
+        $('a[AddSecondCheckRow]').click(function () {
+            $URL =  "/SafetyMng/CheckTask/showCheckSelectRow/CheckListID/{$CheckInfoRow['id']}";
+            layer.open({
+                title:'添加检查条款',
+                type: 2,
+                content: $URL,
+                area: ['90%', '700px'],
+                cancel: function(index, layero){
+                    window.parent.location.reload();
+                    return false;
+                }
+            });
+        });
+
+        $('tr[CheckListRowId]').dblclick(function () {
+            $CheckListId = $(this).attr('CheckListRowId');
+            if ($('#CK' + $CheckListId).is(':checked')) {
+                $('#CK' + $CheckListId).removeAttr('checked');
+            }else{
+                $('#CK' + $CheckListId).attr('checked','checked');
+            }
+        });
+
+        $('a[DelCheckRow]').click(function () {
+            $Cks =  $('input[CheckListRowId]:checked');
+            $Arr = [];
+            $Cks.each(function () {
+                $o = {'CheckListId':$CheckListID,'CkId':$(this).attr('id'),'CheckListRowId':$(this).attr('CheckListRowId')};
+                $Arr.push($o);
+            });
+
+            $.ajax({
+                url:"/SafetyMng/Help/Ajax_DelCheckListRow",
+                data: JSON.stringify($Arr),
+                type:'post',
+                dataType:"json",
+                success:function (data,textStatus) {
+                    if(data['Ret']!='Success'){
+                        layer.alert('删除条款失败:'+data['Msg']);
+                    }else{
+                        window.location.reload();
+                    }
+                },
+                error:function (XMLHttpRequest,textStatus,errorThrown) {
+                    layer.alert('删除条款失败!');
+                }
+            });
+        });
+
+        $('a[CheckListIsOK]').click(function () {
+            $o =  {'CheckListId':$CheckListID};
+            $.ajax({
+                url:"/SafetyMng/Help/Ajax_SetCheckTaskToCheckListIsDefined",
+                data: JSON.stringify($o),
+                type:'post',
+                dataType:"json",
+                success:function (data,textStatus) {
+                    if(data['Ret']=='Success'){
+                        window.location.reload();
+                    }else{
+                        layer.alert('设置状态失败:'+data['Msg']);
+                    }
+                },
+                error:function (XMLHttpRequest,textStatus,errorThrown) {
+                    layer.alert('设置状态失败!');
+                }
+            });
+        });
+        $('a[showTaskCoreInfo]').click(function () {
+            layer.open({
+                type: 2,
+                title: false,
+                area: ['720px', '750px'],
+                shade: 0.8,
+                closeBtn: 0,
+                shadeClose: true,
+                content: '/SafetyMng/TaskCore/showTaskCoreInfoPage/TaskID/'+$(this).attr('TaskID')
+            });
+        });
+
+        $('#gyDiv').css('min-height',window.screen.height-310);
+
+        $('a[LookCkProof]').click(function () {
+            layer.open({
+                type: 2,
+                title: false,
+                area: ['720px', '750px'],
+                shade: 0.8,
+                closeBtn: 0,
+                shadeClose: true,
+                content: '/SafetyMng/CheckTask/showLookCkProof/CheckListID/'+$(this).attr('CkID')+'/CheckListDetailID/'+$(this).attr('CkDetailID')
+
+            });
+        });
+
+    });
+</script>
+</body>
+</html>

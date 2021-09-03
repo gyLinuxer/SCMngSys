@@ -1,0 +1,270 @@
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+    <meta charset="utf-8">
+    <title>质量与安全管理模块</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="author" content="author">
+    <!-- 网页描述 -->
+    <meta name="description" content="hello">
+    <!-- 关键字使用","分隔 -->
+    <meta name="keywords" content="a,b,c">
+    <!-- 禁止浏览器从本地机的缓存中调阅页面内容 -->
+    <meta http-equiv="Pragma" content="no-cache">
+    <!-- 用来防止别人在框架里调用你的页面 -->
+    <meta http-equiv="Window-target" content="_top">
+    <!-- content的参数有all，none，index，noindex，follow，nofollow，默认是all -->
+    <meta name="robots" content="none">
+    <!-- 收藏图标 -->
+    <link rel="Shortcut Icon" href="favicon.ico" rel="external nofollow" >
+    <!-- 网页不会被缓存 -->
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <!-- 解决部分兼容性问题，如果安装了GCF，则使用GCF来渲染页面，如果未安装GCF，则使用最高版本的IE内核进行渲染。 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 页面按原比例显示 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href='__PUBLIC__/css/MyCss.css' rel='stylesheet'>
+    <link id="bs-css" href="__PUBLIC__/css/bootstrap.css" rel="stylesheet">
+
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/dialog.css" rel="stylesheet">
+    <script src="__PUBLIC__/js/dialog-plus.js"></script>
+    <script src="__PUBLIC__/js/dialog.js"></script>
+    <script src="__PUBLIC__/js/jquery.js"></script>
+    <script src="__PUBLIC__/js//bootstrap.js"></script>
+    <link href="__PUBLIC__/css/summernote.css" rel="stylesheet">
+    <script src="__PUBLIC__/js/summernote.js"></script>
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+    <link href="__PUBLIC__/css/select2.min.css" rel="stylesheet" />
+    <script src="__PUBLIC__/js/select2.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/UEditor/ueditor.config.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/UEditor/ueditor.all.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/UEditor/lang/zh-cn/zh-cn.js"></script>
+    <script src="__PUBLIC__/js/GY.js"></script>
+    <link href="__PUBLIC__/css/dialog.css" rel="stylesheet">
+    <script src="__PUBLIC__/js/dialog-plus.js"></script>
+    <script src="__PUBLIC__/layer/layer.js"></script>
+    <script src="__PUBLIC__/js/GY.js"></script>
+    <style>
+        .select2-container .select2-selection--single{
+            height:34px;
+            line-height: 34px;
+        }
+        </style>
+</head>
+<body class="container-full" >
+<form id="mForm" action="/SafetyMng/CheckTBMng/FirstHalfCheckRowMng/opType/{$opType}" method="post" enctype="application/x-www-form-urlencoded">
+    <input type="hidden" name="rowId" id="rowId"  value="{$id}"/>
+    <div class="col-sm-8 col-sm-offset-2" >
+        <div class="row">
+            <div class="col-sm-10" style="margin-top: 10px;">
+                {neq name="Warning" value=""}
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <div class="alert alert-danger" role="alert"><strong>提示：</strong>{$Warning}</div>
+                    </div>
+                </div>
+                {/neq}
+                {eq name="Warning" value=""}
+                <div class="alert alert-warning" role="alert">
+                    <strong>提示：</strong>本页面用来对检查条款进行管理。
+                </div>
+                {/eq}
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1"><span style="font-weight: bold;">数据库:</span></div>
+            <div class="col-sm-8 col-xs-8">
+                <select class="form-control required"  name="CheckDB" id="CheckDB" LinkAge>
+                    <option ></option>
+                    {volist name="CheckDB" id="vo"}
+                        <option value="{$vo.id}" >{$vo.BaseName}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1"><span style="font-weight: bold;">专业名称:</span></div>
+            <div class="col-sm-8 col-xs-8">
+                <select class="form-control required" data-tags="true" name="ProfessionName" id="ProfessionName" LinkAge>
+                    <option ></option>
+                </select>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1" ><span style="font-weight: bold;">业务名称:</span></div>
+            <div class="col-sm-8 col-xs-8">
+                <select class="form-control required" data-tags="true" name="BusinessName"  id="BusinessName" LinkAge>
+                    <option ></option>
+                </select>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1" ><span style="font-weight: bold;">检查来源:</span></div>
+            <div class="col-xs-8 col-xs-8 ">
+                <select class="form-control required"  data-tags="true" name="CheckSource"  id="CheckSource" LinkAge>
+                    <option ></option>
+                </select>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1"><span style="font-weight: bold;">检查项目:</span></div>
+            <div class="col-sm-8 col-xs-8">
+                <select class="form-control required" data-tags="true" name="CheckSubject"  id="CheckSubject" LinkAge>
+                    <option ></option>
+                </select>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1"><span style="font-weight: bold;">检查标准编号:</span></div>
+            <div class="col-sm-8 col-xs-8">
+                <select class="form-control required" data-tags="true"  name="Code1" id="Code1" LinkAge>
+                    <option ></option>
+                </select>
+            </div>
+        </div>
+
+         <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1" ><span style="font-weight: bold;">检查内容:</span></div>
+            <div class="col-sm-8 col-xs-8">
+                <select class="form-control required" data-tags="true" name="CheckContent" id="CheckContent"  LinkAge>
+                    <option ></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1" ><span style="font-weight: bold;">检查标准:</span></div>
+            <div class="col-xs-8 col-xs-8 ">
+                <select class="form-control required"  data-tags="true" name="CheckStandard"  id="CheckStandard">
+                    <option ></option>
+                </select>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1" ><span style="font-weight: bold;">检查标准编辑:</span></div>
+            <div class="col-xs-8 col-xs-8">
+                <textarea name="CheckStandardEdit"  id="CheckStandardEdit" class="form-control" style="width: 100%;height: 100px;"></textarea>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;margin-bottom: 20px;">
+            <div class="col-sm-3 col-sm-offset-2 col-xs-3 col-xs-offset-1"><span style="font-weight: bold;">操作:</span></div>
+            <div class="col-xs-8 col-xs-8">
+                <div class="col-sm-offset-2 col-xs-offset-2">
+                    <button type="submit" class="btn btn-success" >保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="CurRowId" name="CurRowId" value="0"/>
+</form>
+
+<script>
+    $NeedInitAllSelect = '{$NeedInitAllSelect}';
+
+    function FillAllSelectById ($id) {
+        $.ajax({
+            url:"/SafetyMng/Help/GetFirstHalfCheckTBRowById/id/"+$id,
+            type:'get',
+            dataType:"json",
+            success:function (data,textStatus) {
+                if(data==null){
+                    layer.alert('获取数据失败!');
+                    return;
+                }
+                $('#ProfessionName').select2({data:[{'text':data.ProfessionName,'id':data.ProfessionName}]});
+                $('#ProfessionName').val(data.ProfessionName).trigger('change');
+
+                $('#BusinessName').select2({data:[{'text':data.BusinessName,'id':data.BusinessName}]});
+                $('#BusinessName').val(data.BusinessName).trigger('change');
+
+                $('#CheckSubject').select2({data:[{'text':data.CheckSubject,'id':data.CheckSubject}]});
+                $('#CheckSubject').val(data.CheckSubject).trigger('change');
+
+                $('#Code1').select2({data:[{'text':data.Code1,'id':data.Code1}]});
+                $('#Code1').val(data.Code1).trigger('change');
+
+                $('#CheckSource').select2({data:[{'text':data.CheckSource,'id':data.CheckSource}]});
+                $('#CheckSource').val(data.CheckSource).trigger('change');
+
+                $('#CheckContent').select2({data:[{'text':data.CheckContent,'id':data.CheckContent}]});
+                $('#CheckContent').val(data.CheckContent).trigger('change');
+
+                $('#CheckStandard').select2({data:[{'text':data.CheckStandard,'id':data.CheckStandard}]});
+                $('#CheckStandard').val(data.CheckStandard).trigger('change');
+
+                $('#CheckDB').val(data.CheckDBId).trigger('change');
+
+                $('#CheckStandardEdit').text(data.CheckStandard);
+
+            },
+            error:function (XMLHttpRequest,textStatus,errorThrown) {
+
+            }
+        });
+    }
+
+    function SelectLinkage (SelID) {
+        $Pv = [];
+        $SelArr = ['CheckDB','ProfessionName','BusinessName','CheckSource','CheckSubject','Code1','CheckContent','CheckStandard'];
+        $SelArr.forEach(function (v) {
+            $r = {'SelName':v,'SelText':$('#'+v + ' option:selected').text(),'SelVal':$('#'+v).val()};
+            $Pv.push($r);
+        });
+        $PostData = {"EventSel":SelID,'data':$Pv,'FakeID':'YES'};
+        $.ajax({
+            url:"/SafetyMng/Help/Ajax_SelectLinkage",
+            data: JSON.stringify($PostData),
+            type:'post',
+            dataType:"json",
+            success:function (data,textStatus) {
+                $TargetSel = data['TargetSel'];
+                $SelData = data['data'];
+                //alert($TargetSel);
+                $bBegin = false;
+                $SelArr.forEach(function (v) {
+                    if($bBegin){
+                        $('#'+v).html('').select2('data', null);
+                    }
+                    if(v==SelID){
+                        $bBegin =true;
+                    }
+                });
+                $('#'+$TargetSel).select2({data:$SelData});
+                $('#'+$TargetSel).val('').select2();
+            },
+            error:function (XMLHttpRequest,textStatus,errorThrown) {
+
+            }
+        });
+    }
+
+    $(function () {
+        $('select').select2();
+        $('#CheckStandard').on("change",function () {
+            $('#CheckStandardEdit').text($('#'+$(this).attr('id') + ' option:selected').text());
+        });
+
+        if($NeedInitAllSelect=='YES'){
+            $('#ProfessionName').select2('data',{'text':1,'id':1});
+            FillAllSelectById($('#rowId').val());
+        }else{
+            $('select[LinkAge]').on("change", function(e) {
+                $val  = $(this).val();
+                $text = $('#'+$(this).attr('id') + ' option:selected').text();
+                if($val!='' && ($text ==$val)){
+
+                }else{
+                    SelectLinkage($(this).attr('id'))
+                }
+            });
+        }
+
+    });
+</script>
+</body>
+</html>

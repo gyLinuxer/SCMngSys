@@ -1,0 +1,98 @@
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link id="bs-css" href="__PUBLIC__/css/bootstrap-cerulean.min.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/charisma-app.css" rel="stylesheet">
+    <link href='__PUBLIC__/bower_components/fullcalendar/dist/fullcalendar.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/fullcalendar/dist/fullcalendar.print.css' rel='stylesheet' media='print'>
+    <link href='__PUBLIC__/bower_components/chosen/chosen.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/bootstrap-tour/build/css/bootstrap-tour.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery.noty.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/noty_theme_default.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/elfinder.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/elfinder.theme.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery.iphone.toggle.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/uploadify.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/animate.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/doc.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/MyCss.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery-ui.min.css' rel='stylesheet'>
+
+    <!-- jQuery -->
+    <script src="__PUBLIC__/bower_components/jquery/jquery.min.js"></script>
+
+
+    <script src="__PUBLIC__/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- library for cookie management -->
+    <script src="__PUBLIC__/js/jquery.cookie.js"></script>
+    <!-- calender plugin -->
+
+    <!-- data table plugin -->
+    <script src='__PUBLIC__/js/jquery.dataTables.min.js'></script>
+
+    <!-- select or dropdown enhancer -->
+    <script src="__PUBLIC__/bower_components/chosen/chosen.jquery.min.js"></script>
+    <!-- plugin for gallery image view -->
+    <script src="__PUBLIC__/bower_components/colorbox/jquery.colorbox-min.js"></script>
+    <!-- notification plugin -->
+    <script src="__PUBLIC__/js/jquery.noty.js"></script>
+    <!-- library for making tables responsive -->
+    <script src="__PUBLIC__/bower_components/responsive-tables/responsive-tables.js"></script>
+    <!-- tour plugin -->
+    <script src="__PUBLIC__/bower_components/bootstrap-tour/build/js/bootstrap-tour.min.js"></script>
+    <!-- star rating plugin -->
+    <script src="__PUBLIC__/js/jquery.raty.min.js"></script>
+    <script src="__PUBLIC__/js/moment.js"></script>
+    <!-- for iOS style toggle switch -->
+    <script src="__PUBLIC__/js/jquery.iphone.toggle.js"></script>
+    <!-- autogrowing textarea plugin -->
+    <script src="__PUBLIC__/js/jquery.autogrow-textarea.js"></script>
+    <!-- multiple file upload plugin -->
+    <script src="__PUBLIC__/js/jquery.uploadify-3.1.min.js"></script>
+    <!-- history.js for cross-browser state change on ajax -->
+    <script src="__PUBLIC__/js/jquery.history.js"></script>
+    <link rel="shortcut icon" href="__PUBLIC__/img/favicon.ico">
+    <script type="text/javascript" src="__PUBLIC__/ckeditor/ckeditor.js"></script>
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+    <script src="__PUBLIC__/js/jquery-ui.min.js"></script>
+    <link href="__PUBLIC__/css/select2.min.css" rel="stylesheet" />
+    <script src="__PUBLIC__/js/select2.min.js"></script>
+</head>
+<body class="container-full">
+<div class="col-sm-8 col-sm-offset-2" style="margin-top: 20px;">
+    <form class="form-horizontal" method="post" enctype="application/x-www-form-urlencoded" action="/SafetyMng/TaskCore/CloseTask.html">
+        <div class="row" style="min-height: 150px;">
+            <input type="hidden" name="TaskID" value="{$TaskID}"/>
+            <div class="col-sm-12 col-xs-12">
+               <span style="color:blue;">
+                   {$TaskIsCanClose}
+               </span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                {eq name = "TaskIsCanClose" value="可关闭"}
+                    <button type="submit" style="margin-left:35%" class="btn btn-primary">关闭</button>
+                {/eq}
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    $(function () {
+                {eq name = "CloseLayer" value="YES"}
+                    parent.layer.closeAll();
+
+                {/eq}
+        });
+</script>
+</body>
+</html>

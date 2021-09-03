@@ -1,0 +1,683 @@
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta charset="utf-8">
+    <title></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="author" content="author">
+    <!-- 网页描述 -->
+    <meta name="description" content="hello">
+    <!-- 关键字使用","分隔 -->
+    <meta name="keywords" content="a,b,c">
+    <!-- 禁止浏览器从本地机的缓存中调阅页面内容 -->
+    <meta http-equiv="Pragma" content="no-cache">
+    <!-- 用来防止别人在框架里调用你的页面 -->
+    <meta http-equiv="Window-target" content="_top">
+    <!-- content的参数有all，none，index，noindex，follow，nofollow，默认是all -->
+    <meta name="robots" content="none">
+    <!-- 收藏图标 -->
+    <link rel="Shortcut Icon" href="favicon.ico" rel="external nofollow" >
+    <!-- 网页不会被缓存 -->
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <!-- 解决部分兼容性问题，如果安装了GCF，则使用GCF来渲染页面，如果未安装GCF，则使用最高版本的IE内核进行渲染。 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 页面按原比例显示 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--[if lt IE 9]>
+
+    <![endif]-->
+    <!-- The styles -->
+    <link id="bs-css" href="__PUBLIC__/css/bootstrap-cerulean.min.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/charisma-app.css" rel="stylesheet">
+    <link href='__PUBLIC__/bower_components/fullcalendar/dist/fullcalendar.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/fullcalendar/dist/fullcalendar.print.css' rel='stylesheet' media='print'>
+    <link href='__PUBLIC__/bower_components/chosen/chosen.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/bootstrap-tour/build/css/bootstrap-tour.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery.noty.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/noty_theme_default.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/elfinder.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/elfinder.theme.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery.iphone.toggle.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/uploadify.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/animate.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/doc.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/MyCss.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery-ui.min.css' rel='stylesheet'>
+
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/bootstrap-editable.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/ui-dialog.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="__PUBLIC__/js/jquery.js"></script>
+    <script src="__PUBLIC__/js//bootstrap.js"></script>
+
+    <!-- include summernote css/js -->
+    <link href="__PUBLIC__/css/summernote.css" rel="stylesheet">
+    <script src="__PUBLIC__/js/summernote.js"></script>
+
+    <!-- library for cookie management -->
+    <script src="__PUBLIC__/js/jquery.cookie.js"></script>
+    <!-- calender plugin -->
+
+    <!-- data table plugin -->
+    <script src='__PUBLIC__/js/jquery.dataTables.min.js'></script>
+
+    <!-- select or dropdown enhancer -->
+    <script src="__PUBLIC__/bower_components/chosen/chosen.jquery.min.js"></script>
+    <!-- plugin for gallery image view -->
+    <script src="__PUBLIC__/bower_components/colorbox/jquery.colorbox-min.js"></script>
+    <!-- notification plugin -->
+    <script src="__PUBLIC__/js/jquery.noty.js"></script>
+    <!-- library for making tables responsive -->
+    <script src="__PUBLIC__/bower_components/responsive-tables/responsive-tables.js"></script>
+    <!-- tour plugin -->
+    <script src="__PUBLIC__/bower_components/bootstrap-tour/build/js/bootstrap-tour.min.js"></script>
+    <!-- star rating plugin -->
+    <!-- for iOS style toggle switch -->
+    <!-- autogrowing textarea plugin -->
+    <script src="__PUBLIC__/js/jquery.autogrow-textarea.js"></script>
+    <!-- multiple file upload plugin -->
+    <script src="__PUBLIC__/js/jquery.uploadify-3.1.min.js"></script>
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+    <script src="__PUBLIC__/js/jquery-ui.min.js"></script>
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+    <script src="__PUBLIC__/js//bootstrap-slider.min.js"></script>
+    <link href="__PUBLIC__/css/select2.min.css" rel="stylesheet" />
+    <script src="__PUBLIC__/js/select2.min.js"></script>
+    <link href="__PUBLIC__/css/bootstrap-datetimepicker.css" rel="stylesheet">
+    <script src="__PUBLIC__/js/dialog-plus-min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/jquery.treegrid.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/css/jquery.treegrid.css">
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/UEditor/ueditor.config.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/UEditor/ueditor.all.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/UEditor/lang/zh-cn/zh-cn.js"></script>
+    <script src="__PUBLIC__/js/GY.js"></script>
+    <script src="__PUBLIC__/layer/layer.js"></script>
+    <style>
+        .select2-container .select2-selection--single{
+            height:34px;
+            line-height: 34px;
+        }
+        img{
+            max-width: 100%;
+        }
+        video{
+            max-width: 100%;
+        }
+        </style>
+
+
+</head>
+<body class="container">
+<form id ="mForm" method="post" action="{$FormAction}">
+    <input type="hidden" name="Platform" value="Mobile"/>
+    <input type="hidden" name="ReformIDHid"  value="{$ReformID}"/>
+    <input type="hidden" name="TaskIDHid" value="{$TaskID}"/>
+    <input type="hidden" name="opType" value="{$opType}"/>
+    <input type="hidden" name="Platform" value="Mobile"/>
+    <input type="hidden" name="CallBackURL" value="{$ReformSelData['CallBackURL']}">
+    <input id="RequireDefineCause" name="RequireDefineCause" checked="checked" style="display: none;"/>
+    <input id="RequireDefineAction"  checked="checked" name="RequireDefineAction" style="display: none;"/>
+
+    <div class="row">
+        <div class="col-sm-offset-1 col-sm-10" style="margin-top: 10px;">
+            <h3 style="text-align: center;color: #ac2925 ">不符合项整改/通知单({$Reform['Code']})</h3>
+            {neq name="Warning" value=""}
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <div class="alert alert-danger" role="alert"><strong>提示：</strong>{$Warning}</div>
+                </div>
+            </div>
+            {/neq}
+            {eq name="Warning" value=""}
+                <div class="alert alert-warning" role="alert">
+                    <strong>提示：</strong>本页面用来直接向责任单位下发整改通知书立即整改，无需质量部门审核，提高整改实效性，但整个流程受质量部门监督。
+                </div>
+            {/eq}
+
+        </div>
+    </div>
+    <div class="row" style="padding: 0px;">
+        <table  class="table table-bordered" >
+            <tr>
+                <td  class="col-xs-4 col-sm-4">
+                    <span style="font-size: medium;color: #00A000;">问题来源:</span>
+                </td>
+                <td class="col-xs-8 col-sm-8">
+
+                    {in name="ReformIntStatus" value="1"}
+                    <select class="form-control js-example-basic-multiple js-states " name="QuestionSourceName" id="QuestionSource">
+                        <option ></option>
+                        {volist name="QuestionSourceList" id="vo"}
+                        {neq name="$Reform['QuestionSourceName']" value="" }
+                        <option value="{$vo.SourceName}" {eq name="$vo.SourceName" value="$Reform['QuestionSourceName']" } selected {/eq}>{$vo.SourceName}</option>
+                        {/neq}
+                        {eq name="$Reform['QuestionSourceName']" value="" }
+                        <option value="{$vo.SourceName}" {eq name="$vo.SourceName" value="$Question['QuestionSource']" } selected {/eq}>{$vo.SourceName}</option>
+                        {/eq}
+                        {/volist}
+                    </select>
+                    {/in}
+                    {notin name="ReformIntStatus" value="1"}
+                    <span>{$Reform['QuestionSourceName']}</span>
+                    {/notin}
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span style="font-size: medium;color: #00A000;">通知书<br/>&nbsp标题:</span>
+                </td>
+                <td >
+                    <span style="font-size: medium;font-weight: bolder;">
+                            {in name="ReformIntStatus" value="1"}
+                                <input name="ReformTitle" class="form-control" value="{if condition="$Reform['ReformTitle'] eq '' "} {$ReformSelData['QuestionSourceName']}-{$ReformSelData['CheckSubject']}{else /} {$Reform['ReformTitle']}{/if}"placeholder="必须填写"/>
+                            {/in}
+                            {notin name="ReformIntStatus" value="1"}
+                                <span>{$Reform['ReformTitle']}</span>
+                            {/notin}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    <span style="font-size: medium;color: #00A000;">责任单位:</span>
+                </td>
+                <td >
+                    {in name="ReformIntStatus" value="1"}
+                    <select class="form-control js-example-basic-multiple js-states " multiple="multiple" name="DutyCorps[]" id="DutyCorps">
+                        <option ></option>
+                        {volist name="CorpList" id="vo"}
+                        <option value="{$vo.Corp}"
+                                {php}
+                                if($Reform['DutyCorp']!=$vo['Corp']){
+                        if($Question['RelatedCorp'] == $vo['Corp']){
+                        echo 'selected';
+                        }
+                        }else{
+                        echo 'selected';
+                        }
+                        {/php}
+                        >{$vo.Corp}</option>
+                        {/volist}
+                    </select>
+                    {/in}
+                    {notin name="ReformIntStatus" value="1"}
+                    <span>{$Reform['DutyCorp']}</span>
+                    {/notin}
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    <span style="font-size: medium;color: #00A000;">当前部门:</span>
+                </td>
+                <td >
+                    <span>{$Reform['CurDealCorp']}</span>
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    <span style="font-size: medium;color: #00A000;">状态:</span>
+                </td>
+                <td >
+                    <span><label class="label label-{php}
+                            $RF = new app\safetymng\controller\Reform;
+
+                            echo $RF->GetReformStatusColor($Reform['ReformStatus']);
+                     {/php}">{$Reform['ReformStatus']}</label></span>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 150px;" class="PrivTD">
+                    <span style="font-size: medium;color: #00A000;">检查日期:</span>
+                </td>
+                <td>
+                    {in name="ReformIntStatus" value="1"}
+                         <input class="form-control" name="CheckDate" type="date" value="{$Reform['CheckDate']|default=$Today}"/>
+                    {/in}
+                    {notin name="ReformIntStatus" value="1"}
+                        <span>{$Reform['CheckDate']}</span>
+                    {/notin}
+                </td>
+            </tr>
+            <tr>
+                <td >
+                    <span style="font-size: medium;color: #00A000;">督查人员:</span>
+                </td>
+                <td>
+                    {in name="ReformIntStatus" value="1"}
+                        <span>{$Think.session.Name} </span>
+                    {/in}
+                    {notin name="ReformIntStatus" value="1"}
+                        <span>{$Reform['Inspectors']}</span>
+                    {/notin}
+                </td>
+            </tr>
+           <tr>
+                <td colspan="2">
+                    <span style="font-size: medium;color: #00A000;">不符合项描述:</span>
+                    <div>
+                        {in name="ReformIntStatus" value="1"}
+                        <textarea id="NonConfirmDesc" summernote name="NonConfirmDesc" style="width:100%;">
+
+
+
+                                {neq name="ReformStatus" value=""}
+                                    {$Reform['NonConfirmDesc']|htmlspecialchars_decode}
+                                {/neq}
+                                {eq name="ReformStatus" value=""}
+                                    {$NonConfirmDesc}
+                                {/eq}
+
+
+
+
+                             </textarea>
+                        {/in}
+                        {notin name="ReformIntStatus" value="1"}
+                        <span>{$Reform['NonConfirmDesc']|htmlspecialchars_decode}</span>
+                        {/notin}
+
+
+
+                    </div>
+
+                </td>
+
+            </tr>
+                <tr>
+                    <td>
+                        <span style="font-size: medium;color: #00A000;">依据:</span>
+                    </td>
+                    <td>
+                        {in name="ReformIntStatus" value="1"}
+                            <textarea name="Basis"  class="form-control" style="width:100%;height:80px;" placeholder="不符合项的依据">{$Reform['Basis']} {$ReformSelData['Basis']}</textarea>
+                        {/in}
+                        {notin name="ReformIntStatus" value="1"}
+                            <span>{$Reform['Basis']} </span>
+                        {/notin}
+
+                    </td>
+                </tr>
+            <tr>
+                   <td>
+                        <span style="font-size: medium;color: #00A000;">整改要求:</span>
+                    </td>
+                    <td>
+                        {in name="ReformIntStatus" value="1"}
+                            <textarea name="ReformRequirement" class="form-control" style="width:100%;height:80px;">{$Reform['ReformRequirement']} </textarea>
+                        {/in}
+                        {notin name="ReformIntStatus" value="1"}
+                            <span>{$Reform['ReformRequirement']} </span>
+                        {/notin}
+
+                    </td>
+            </tr>
+            <tr>
+                <td>
+                    <span style="font-size: medium;color: #00A000;">原因分析</br>措施制定:</span>
+                </td>
+                <td>
+                        <span > {in name="ReformIntStatus" value="1"}
+                                           <input id="ActionAndCauseRequired"  name="ActionAndCauseRequired"  type="checkbox" />由责任单位分析原因并制定措施</span>
+                                 {/in}
+
+                 </td>
+            </tr>
+                        <tr>
+                            <td>
+                                <span style="font-size: medium;color:red;">要求的<br/>反馈日期:</span>
+                            </td>
+                        <td>
+
+                            {in name="ReformIntStatus" value="1"}
+                                <input class="form-control" name="RequestFeedBackDate"  type="date" value="{$Reform['RequestFeedBackDate']|default=$Today}"/>
+                            {/in}
+                            {notin name="ReformIntStatus" value="1"}
+                                <span>{$Reform['RequestFeedBackDate']}</span>
+                            {/notin}
+                        </td>
+                            </tr>
+
+                        <tr Action >
+                            <td >
+                            <span style="font-size: medium;color: #00A000;">直接原因:</span>
+                            </td>
+                            <td>
+                                {in name="ReformIntStatus" value="1"}
+                                    <textarea name="DirectCause" class="form-control" style="width:100%;height:80px;">{$Reform['DirectCause']}</textarea>
+                                {/in}
+                                {in name="ReformIntStatus" value="2,5"}
+                                {eq name="$Reform['RequireDefineCause']" value="YES"}
+                                     <textarea name="DirectCause"class="form-control"  style="width:100%;height:80px;">{$Reform['RootCause']}</textarea>
+                                {/eq}
+                                {neq name="$Reform['RequireDefineCause']" value="YES"}
+                                    <span>{$Reform['DirectCause']}</span>
+                                {/neq}
+                                {/in}
+                                {notin name="ReformIntStatus" value="1,2,5"}
+                                    <span>{$Reform['DirectCause']}</span>
+                                {/notin}
+                             </td>
+                        </tr>
+                        <tr Action >
+                        <td >
+                              <span style="font-size: medium;color: #00A000;">根本原因:</span>
+                        </td>
+                         <td>
+                             {in name="ReformIntStatus" value="1"}
+                                <textarea name="RootCause" class="form-control" style="width:100%;height:80px;">{$Reform['RootCause']}</textarea>
+                             {/in}
+                             {in name="ReformIntStatus" value="2,5"}
+                             {eq name="$Reform['RequireDefineCause']" value="YES"}
+                                <textarea name="RootCause" class="form-control" style="width:100%;height:80px;">{$Reform['RootCause']}</textarea>
+                             {/eq}
+                             {neq name="$Reform['RequireDefineCause']" value="YES"}
+                                <span>{$Reform['RootCause']}</span>
+                             {/neq}
+                             {/in}
+                             {notin name="ReformIntStatus" value="1,2,5"}
+                                <span>{$Reform['RootCause']}</span>
+                             {/notin}
+
+                        </td>
+                        </tr>
+
+                        <tr Action >
+                            <td >
+                                <span style="font-size: medium;">纠正措施:</span>
+                            </td>
+                            <td>
+                                {in name="ReformIntStatus" value="1,2,5"}
+                                    <textarea name="CorrectiveAction" class="form-control" style="width:100%;height:80px;">{$Reform['CorrectiveAction']}</textarea>
+                                {/in}
+                                {notin name="ReformIntStatus" value="1,2,5"}
+                                    <span>{$Reform['CorrectiveAction']}</span>
+                                {/notin}
+                                <br/>
+                                <span style="color:red;">
+                                    完成时限:
+                               </span>
+
+
+                                {in name="ReformIntStatus" value="1,2,5"}
+                                    <input class="form-control" name="CorrectiveDeadline" class="form-control" type="date" value="{$Reform['CorrectiveDeadline']|default=$Today}"/>
+                                {/in}
+                                {notin name="ReformIntStatus" value="1,2,5"}
+                                    <span>{$Reform['CorrectiveDeadline']}</span>
+                                {/notin}
+                            </td>
+                        </tr>
+                        <tr Action >
+                        <td >
+                        <span style="font-size: medium;color:black;">预防措施:</span>
+                            </td>
+                            <td>
+                              {in name="ReformIntStatus" value="1,2,5"}
+                                <textarea name="PrecautionAction" class="form-control" style="width:100%;height:80px;" placeholder="若无预防措施,此处请留空白."></textarea>
+                              {/in}
+                              {notin name="ReformIntStatus" value="1,2,5"}
+                                <span>{$Reform['PrecautionAction']}</span>
+                              {/notin}
+                                <br/>
+                                <span style="color:red;">
+                                完成时限:
+                            </span>
+                                {in name="ReformIntStatus" value="1,2,5"}
+                                    <input class="form-control" name="PrecautionDeadline" class="form-control" type="date" value="{$Reform['PrecautionAction']|default=$Today}"/>
+                                {/in}
+                                {notin name="ReformIntStatus" value="1,2,5"}
+                                <span >{$Reform['PrecautionDeadline']}</span>
+                                {/notin}
+                            </td>
+                        </tr>
+            <tr Action >
+                <td class="PrivTD">
+                    <span style="font-size: medium;color: #00A000;">措施评估:</span>
+                </td>
+                <td >
+                    {in name="ReformIntStatus" value="1,3"}
+                    <span><input name="ActionIsOK" type="radio" value="YES" {eq name="$Reform['ActionIsOK']" value="YES"} checked="checked" {/eq} /><label class="label label-success">措施评估通过</label> <span/>
+                            <span style="margin-left: 10px;"><input name="ActionIsOK" type="radio" value="NO" {eq name="$Reform['ActionIsOK']" value="NO"} checked="checked" {/eq}/><label class="label label-danger">措施评估不通过</label> </span>
+                            <br/>
+                            <textarea class="form-control" style="height: 100px;" name="ActionEval">{$Reform['ActionEval']}</textarea>
+                        {/in}
+                        {notin name="ReformIntStatus" value="1,3"}
+                        <span><input name="ActionIsOK" type="radio" value="YES" {neq name="ReformIntStatus" value="1,3" } disabled="disabled" {/neq} {eq name="$Reform['ActionIsOK']" value="YES"} checked="checked" {/eq} /><label class="label label-success">措施评估通过</label> </span>
+                        <span style="margin-left: 10px;"><input  name="ActionIsOK" type="radio" value="NO" {neq name="ReformIntStatus" value="1,3" } disabled="disabled" {/neq} {eq name="$Reform['ActionIsOK']" value="NO"} checked="checked" {/eq} /><label class="label label-danger">措施评估不通过</label> </span>
+                            <br/>
+                            <span>{$Reform['ActionEval']}</span>
+                        {/notin}
+                </td>
+            </tr>
+
+
+            {in name="ReformIntStatus" value="4,7"}
+            <tr>
+                <td colspan="2">
+                    <span style="font-size: medium;color: #0000cc;">纠正措施整改证据:</span>
+                    {php}
+                    $showType  = '';
+                    if(session('Corp') == $Reform['DutyCorp'] && $ReformIntStatus==4 && ($Reform['CorrectiveActionProof'] == '' || $Reform['CorrectiveActionProofEvalIsOK'] == 'NO') ){
+                    $showType = 'EDIT';
+                    }else{
+                    $showType ='SHOW';
+                    }
+                    {/php}
+                    {eq name="showType" value="EDIT"}
+                    <textarea id="CorrectiveActionProof"  name="CorrectiveActionProof" style="width:100%;">{$Reform['CorrectiveActionProof'] | htmlspecialchars_decode}</textarea>
+                    {/eq}
+                    {neq name="showType" value="EDIT"}
+                    <span>{$Reform['CorrectiveActionProof'] | htmlspecialchars_decode}</span><span style="font-size: smaller;color: #0d7bdc;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$Reform['CorrectiveActionProofUploaderName']}&nbsp;&nbsp;{$Reform['CorrectiveActionProofUploadTime']}</span>
+                    {/neq}
+
+                </td>
+            </tr>
+            {/in}
+
+            {neq name="$Reform['CorrectiveActionProof']" value=""}
+                <tr >
+                    <td colspan="2" style="">
+                        <span style="font-size: medium;color: #0000cc;">纠正措施证据评估:</span><br/>
+                        {php}
+                        $showType  = '';
+                        if(session('Corp') == $Reform['IssueCorp']){
+                        $showType = $Reform['CorrectiveActionProofEvalIsOK']==''?'EDIT':'SHOW';
+                        }else{
+                        $showType ='SHOW';
+                        }
+                        {/php}
+
+
+                        {eq name="showType" value="EDIT"}
+                        <span><input name="CorrectiveActionProofEvalIsOK" type="radio" value="YES"  {eq name="$Reform['CorrectiveActionProofEvalIsOK']" value="YES"} checked="checked" {/eq}  /><label class="label label-success">整改效果可接受</label> <span/>
+                                    <span><input name="CorrectiveActionProofEvalIsOK" type="radio" value="NO"  {eq name="$Reform['CorrectiveActionProofEvalIsOK']" value="NO"} checked="checked" {/eq}  /><label class="label label-danger">整改效果不可接受</label> </span>
+                                <br/>
+                                    <textarea class="form-control" style="height: 100px;" name="CorrectiveActionProofEvalMemo">{$Reform['CorrectiveActionProofEvalMemo']}</textarea>
+                                {/eq}
+                                {neq name="showType" value="EDIT"}
+                                    <span><input name="CorrectiveActionProofEvalIsOK" type="radio" value="YES"  disabled="disabled"  {eq name="$Reform['CorrectiveActionProofEvalIsOK']" value="YES"} checked="checked" {/eq}  /><label class="label label-success">整改效果可接受</label> <span/>
+                                        <span><input name="CorrectiveActionProofEvalIsOK" type="radio" value="NO"  disabled="disabled" {eq name="$Reform['CorrectiveActionProofEvalIsOK']" value="NO"} checked="checked" {/eq}  /><label class="label label-danger">整改效果不可接受</label> </span>
+                                    <br/>
+                                         <span>{$Reform['CorrectiveActionProofEvalMemo'] }</span><span style="font-size: smaller;color: #0d7bdc;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$Reform['CorrectiveActionProofEvalerName']}&nbsp;&nbsp;{$Reform['CorrectiveActionProofEvalTime']}</span>
+                                {/neq}
+                    </td>
+                </tr>
+                {/neq}
+                {in name="ReformIntStatus" value="4,7"}
+                <tr>
+                    <td colspan="3">
+                        <span style="font-size: medium;color:black;">预防措施整改证据:</span>
+                        {php}
+                        $showType  = '';
+                        if(session('Corp') == $Reform['DutyCorp'] && $ReformIntStatus==4 && ($Reform['PrecautionActionProof'] == '' || $Reform['PrecautionActionProofEvalIsOK'] == 'NO') ){
+                        $showType = 'EDIT';
+                        }else{
+                        $showType ='SHOW';
+                        }
+                        {/php}
+                        {eq name="showType" value="EDIT"}
+                        <textarea id="PrecautionActionProof"  name="PrecautionActionProof" style="width:100%;">{$Reform['PrecautionActionProof'] | htmlspecialchars_decode}</textarea>
+                        {/eq}
+                        {neq name="showType" value="EDIT"}
+                        <span>{$Reform['PrecautionActionProof'] | htmlspecialchars_decode}</span><span style="font-size: smaller;color: #0d7bdc;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$Reform['PrecautionActionProofUploaderName']}&nbsp;&nbsp;{$Reform['PrecautionActionProofUploadTime']}</span>
+                        {/neq}
+                    </td>
+                </tr>
+                {/in}
+                {neq name="$Reform['PrecautionActionProof']" value=""}
+                <tr>
+                    <td colspan="2" style="">
+                        <span style="font-size: medium;color: black;">预防措施证据评估:</span><br/>
+                        {php}
+                        $showType  = '';
+                        if(session('Corp') == $Reform['IssueCorp']){
+                        $showType = $Reform['PrecautionActionProofEvalIsOK']==''?'EDIT':'SHOW';
+                        }else{
+                        $showType ='SHOW';
+                        }
+                        {/php}
+
+                        {eq name="showType" value="EDIT"}
+                        <span><input name="PrecautionActionProofEvalIsOK" type="radio" value="YES"  {eq name="$Reform['PrecautionActionProofEvalIsOK']" value="YES"} checked="checked" {/eq}  /><label class="label label-success">整改效果可接受</label> <span/>
+                                    <span><input name="PrecautionActionProofEvalIsOK" type="radio" value="NO"  {eq name="$Reform['PrecautionActionProofEvalIsOK']" value="NO"} checked="checked" {/eq}  /><label class="label label-danger">整改效果不可接受</label> </span>
+                                <br/>
+                                    <textarea class="form-control" style="height: 100px;" name="PrecautionActionProofEvalMemo">{$Reform['PrecautionActionProofEvalMemo']}</textarea>
+                                {/eq}
+                                {neq  name="showType" value="EDIT"}
+                                    <span><input name="PrecautionActionProofEvalIsOK" type="radio" value="YES"  disabled="disabled"  {eq name="$Reform['PrecautionActionProofEvalIsOK']" value="YES"} checked="checked" {/eq}  /><label class="label label-success">整改效果可接受</label> <span/>
+                                        <span><input name="PrecautionActionProofEvalIsOK" type="radio" value="NO"  disabled="disabled" {eq name="$Reform['PrecautionActionProofEvalIsOK']" value="NO"} checked="checked" {/eq}  /><label class="label label-danger">整改效果不可接受</label> </span>
+                                    <br/>
+                                         <span>{$Reform['PrecautionActionProofEvalMemo'] }</span><span style="font-size: smaller;color: #0d7bdc;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$Reform['PrecautionActionProofEvalerName']}&nbsp;&nbsp;{$Reform['PrecautionActionProofEvalTime']}</span>
+                                {/neq}
+                    </td>
+                </tr>
+            {/neq}
+
+                <tr>
+                    <td colspan="2" style="">
+                            {eq name="AddFastReform" value="YES"}
+                                <div class="row">
+                                    <div class="" style="">
+                                        <a class="btn btn-warning col-xs-offset-5" XFZGTZS >下发整改通知书</a>
+                                    </div>
+                                </div>
+                            {/eq}
+                            {eq name="showSaveBtn" value= "YES"}
+                                <div class="row">
+                                    <div class="" style="">
+                                        <button type="submit" class="btn btn-primary col-xs-offset-5">保存并发送</button>
+                                    </div>
+                                </div>
+                            {/eq}
+                    </td>
+                </tr>
+        </table>
+        </div>
+
+</form>
+
+<script>
+    function MBUEditorInit(id) {
+        var editor = UE.getEditor(id,{
+            //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个
+            serverUrl: "{:url('SafetyMng/UEditorGYHelp/index')}",
+            toolbars: [
+                [
+                    'undo', //撤销
+                    'redo', //重做
+                    'bold', //加粗
+                    'indent', //首行缩进
+                    'italic', //斜体
+                    'subscript', //下标
+                    'fontborder', //字符边框
+                    'preview', //预览
+                    'horizontal', //分隔线
+                    'cleardoc', //清空文档
+                    'fontfamily', //字体
+                    'fontsize' //字号
+                ],[
+                    'simpleupload', //单图上传
+                    'insertimage', //多图上传
+                    'emotion', //表情
+                    'spechars', //特殊字符
+                    'searchreplace', //查询替换
+                    'map', //Baidu地图
+                    'insertvideo', //视频
+                    'justifyleft', //居左对齐
+                    'justifyright', //居右对齐
+                    'justifycenter', //居中对齐
+                    'justifyjustify', //两端对齐
+                    'forecolor', //字体颜色
+                    'backcolor' //背景色
+                ],[
+                    'insertorderedlist', //有序列表
+                    'insertunorderedlist', //无序列表
+                    'fullscreen', //全屏
+                    'attachment', //附件
+                    'imagecenter', //居中
+                    'background', //背景
+                    'template', //模板
+                    'scrawl', //涂鸦
+                    'inserttable', //插入表格
+                ]
+
+            ],
+            //focus时自动清空初始化时的内容
+            autoFloatEnabled:false,
+            //关闭字数统计
+            wordCount:false,
+            //关闭elementPath
+            elementPathEnabled:false,
+            //默认的编辑区域高度
+            initialFrameHeight:300
+            //更多其他参数，请参考ueditor.config.js中的配置项
+        });
+    }
+    $(function () {
+
+        $('a[XFZGTZS]').click(function () {
+            layer.confirm('确定内容填写完整并下发整改通知书吗', {
+                btn: ['确定', '取消'] //可以无限个按钮
+                }, function(index, layero){
+                    $('#mForm').submit();
+                });
+            });
+
+        $('a[SubmitA]').click(function () {
+            window.location = '/SafetyMng/Reform/SendReform/TaskID/{$TaskID}/ReformID/{$ReformID}/Platform/Mobile';
+        });
+        $('#ActionAndCauseRequired').click(function () {
+            $isRequired = $(this).is(':Checked');
+            if($isRequired){
+                $('#RequireDefineCause').attr("checked", 'checked');
+                $('#RequireDefineAction').attr("checked", 'checked');
+            }
+            if(!$isRequired){
+                $("tr[Action]").css("display","table-row");
+            }else{
+                $("tr[Action]").css("display","none");
+            }
+        });
+
+        if($('#NonConfirmDesc').length>0){
+            MBUEditorInit('NonConfirmDesc');
+        }
+
+        if($('#CorrectiveActionProof').length>0){
+            MBUEditorInit('CorrectiveActionProof');
+        }
+        if($('#PrecautionActionProof').length>0){
+            MBUEditorInit('PrecautionActionProof');
+        }
+        $('select').select2();
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="author" content="author">
+    <!-- 网页描述 -->
+    <meta name="description" content="hello">
+    <!-- 关键字使用","分隔 -->
+    <meta name="keywords" content="a,b,c">
+    <!-- 禁止浏览器从本地机的缓存中调阅页面内容 -->
+    <meta http-equiv="Pragma" content="no-cache">
+    <!-- 用来防止别人在框架里调用你的页面 -->
+    <meta http-equiv="Window-target" content="_top">
+    <!-- content的参数有all，none，index，noindex，follow，nofollow，默认是all -->
+    <meta name="robots" content="none">
+    <!-- 收藏图标 -->
+    <link rel="Shortcut Icon" href="favicon.ico" rel="external nofollow" >
+    <!-- 网页不会被缓存 -->
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <!-- 解决部分兼容性问题，如果安装了GCF，则使用GCF来渲染页面，如果未安装GCF，则使用最高版本的IE内核进行渲染。 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 页面按原比例显示 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--[if lt IE 9]>
+    <![endif]-->
+    <!-- The styles -->
+    <link id="bs-css" href="__PUBLIC__/css/bootstrap-cerulean.min.css" rel="stylesheet">
+    <link href='__PUBLIC__/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+    <link rel="stylesheet" href="__PUBLIC__/css/el-ui.css">
+    <link href='__PUBLIC__/css/MyCss.css' rel='stylesheet'>
+
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+
+    <link href="__PUBLIC__/css/bootstrap-editable.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/ui-dialog.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="__PUBLIC__/js/jquery.js"></script>
+    <script src="__PUBLIC__/js/bootstrap.js"></script>
+
+    <script src="__PUBLIC__/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- library for cookie management -->
+    <script src="__PUBLIC__/js/bootstrap-datetimepicker.zh-CN.js"></script>
+
+    <!-- data table plugin -->
+
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+
+    <link href="__PUBLIC__/css/select2.min.css" rel="stylesheet" />
+    <script src="__PUBLIC__/js/select2.min.js"></script>
+    <link href="__PUBLIC__/css/bootstrap-datetimepicker.css" rel="stylesheet">
+
+
+
+    <script src="__PUBLIC__/js/GY.js"></script>
+    <script src="__PUBLIC__/layer/layer.js"></script>
+    <script src="__PUBLIC__/js/jquery.ztree.all.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/jquery.ztree.exhide.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/fuzzysearch.js"></script>
+
+    <script type="text/javascript" src="__PUBLIC__/js/jquery.ztree.exedit.js"></script>
+    <script src="__PUBLIC__/js/el-index.js"></script>
+    <style>
+        .select2-container .select2-selection--single{
+            height:36px;
+            line-height: 36px;
+        }
+        .ztree li span.button.add {margin-left:2px; margin-right: -1px; background-position:-144px 0; vertical-align:top; *vertical-align:middle}
+
+    </style>
+    <script>
+
+    </script>
+</head>
+{php}
+    $Pub = new  app\safetymng\controller\PublicController;
+    $isShowZXDC = $Pub->GetGroupCorp()=='机务工程部' &&  $Pub->IsSuperCorp();
+    $IsSuperCorp = $Pub->IsSuperCorp();
+{/php}
+<body>
+    {neq name="CurPlatform" value = "Mobile"}
+        <div class="navbar navbar-default" role="navigation" style="height:75px;">
+            <div class="container-full" >
+                <div class="navbar-header col-sm-4">
+                    <a class="navbar-brand" href="#">
+                        <img CAFUC="Fuck" style="width: 160px;height:60px;margin-left: 10px;margin-top: -7px" src="__PUBLIC__/img/CYLHLogo.png"  />
+                        <span style="font-size: 25px;margin-left: 10px;">运行品质管理</span>
+                    </a>
+                </div>
+                <div class="col-sm-8" >
+                    <ul class="nav navbar-nav" style="margin-top:15px">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                工作列表<b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown"><a href="/SafetyMng/TaskList/showQuestionList.html">问题及整改任务列表</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown"><a href="/SafetyMng/TaskList/showRFList.html">整改通知书列表</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown"><a href="/SafetyMng/FXMng/showMyWXYList.html">危险源列表</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown"><a href="/SafetyMng/FXMng/showMyAQYHList.html">安全隐患列表</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown"><a href="/SafetyMng/TaskList/showOCList.html" href="#">在线检查任务列表</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                问题-整改<b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown"><a href="/SafetyMng/QuestionInput/Index.html">提交问题</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown"><a href="/SafetyMng/Reform/showFastReformIndex.html">下发立即整改</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                创建任务<b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown"><a href="/SafetyMng/CheckTask/Index.html">创建检查任务</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                数据查询 <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown"><a href="/SafetyMng/lgyQuery/Index.html">问题查询</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown"><a href="/SafetyMng/lgyQuery/showRFQuery.html" href="#">整改通知书查询</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown"><a href="/SafetyMng/lgyQuery/showFXQry.html">风险查询</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown"><a href="/SafetyMng/lgyQuery/showSMSQry.html">危险源查询</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown"><a href="/SafetyMng/lgyQuery/showYHQry.html">安全隐患查询</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown"><a href="/SafetyMng/DataMng/showDataQuery.html">资料查询</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown"><a href="/SafetyMng/DataMng/showDataRoom.html">在线资料室</a></li>
+                            </ul>
+                        </li>
+                        {eq name="$IsSuperCorp" value="true"}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    系统元数据管理 <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="dropdown"><a href="/SafetyMng/SysConf/Index.html">系统配置</a></li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown"><a href="/SafetyMng/FXMng/showMatrix.html">风险矩阵</a></li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown"><a href="/SafetyMng/CheckTBMng/Index.html">条款数据库</a></li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown"><a href="/SafetyMng/TreeMng/Index.html" href="#">标签树管理</a></li>
+                                    <li class="divider"></li>
+                                    <li class="dropdown"><a href="/SafetyMng/DataMng/showDataUpload.html" href="#">资料发布</a></li>
+                                </ul>
+                            </li>
+                        {/eq}
+
+                        <li class="dropdown"><a href="/SafetyMng/WebMain">退出登陆</a></li>
+                        <li class="dropdown"><a href="#">{$Think.session.Name}({$Think.session.Corp}) </a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    {/neq}
+    {eq name="CurPlatform" value = "Mobile"}
+        <nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+            <div class="navbar-header" >
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div style="margin-top: 15px;padding-left: 5px;">
+                    <span class="" style="color: white;font-weight: bold;font-size: medium;">{php}
+         $Login = new app\safetymng\controller\Login;
+         echo $Login->GetSysNameByServerIP();
+        {/php}</span>
+                </div>
+
+            </div>
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/SafetyMng/MyRelatedQuestion">当前任务</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/SafetyMng/QuestionInput/index">问题提交</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/SafetyMng/Reform/showFastReformIndex.html">下发立即整改</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/SafetyMng/Login/ExitSYS">退出系统</a></li>
+                </ul>
+            </div>
+        </div>
+        </nav>
+    {/eq}
+    <div id="content_main" class="col-lg-12 col-xs-12 col-sm-12">
+        {__CONTENT__}
+    </div>
+
+
+<script>
+    $(function(){
+            $("#MainFrm").attr("height", $(window).height()-90);
+            $("#vdiv").css("height",$(window).height());
+
+    });
+
+
+
+</script>
+
+</body>
+</html>

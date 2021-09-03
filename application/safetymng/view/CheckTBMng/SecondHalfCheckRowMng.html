@@ -1,0 +1,163 @@
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>质量安全管理模块</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="author" content="author">
+    <!-- 网页描述 -->
+    <meta name="description" content="hello">
+    <!-- 关键字使用","分隔 -->
+    <meta name="keywords" content="a,b,c">
+    <!-- 禁止浏览器从本地机的缓存中调阅页面内容 -->
+    <meta http-equiv="Pragma" content="no-cache">
+    <!-- 用来防止别人在框架里调用你的页面 -->
+    <meta http-equiv="Window-target" content="_top">
+    <!-- content的参数有all，none，index，noindex，follow，nofollow，默认是all -->
+    <meta name="robots" content="none">
+    <!-- 收藏图标 -->
+    <link rel="Shortcut Icon" href="favicon.ico" rel="external nofollow" >
+    <!-- 网页不会被缓存 -->
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <!-- 解决部分兼容性问题，如果安装了GCF，则使用GCF来渲染页面，如果未安装GCF，则使用最高版本的IE内核进行渲染。 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 页面按原比例显示 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href='__PUBLIC__/css/MyCss.css' rel='stylesheet'>
+    <link id="bs-css" href="__PUBLIC__/css/bootstrap.css" rel="stylesheet">
+
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/dialog.css" rel="stylesheet">
+    <script src="__PUBLIC__/js/dialog-plus.js"></script>
+    <script src="__PUBLIC__/js/dialog.js"></script>
+    <script src="__PUBLIC__/js/jquery.js"></script>
+    <script src="__PUBLIC__/js//bootstrap.js"></script>
+    <link href="__PUBLIC__/css/summernote.css" rel="stylesheet">
+    <script src="__PUBLIC__/js/summernote.js"></script>
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+    <link href="__PUBLIC__/css/select2.min.css" rel="stylesheet" />
+    <script src="__PUBLIC__/js/select2.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/UEditor/ueditor.config.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/UEditor/ueditor.all.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/UEditor/lang/zh-cn/zh-cn.js"></script>
+    <script src="__PUBLIC__/js/GY.js"></script>
+    <link href="__PUBLIC__/css/dialog.css" rel="stylesheet">
+    <script src="__PUBLIC__/js/dialog-plus.js"></script>
+    <script src="__PUBLIC__/layer/layer.js"></script>
+    <script src="__PUBLIC__/js/GY.js"></script>
+    <style>
+        .select2-container .select2-selection--single{
+            height:34px;
+            line-height: 34px;
+        }
+        </style>
+</head>
+<body class="container-full" >
+<form id="mForm" action="/SafetyMng/CheckTBMng/SecondHalfCheckRowMng/opType/{$opType}/CheckStandard/{$CheckStandardID}/id/{$id}" method="post" enctype="application/x-www-form-urlencoded">
+    <input type="hidden" name="CheckStandardID" id="CheckStandardID"  value="{$CheckStandardID}"/>
+    <input type="hidden" name="rowId" name="rowId"   value="{$CheckStandardID}"/>
+    <div class="col-sm-8 col-sm-offset-2" >
+        <div class="row">
+            <div class="col-sm-10" style="margin-top: 10px;">
+                {neq name="Warning" value=""}
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <div class="alert alert-danger" role="alert"><strong>提示：</strong>{$Warning}</div>
+                    </div>
+                </div>
+                {/neq}
+                {eq name="Warning" value=""}
+                <div class="alert alert-warning" role="alert">
+                    <strong>提示：</strong>本页面用来对检查条款进行管理。
+                </div>
+                {/eq}
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1" ><span style="font-weight: bold;">检查标准:</span></div>
+            <div class="col-xs-8 col-xs-8">
+                <textarea   id="CheckStandard" disabled="disabled" class="form-control" style="width: 100%;height: 100px;">{$CheckStandard}</textarea>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1" ><span style="font-weight: bold;">判定标准编号:</span></div>
+            <div class="col-xs-8 col-xs-8">
+                <input class="form-control" name="Code2" value="{$ComplianceStandardRow['Code2']}"/>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1" ><span style="font-weight: bold;">判定标准:</span></div>
+            <div class="col-xs-8 col-xs-8">
+                <textarea   id="ComplianceStandard"  name="ComplianceStandard" class="form-control" style="width: 100%;height: 100px;">{$ComplianceStandardRow['ComplianceStandard']}</textarea>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1"><span style="font-weight: bold;">依据名称:</span></div>
+            <div class="col-sm-8 col-xs-8">
+                <input class="form-control" name="BasisName" value="{$ComplianceStandardRow['BasisName']}"/>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1" ><span style="font-weight: bold;">依据条款:</span></div>
+            <div class="col-sm-8 col-xs-8">
+                <input class="form-control" name="BasisTerm" value="{$ComplianceStandardRow['BasisTerm']}"/>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1"><span style="font-weight: bold;">检查方式:</span></div>
+            <div class="col-sm-8 col-xs-8">
+                <select class="form-control required" data-tags="true" name="CheckMethods[]"  multiple="multiple" id="CheckMethods" LinkAge>
+                    <option >现场文件审查</option>
+                    <option >远程文件审查</option>
+                    <option >现场实地审查</option>
+                    <option >远程视频审查</option>
+                </select>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1"><span style="font-weight: bold;">责任部门:</span></div>
+            <div class="col-sm-8 col-xs-8">
+                <select class="form-control required" data-tags="true" name="RelatedCorps[]"  multiple="multiple" id="RelatedCorps" LinkAge>
+                    {volist name="CorpList" id="vo"}
+                        <option value="{$vo.Corp}" >{$vo.Corp}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1"><span style="font-weight: bold;">单位手册:</span></div>
+            <div class="col-sm-8 col-xs-8">
+                <input class="form-control" name="InnerManual" value="{$ComplianceStandardRow['InnerManual']}"/>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1"><span style="font-weight: bold;">检查频次:</span></div>
+            <div class="col-sm-8 col-xs-8">
+                <input class="form-control" name="CheckFrequency" value="{$ComplianceStandardRow['CheckFrequency']}"/>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;margin-bottom: 20px;">
+            <div class="col-sm-3 col-sm-offset-2 col-xs-3 col-xs-offset-1"><span style="font-weight: bold;">操作:</span></div>
+            <div class="col-xs-8 col-xs-8">
+                <div class="col-sm-offset-2 col-xs-offset-2">
+                    <button type="submit" class="btn btn-success" >保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="CurRowId" name="CurRowId" value="0"/>
+</form>
+
+<script>
+    $CheckMethods = {$CheckMethods|default=[]};
+    $RelatedCorps = {$RelatedCorps|default=[]};
+    $(function () {
+        $('select').select2();
+        $('#CheckMethods').val($CheckMethods).change();
+        $('#RelatedCorps').val($RelatedCorps).change();
+    });
+</script>
+</body>
+</html>

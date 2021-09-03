@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+    <script src="__PUBLIC__/js/jquery-3.1.1.min.js"></script>
+    <script src="__PUBLIC__/js/bootstrap.min.js"></script>
+
+    <script src="__PUBLIC__/js/vue.js"></script>
+    <script src="__PUBLIC__/js/axios.min.js"></script>
+
+    <script src="__PUBLIC__/js/jquery.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/el-index2155/el-css.css">
+    <!-- 引入组件库 -->
+    <script src="__PUBLIC__/el-index2155/el-index.js"></script>
+    <style>
+        div[DTRow] {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body class="container-fluid">
+<datalist id="QsSourceList">
+    {volist name="QsSourceList" id="v"}
+    <option value="{$v.SourceName}">{$v.CodePre}</option>
+    {/volist}
+</datalist>
+<datalist id="CorpList">
+    {volist name="CorpList" id="v"}
+    <option value="{$v.Corp}">{$v.Corp}</option>
+    {/volist}
+</datalist>
+<datalist id="CorpList2">
+
+</datalist>
+<datalist id="UserList">
+    {volist name="UserList" id="v"}
+    <option value="{$v.Name}">{$v.Corp}</option>
+    {/volist}
+</datalist>
+{php}
+$TreeMng = new app\safetymng\controller\TreeMng();
+{/php}
+<div id="app">
+    <div id="myTabContent" class="tab-content">
+
+        <div class="tab-pane active" id="home1" style="">
+            <div class="form-group">
+
+                <div class="alert alert-success col-sm-12" role="alert"><strong>提示：</strong>危险源查询</div>
+
+            </div>
+            <form id="QsForm" action="/SafetyMng/lgyQuery/SMSQry.html" method="post" enctype="application/x-www-form-urlencoded">
+                <input type="hidden" id="QsLabelCalc" name="QsLabelCalc" value="">
+                <div class="col-sm-10 col-sm-offset-1" style="margin-bottom: 10px;">
+                    <div class="row" DTRow>
+                        <div class="col-sm-1"><label class="control-label" for="QsSource">风险来源:</label></div>
+                        <div class="col-sm-4"><input class="form-control" name="QsSource" id="QsSource" list="QsSourceList" value="{$Think.post.QsSource}"/></div>
+                        <div class="col-sm-1 col-sm-offset-1"><label>SMS代码:</label></div>
+                        <div class="col-sm-4"><input class="form-control" name="SMSCode" id="SMSCode" value="{$Think.post.SMSCode}"/></div>
+                        <div class="col-sm-1"><a QsSearch class="btn btn-warning">搜索</a></div>
+                    </div>
+                    <div class="row" DTRow>
+                        <div class="col-sm-1"><label class="control-label" for="FXMS">风险描述:</label></div>
+                        <div class="col-sm-4"><input class="form-control" name="FXMS" id="FXMS" value="{$Think.post.FXMS}"/></div>
+                        <div class="col-sm-1 col-sm-offset-1"><label>危害描述:</label></div>
+                        <div class="col-sm-4"><input class="form-control" name="WHMS" id="WHMS" value="{$Think.post.WHMS}"/></div>
+                    </div>
+                    <div class="row" DTRow>
+                        <div class="col-sm-1 "><label>判定部门:</label></div>
+                        <div class="col-sm-4"><input class="form-control" list="CorpList" name="ClaimCorp" id="ClaimCorp" value="{$Think.post.ClaimCorp}"/></div>
+                        <div class="col-sm-1 col-sm-offset-1"><label class="control-label " for="DutyCorp1">责任部门:</label></div>
+                        <div class="col-sm-2"><input class="form-control" name="DutyCorp1" autocomplete="off" id="DutyCorp1" placeholder="父部门" list="CorpList" value="{$Think.post.DutyCorp1}" /></div>
+                        <div class="col-sm-2"><input class="form-control" name="DutyCorp2"  autocomplete="off" id="DutyCorp2" placeholder="子部门" list="CorpList2" value="{$Think.post.DutyCorp2}" /></div>
+                    </div>
+                    <div class="row" DTRow>
+                        <div class="col-sm-1 "><label>判定人:</label></div>
+                        <div class="col-sm-4"><input class="form-control" list="UserList" name="Judger" id="Judger" value="{$Think.post.Judger}"/></div>
+                        <div class="col-sm-1 col-sm-offset-1"><label>判定日期:</label></div>
+                        <div class="col-sm-2"><input Date class="form-control" type="date" name="SDate1" id="SDate2" value="{$Think.post.SDate1}"/></div>
+                        <div class="col-sm-2"><input Date class="form-control" type="date" name="EDate1" id="EDate2" value="{$Think.post.EDate1}"/></div>
+                        <div class="col-sm-1" style="vertical-align: center;"><a SuperQry>高级</a></div>
+                    </div>
+                </div>
+                <div class="col-sm-12" style="display: none;" id="showDiv">
+                    <div class="row">
+                        <div class="alert alert-success" role="alert">
+                            <strong>提示：</strong>危险源的高级搜索页面,各条件之间的逻辑关系为'且'.
+                        </div>
+                    </div>
+                    <div class="row" DTRow>
+                        <div class="col-xs-3" style=""><span style="font-weight: bold;">依据风险代码:</span></div>
+                        <div class="col-xs-8">
+                            <input class="form-control" name="FXCode"   value="{$Think.post.FXCode}" />
+                        </div>
+                    </div>
+                    <div class="row" DTRow>
+                        <div class="col-xs-3" ><span style="font-weight: bold;">风险评定等级:</span></div>
+                        <div class="col-xs-8">
+                            <input class="form-control" name="FXDJ1" placeholder="例如:I II等"  value="{$Think.post.FXDJ1}" />
+                        </div>
+                    </div>
+                    <div class="row" DTRow>
+                        <div class="col-xs-3" ><span style="font-weight: bold;">直接原因:</span></div>
+                        <div class="col-xs-8">
+                            <input class="form-control" name="ZJYY" value="{$Think.post.ZJYY}" />
+                        </div>
+
+                    </div>
+                    <div class="row" DTRow>
+                        <div class="col-xs-3" ><span style="font-weight: bold;">根本原因:</span></div>
+                        <div class="col-xs-8">
+                            <input class="form-control" name="GBYY" value="{$Think.post.GBYY}" />
+                        </div>
+                    </div>
+                    <div class="row" DTRow>
+                        <div class="col-xs-3" ><span style="font-weight: bold;">纠正措施:</span></div>
+                        <div class="col-xs-8">
+                            <input class="form-control" name="JZCS" value="{$Think.post.JZCS}" />
+                        </div>
+                    </div>
+                    <div class="row" DTRow>
+                        <div class="col-xs-3" ><span style="font-weight: bold;">纠正期限:</span></div>
+                        <div class="col-xs-4">
+                            <input class="form-control" name="JZQX1" type="date" value="{$Think.post.JZQX1}" />
+                        </div>
+                        <div class="col-xs-4">
+                            <input class="form-control" name="JZQX2" type="date" value="{$Think.post.JZQX2}" />
+                        </div>
+                    </div>
+                    <div class="row" DTRow>
+                        <div class="col-xs-3" ><span style="font-weight: bold;">预防措施:</span></div>
+                        <div class="col-xs-8">
+                            <input class="form-control" name="YFCS" value="{$Think.post.YFCS}" />
+                        </div>
+                    </div>
+                    <div class="row" DTRow>
+                        <div class="col-xs-3" ><span style="font-weight: bold;">预防期限:</span></div>
+                        <div class="col-xs-4">
+                            <input class="form-control" name="YFQX1" type="date" value="{$Think.post.YFQX1}" />
+                        </div>
+                        <div class="col-xs-4">
+                            <input class="form-control" name="YFQX2" type="date" value="{$Think.post.YFQX2}" />
+                        </div>
+                    </div>
+                    <div class="row" DTRow>
+                        <div class="col-xs-3" ><span style="font-weight: bold;">措施后风险等级:</span></div>
+                        <div class="col-xs-8">
+                            <input class="form-control" name="FXDJ2" placeholder="例如:I II等"  value="{$Think.post.FXDJ2}" />
+                        </div>
+                    </div>
+                    <div class="row" DTRow>
+                        <div class="col-xs-3" ><span style="font-weight: bold;">措施制定人:</span></div>
+                        <div class="col-xs-8">
+                            <input class="form-control" name="CSCreater"   value="{$Think.post.CSCreater}" />
+                        </div>
+                    </div>
+                    <div class="row" DTRow>
+                        <div class="col-xs-3" ><span style="font-weight: bold;">危险源状态:</span></div>
+                        <div class="col-xs-8">
+                            <label class="label label-primary"><input type="radio" name="Status" value="所有" {eq name="$Think.post.Status" value="所有"} checked="checked" {/eq} />所有</label>
+                            <label class="label label-warning"><input type="radio" name="Status" value="未关闭" {eq name="$Think.post.Status" value="未关闭"} checked="checked" {/eq} />未关闭</label>
+                            <label class="label label-default"><input type="radio" name="Status" value="已关闭" {eq name="$Think.post.Status" value="已关闭"} checked="checked" {/eq}/>已关闭</label>
+                        </div>
+                    </div>
+                    <p></p>
+                </div>
+            </form>
+            <div class="row" DTRow style="margin-top: 10px;">
+                <table id="table" class="table table-hover"
+                       data-toggle="table"
+                       data-classes="table table-hover"
+                       data-show-columns="true"
+                       data-striped="true"
+                       data-show-toggle="true"
+                       data-search="true"
+                       data-show-refresh="true"
+                       data-toolbar="#toolbar"
+                       style="width: 100%;min-width: 100%;margin-left: 10px;"
+                >
+
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>SMS代码</th>
+                        <th style="width: 80px;">依据风险</th>
+                        <th>风险描述与危害描述</th>
+                        <th style="width: 80px;">识别部门<br/>责任部门</th>
+                        <th style="width: 100px;">风险评定记录</th>
+                        <th>风险等级</th>
+                        <th>原因及措施</th>
+                        <th>措施后风险等级</th>
+                        <th style="width: 100px;">措施后风险评定记录</th>
+                        <th style="width: 100px;">措施制定人</th>
+                        <th style="width: 100px;">整改通知书与关联问题</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="SMSList" id="vo"}
+                    <tr>
+                        <td>{++$QsCnt}</td>
+                        <td>
+                            <label class="label label-warning">{$vo.SMSCode}</label>
+                             <br/>
+                            <br/>
+                            <span style="color: #00A000">{$vo.SMSSource}</span>
+                            <br/>
+                            <br/>
+                            {eq  name="vo['Status']" value="已关闭"}<span style="color: #B1B1B8;font-weight: bold"> {$vo.Status}</span>{/eq}
+                            {neq name="vo['Status']" value="已关闭"}<span style="color: #003eff;font-weight: bold"> {$vo.Status}</span>{/neq}
+                        </td>
+                        <td>
+                            <el-popover
+                                    placement="right"
+                                    width="400"
+                                    trigger="click"
+                                    @show="showFX('{$vo.FXCode}')"
+                            >
+                                <el-descriptions class="margin-top"  :column="2" size="small" border>
+                                    <el-descriptions-item>
+                                        <template slot="label">
+                                            <i class="el-icon-user"></i>
+                                            风险代码
+                                        </template>
+                                        {{curFX.FXCode}}
+                                    </el-descriptions-item>
+
+                                    <el-descriptions-item>
+                                        <template slot="label">
+                                            <i class="el-icon-location-outline"></i>
+                                            风险类型
+                                        </template>
+                                        {{curFX.FXJudgeType}}
+                                    </el-descriptions-item>
+                                    <el-descriptions-item>
+                                        <template slot="label">
+                                            <i class="el-icon-tickets"></i>
+                                            识别人
+                                        </template>
+                                        {{curFX.CreaterName}}
+                                    </el-descriptions-item>
+                                    <el-descriptions-item>
+                                        <template slot="label">
+                                            <i class="el-icon-office-building"></i>
+                                            识别时间
+                                        </template>
+                                        {{curFX.CreateTime}}
+                                    </el-descriptions-item>
+                                    <el-descriptions-item>
+                                        <template slot="label">
+                                            <i class="el-icon-tickets"></i>
+                                            判定人
+                                        </template>
+                                        {{curFX.JudgePerson}}
+                                    </el-descriptions-item>
+                                    <el-descriptions-item>
+                                        <template slot="label">
+                                            <i class="el-icon-office-building"></i>
+                                            判定时间
+                                        </template>
+                                        {{curFX.JudgeTime}}
+                                    </el-descriptions-item>
+                                    <el-descriptions-item>
+                                        <template slot="label">
+                                            <i class="el-icon-mobile-phone"></i>
+                                            责任部门
+                                        </template>
+                                        <span v-for="(item,i) in curFX.DutyCorps" style="margin-left: 5px;">{{item.Corp}}</span>
+                                    </el-descriptions-item>
+                                </el-descriptions>
+                                <el-link slot="reference">
+
+                                    {$vo.FXCode}
+                                </el-link >
+                            </el-popover>
+                        </td>
+                        <td>
+                            <span style="color: #003eff;font-weight: bold">风险描述:</span>{$vo.FXMS}
+                            <br/>
+                            <br/>
+                            <span style="color: #8f0000;font-weight: bold">危害描述:</span>{$vo.WHMS}
+                        </td>
+                        <td style="text-align: center">
+                            {$vo.ClaimCorp}
+                            <br/>
+                            ⬇️
+                            <br/>
+                            {$vo.DutyCorp}</td>
+                        <td>
+                            {neq name="$vo['KNXAvg1']" value=""}
+                            可能性:<label class="label label-default table-bordered">{$vo.KNXAvg1}</label> <br/> <br/> 严重性:<label class="label label-default table-bordered">{$vo.YZXAvg1}</label>
+                            {/neq}
+                        </td>
+                        <td>{neq name="$vo['Color1']" value=""}<div style="width: 20px;text-align:center;background-color:{$vo.Color1};font-weight:bolder;border: solid 1px">{$vo.FXDJ1}</div>{/neq}</td>
+                        <td>
+                            <span style="color:#8b0be6;font-weight: bold">直接原因:</span>{$vo.ZJYY}<br/>
+                            <span style="color:#0078a5;font-weight: bold">根本原因:</span>{$vo.GBYY}<br/>
+                            <span style="color:#00A000;font-weight: bold">纠正措施:</span>{$vo.JZCS}<span style="color:#242a2b;font-size: xx-small;font-weight: bold">  {$vo.JZQX}</span><br/>
+                            <span style="color:#c10802;font-weight: bold">预防措施:</span>{$vo.YFCS}<span style="color:#242a2b;font-size: xx-small;font-weight: bold">  {$vo.YFQX}</span><br/>
+                        </td>
+                        <td>{neq name="$vo['Color2']" value=""}<div style="width: 20px;text-align:center;background-color:{$vo.Color2};font-weight:bolder;border: solid 1px">{$vo.FXDJ2}</div>{/neq}</td>
+                        <td>
+                            {neq name="$vo['KNXAvg1']" value=""}
+                            可能性:<label class="label label-default table-bordered">{$vo.KNXAvg2}</label>
+                            <br/>   <br/>严重性:<label class="label label-default table-bordered">{$vo.YZXAvg2}</label>
+                            {/neq}
+                        </td>
+                        <td>
+                            {$vo.CSCreater}
+                            <br/>
+                            {$vo.CSCreateTime}
+                        </td>
+                        <td>
+                            <span style="font-size: xx-small">
+                                 <a onclick="window.open('/SafetyMng/Reform/GetReformDisplayPage/Code/{$vo.RelatedReformCode}/Type/Code');">整改通知书</a>
+                            </span>
+                            <br/>
+                                 <a onclick="window.open('/SafetyMng/QuestionInput/showQuestionInfoWithoutLayout/id/{$vo.QuestionID}');">关联的问题</a>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    function updateDutyCorp2() {
+        $v = $('#DutyCorp1').val();
+        axios({
+            method: 'get',
+            url: '/SafetyMng/CorpMng/GetCorpAllLevelChildrenRows_JSON/ParentCorp/'+$v,
+            data: ''
+        }).then(function (response) {
+            List = response.data;
+            $('#CorpList2').empty();
+            for(i=0;i<List.length;i++){
+                vv = List[i];
+                $("<option value='"+vv+"'>"+vv+"</option>").appendTo('#CorpList2');
+            }
+            $("<option value='全部'>全部</option>").appendTo('#CorpList2');
+        }).catch(function (error) {
+
+        });
+    }
+
+    $(function () {
+        $('a[QsHover]').mousedown(function(e){
+            if(3 == e.which){
+                window.open( '/SafetyMng/QuestionInput/showQuestionInfoWithoutLayout/id/'+$(this).attr('QsID'));
+            }else if(1 == e.which){
+                layer.closeAll();
+                layer.open({
+                    type: 2,
+                    title: false,
+                    closeBtn: 0, //不显示关闭按钮
+                    shade: [0],
+                    area: ['500px', '600px'],
+                    offset: 'rb', //右下角弹出
+                    shadeClose:true,
+                    anim: 2,
+                    content: '/SafetyMng/QuestionInput/showQuestionInfoWithoutLayout/id/'+$(this).attr('QsID'), //iframe的url，no代表不显示滚动条
+                    end: function(){ //此处用于演示
+
+                    }
+                });
+            }
+        });
+
+
+        $('a[SuperQry]').click(function () {
+            layer.open({
+                title:'危险源高级检索',
+                type: 1,
+                shadeClose: true,
+                area: ['800px', '700px'],
+                content: $('#showDiv'),
+                end:function () {
+                    $('#showDiv').css('display','none');
+                }
+            });
+        });
+
+        updateDutyCorp2();
+
+        $('#DutyCorp1').change(function () {
+
+            updateDutyCorp2();
+        })
+
+        $('a[QsSearch]').click(function () {
+            $('#QsForm').submit();
+        });
+
+    });
+    new Vue({
+        el : '#app',
+        data () {
+            return {
+                curFX:{
+
+                }
+            }
+        },
+        methods : {
+            gyAjaxPost(url, data, onSuccess, onError) {
+                var _this = this;
+                axios({
+                    method: 'post',
+                    url: url,
+                    data: data
+                }).then(function (response) {
+                    onSuccess(_this, response);
+                }).catch(function (error) {
+                    if (onError != null)
+                        onError(_this, error);
+                });
+            },
+            showFX(code){
+                this.GetFXRow(code);
+            },
+            GetFXRow(code){
+                var _t =this;
+                this.gyAjaxPost("/SafetyMng/FXMng/GetFXByCode",
+                    'FXCode='+code,
+                    function (_this,response) {
+                        _t.curFX  = response.data[0];
+                    },null);
+            },
+
+        }});
+</script>
+
+
+</body>
+</html>

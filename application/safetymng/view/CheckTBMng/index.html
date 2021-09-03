@@ -1,0 +1,570 @@
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="author" content="author">
+    <!-- 网页描述 -->
+    <meta name="description" content="hello">
+    <!-- 关键字使用","分隔 -->
+    <meta name="keywords" content="a,b,c">
+    <!-- 禁止浏览器从本地机的缓存中调阅页面内容 -->
+    <meta http-equiv="Pragma" content="no-cache">
+    <!-- 用来防止别人在框架里调用你的页面 -->
+    <meta http-equiv="Window-target" content="_top">
+    <!-- content的参数有all，none，index，noindex，follow，nofollow，默认是all -->
+    <meta name="robots" content="none">
+    <!-- 收藏图标 -->
+    <link rel="Shortcut Icon" href="favicon.ico" rel="external nofollow" >
+    <!-- 网页不会被缓存 -->
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <!-- 解决部分兼容性问题，如果安装了GCF，则使用GCF来渲染页面，如果未安装GCF，则使用最高版本的IE内核进行渲染。 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 页面按原比例显示 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--[if lt IE 9]>
+    <![endif]-->
+    <!-- The styles -->
+    <link id="bs-css" href="__PUBLIC__/css/bootstrap-cerulean.min.css" rel="stylesheet">
+    <link href='__PUBLIC__/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+    <link rel="stylesheet" href="__PUBLIC__/css/el-ui.css">
+    <link href='__PUBLIC__/css/MyCss.css' rel='stylesheet'>
+
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+
+    <link href="__PUBLIC__/css/bootstrap-editable.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/ui-dialog.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="__PUBLIC__/js/jquery.js"></script>
+    <script src="__PUBLIC__/js/bootstrap.js"></script>
+
+    <script src="__PUBLIC__/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- library for cookie management -->
+    <script src="__PUBLIC__/js/bootstrap-datetimepicker.zh-CN.js"></script>
+
+    <!-- data table plugin -->
+
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+
+    <link href="__PUBLIC__/css/select2.min.css" rel="stylesheet" />
+    <script src="__PUBLIC__/js/select2.min.js"></script>
+    <link href="__PUBLIC__/css/bootstrap-datetimepicker.css" rel="stylesheet">
+
+
+
+    <script src="__PUBLIC__/js/GY.js"></script>
+    <script src="__PUBLIC__/layer/layer.js"></script>
+    <script src="__PUBLIC__/js/jquery.ztree.all.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/jquery.ztree.exhide.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/fuzzysearch.js"></script>
+
+    <script type="text/javascript" src="__PUBLIC__/js/jquery.ztree.exedit.js"></script>
+    <script src="__PUBLIC__/js/el-index.js"></script>
+    <script src="__PUBLIC__/js/axios.min.js"></script>
+    <style>
+        .select2-container .select2-selection--single{
+            height:36px;
+            line-height: 36px;
+        }
+        .ztree li span.button.add {margin-left:2px; margin-right: -1px; background-position:-144px 0; vertical-align:top; *vertical-align:middle}
+
+    </style>
+    <style>
+        .xuxian{
+            height:0;
+            border-bottom:#000000 2px dashed;
+        }
+    </style>
+</head>
+<body class="container-full">
+<form action="/SafetyMng/CheckTBMng/showCheckRowQuery" id="mForm" method="post" enctype="application/x-www-form-urlencoded">
+    <datalist id="Code1List">
+
+    </datalist>
+    <datalist id="Code2List">
+
+    </datalist>
+
+    <datalist id="CheckDBList">
+        <option ></option>
+        {volist name="CheckDB" id="vo"}
+            <option {eq name="$Think.post.CheckDB" value="{$vo.BaseName}"} selected {/eq} >{$vo.BaseName}</option>
+        {/volist}
+    </datalist>
+
+    <datalist id="CheckContentList">
+
+    </datalist>
+
+    <datalist id="CheckStandardList">
+
+    </datalist>
+
+    <datalist id="ProfessionNameList">
+
+    </datalist>
+
+    <datalist id="BusinessNameList">
+
+    </datalist>
+
+    <datalist id="CheckSubjectList">
+
+    </datalist>
+
+    <datalist id="CorpList2">
+
+    </datalist>
+    <datalist id="CorpList">
+        {volist name="CorpList" id="v"}
+        <option value="{$v.Corp}">{$v.id}</option>
+        {/volist}
+    </datalist>
+    <datalist id="CheckSourceList">
+
+    </datalist>
+
+    <input type="hidden" id="opType" name="opType" value=""/>
+    <input type="hidden" id="CurRowId" name="CurRowId" value="0"/>
+    <h3 style="text-align: center">法定自查事项清单库维护</h3>
+    <div class="col-sm-12" >
+        <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion"
+                           href="#collapseOne">
+                            查询条件<<折叠
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-10" style="margin-top: 10px;">
+                                {neq name="Warning" value=""}
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <div class="alert alert-danger" role="alert"><strong>提示：</strong>{$Warning}</div>
+                                    </div>
+                                </div>
+                                {/neq}
+
+                            </div>
+                            <table class="table table-bordered col-sm-11">
+                                <tr>
+                                    <td style="width: 10%">
+                                        <span style="font-weight: bold;">操作模式:</span>
+                                    </td>
+                                    <td style="width: 30%" colspan="2">
+                                        <div class="btn-group" >
+                                            <a  type="button" name="AddBtn" id="AddBtn" opType="Add" MName="增加" class="btn btn-default ">增加检查标准</a>
+                                            <a  type="button" name="MdfBtn" id="MdfBtn" opType="Mdf" MName="修改" class="btn btn-default ">修改检查标准</a>
+                                            <a  type="button"  class="btn btn-info ">删除通过导入Excel实现</a>
+                                            <!--a  type="button" name="DelBtn" id="DelBtn"  MName="删除" class="btn btn-default ">删除</a-->
+                                        </div>
+                                    </td>
+                                    <td style="width: 10%">
+                                        <span style="font-weight: bold;">检查标准编号:</span>
+                                    </td>
+                                    <td style="width: 20%" >
+                                        <input class="form-control required"  name="Code1" list="Code1List" id="Code1"  value="{$Think.post.Code1}" LinkAge/>
+
+                                    </td>
+                                    <td><span style="font-weight: bold;">检查内容:</span></td>
+                                    <td colspan="">
+                                        <input class="form-control required" data-tags="true" name="CheckContent" id="CheckContent" list="CheckContentList" value="{$Think.post.CheckContent}" LinkAge/>
+
+                                    </td>
+                                    <td rowspan="2" style="text-align: center;">
+                                        <button type="submit"  class="btn btn-success">查询</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <div class="row">
+                                        <td><span style="font-weight: bold;">数据库:</span><a type="submit" AddDB  class="btn btn-primary btn-sm">+</a></td>
+                                        <td colspan="2">
+                                            <input class="form-control required"  name="CheckDB" id="CheckDB" value="{$Think.post.CheckDB}" list="CheckDBList" LinkAge />
+                                        </td>
+
+                                        <td><span style="font-weight: bold;">检查标准:</span></td>
+                                        <td colspan="1">
+                                            <input class="form-control required"  name="CheckStandard"  id="CheckStandard" value="{$Think.post.CheckStandard}"  list="CheckStandardList"/>
+                                        </td>
+                                        <td style="width: 10%">
+                                            <span style="font-weight: bold;">判定标准编号:</span>
+                                        </td>
+                                        <td >
+                                            <input class="form-control required" data-tags="true"  name="Code2" id="Code2"  value="{$Think.post.Code2}" list="Code2List" LinkAge/>
+                                        </td>
+
+                                    </div >
+                                </tr>
+                                <tr>
+                                    <td ><span style="font-weight: bold;">专业名称:</span></td>
+                                    <td colspan="2">
+                                        <input class="form-control required"  name="ProfessionName" id="ProfessionName" list="ProfessionNameList"  value="{$Think.post.ProfessionName}" LinkAge />
+
+                                    </td>
+                                    <td rowspan="4" colspan="5">
+                                        <textarea class="form-control" disabled="disabled" style="height: 200px;" id="CheckStandardEdit"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td >
+                                        <span style="font-weight: bold;">业务名称:</span>
+                                    </td>
+                                    <td colspan="2">
+                                        <input class="form-control required"  name="BusinessName"  id="BusinessName" list="BusinessNameList" value="{$Think.post.BusinessName}" LinkAge />
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td><span style="font-weight: bold;">检查来源:</span></td>
+                                    <td colspan="2">
+                                        <input class="form-control required"  name="CheckSource"  id="CheckSource" list="CheckSourceList"  value="{$Think.post.CheckSource}" LinkAge/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td ><span style="font-weight: bold;">检查项目:</span></td>
+                                    <td colspan="2">
+                                        <input class="form-control required"  name="CheckSubject"  id="CheckSubject" list="CheckSubjectList" value="{$Think.post.CheckSubject}" LinkAge/>
+
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td><span style="font-weight: bold;">适用部门:</span></td>
+                                    <td >
+                                        <input class="form-control" name="DutyCorp1" id="DutyCorp1" list="CorpList" placeholder="父部门" value="{$Think.post.DutyCorp1}" autocomplete="off"/>
+                                    </td>
+                                    <td>
+                                        <input class="form-control" name="DutyCorp2" id="DutyCorp2" list="CorpList2" placeholder="子部门" value="{$Think.post.DutyCorp2}" autocomplete="off"/>
+                                    </td>
+
+                                    <td colspan="1" style="width: 15%">
+                                        <div class="row">
+                                            <div class="col-sm-1" style="width: 20px;">
+                                                <span style="font-weight: bolder">自</span>
+                                            </div>
+                                            <div class="col-sm-10" style="width: 180px;">
+                                                <input type="date" name="StartDate" value="{$Think.post.StartDate}" class="form-control"/>
+                                            </div>
+                                            <div class="col-sm-1" style="width: 20px;">
+                                                <span style="font-weight: bolder">后</span>
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                    <td colspan="3">
+                                        <select name="ItemCheckType" value="{$Think.post.ItemCheckType}" class="form-control">
+                                            <option></option>
+                                            <option {eq name="$Think.post.ItemCheckType" value="未被检查的条款"} selected {/eq}>未被检查的条款</option>
+                                            <option {eq name="$Think.post.ItemCheckType" value="尚未被检查但已列入检查计划的条款"} selected {/eq}>尚未被检查但已列入检查计划的条款</option>
+                                            <option {eq name="$Think.post.ItemCheckType" value="尚未被检查且未列入检查计划的条款"} selected {/eq}>尚未被检查且未列入检查计划的条款</option>
+                                            <option {eq name="$Think.post.ItemCheckType" value="已被检查的条款"} selected {/eq}>已被检查的条款</option>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="row " style="margin-top: 15px;">
+            <div class="col-sm-12 xuxian"></div>
+        </div>
+        <div class="row" style="margin-top: 15px;">
+            <div class="col-sm-12" >
+                    <table class="table  table-bordered bootstrap-datatable  table-hover " style="width: 100%">
+                        <thead>
+                        <tr>
+                            <th style="width: 50px;">序号</th>
+                            <th style="text-align: center;width: 50%">检查标准</th>
+                            <th style="text-align: center;width: 50%">符合性判定标准<a class="btn btn-sm btn-warning" AddSecondCheckRow style="margin-left: 20px;">+</a></th><!-- 生成类型 航空公司　起点　终点　航班类型--->
+                        </thead>
+                        <tbody>
+                        {volist name="SecondCheckRowList" id="vo"}
+                            <tr CheckStandardID = "{$vo.StandardID}" rowId = "{$vo.id}" >
+                                <td CheckStandardID = "{$vo.StandardID}" rowId = "{$vo.id}" >
+                                    {++$Cnt}
+                                </td>
+                                <td>
+                                    <div class="row">
+                                       <div class="col-sm-4">
+                                            <span style="font-weight: bolder">检查标准编号:</span>
+                                           <label class="label label-warning">{$vo.Code1}</label>
+                                       </div>
+                                        <div class="col-sm-4">
+                                            <span style="font-weight: bolder">专业名称:</span>
+                                            <label class="label label-default">{$vo.ProfessionName}</label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <span style="font-weight: bolder">业务名称:</span>
+                                           {$vo.BusinessName}
+                                        </div>
+                                    </div>
+                                    <p></p>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <span style="font-weight: bolder">检查来源:</span>
+                                            <label class="label label-default">{$vo.CheckSource}</label>
+
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <span style="font-weight: bolder">检查项目:</span>
+                                            {$vo.CheckSubject}
+
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <span style="font-weight: bolder">检查内容:</span>
+                                            {$vo.CheckContent}
+
+                                        </div>
+                                    </div>
+                                    <p></p>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <span style="font-weight: bolder">检查标准:</span>
+                                            <span style="color: #1b961b;">{$vo.CheckStandard}</span>
+
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <span style="font-weight: bolder">判定标准编号:</span>
+                                            <label class="label label-info">{$vo.Code2}</label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <span style="font-weight: bolder">检查方法:</span>{$vo.CheckMethods}
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <span style="font-weight: bolder">检查频次:</span>{$vo.CheckFrequency}
+                                        </div>
+                                    </div>
+                                    <p></p>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <span style="font-weight: bolder">依据名称:</span>{$vo.BasisName}
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <span style="font-weight: bolder">依据条款:</span>{$vo.BasisTerm}
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <span style="font-weight: bolder">单位手册:</span>{$vo.InnerManual}
+                                        </div>
+                                    </div>
+                                    <p></p>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <span style="font-weight: bolder">判定标准:</span>
+                                            <span style="color: #003eff;"> {$vo.ComplianceStandard}</span>
+
+                                        </div>
+                                    </div>
+                                    <p></p>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <span style="font-weight: bolder">适用部门:</span>
+                                            {volist name="vo.Corps" id="vv"}
+                                                <label class="label label-success">{$vv.Corp}</label>
+                                            {/volist}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+            </div>
+        </div>
+</form>
+</body>
+<script>
+
+
+    function updateDutyCorp2() {
+        $v = $('#DutyCorp1').val();
+        axios({
+            method: 'get',
+            url: '/SafetyMng/CorpMng/GetCorpAllLevelChildrenRows_JSON/ParentCorp/'+$v,
+            data: ''
+        }).then(function (response) {
+            List = response.data;
+            $('#CorpList2').empty();
+            for(i=0;i<List.length;i++){
+                vv = List[i];
+                $("<option value='"+vv+"'>"+vv+"</option>").appendTo('#CorpList2');
+            }
+            $("<option value='全部'>全部</option>").appendTo('#CorpList2');
+        }).catch(function (error) {
+
+        });
+    }
+
+    function SelectLinkage (SelID) {
+        $Pv = [];
+        $SelArr = ['CheckDB','ProfessionName','BusinessName','CheckSource','CheckSubject','Code1','CheckContent','CheckStandard'];
+        $SelArr.forEach(function (v) {
+            $r = {'SelName':v,'SelText':$('#'+v ).val()};
+            $Pv.push($r);
+        });
+        $PostData = {"EventSel":SelID,'data':$Pv,'FakeID':'YES'};
+        $.ajax({
+            url:"/SafetyMng/Help/Ajax_SelectLinkage",
+            data: JSON.stringify($PostData),
+            type:'post',
+            dataType:"json",
+            success:function (data,textStatus) {
+                $TargetSel = data['TargetSel']+'List';
+                $SelData = data['data'];
+                //alert($TargetSel);
+                $bBegin = false;
+                $SelArr.forEach(function (v) {
+                    if($bBegin){
+                        $('#'+v+'List').empty();
+                    }
+                    if(v==SelID){
+                        $bBegin =true;
+                    }
+                });
+
+                $('#'+$TargetSel).empty();
+
+                for(i=0,str='';i<$SelData.length;i++){
+                    str+= '<option >'+$SelData[i].text+'</option>';
+                }
+
+                $(str).appendTo('#'+$TargetSel);
+
+            },
+            error:function (XMLHttpRequest,textStatus,errorThrown) {
+
+            }
+        });
+    }
+
+
+
+     $(function () {
+         $("a[opType]").bind('click',function () {
+             $URL =  '/SafetyMng/CheckTBMng/showFirstHalfCheckRowMng';
+             $opType = $(this).attr('opType');
+             if($opType=='Mdf'){
+                 if($('#CurRowId').val()==0){
+                     layer.alert('请选择您要修改的条款!');
+                     return;
+                 }
+                 $URL = $URL + '/opType/Mdf/id/'+$('#CurRowId').val();
+             }
+             layer.open({
+                 title:'维护',
+                 type: 2,
+                 content: $URL,
+                 area: ['500px', '600px'],
+                 end:function () {
+                     $('#mForm').submit();
+                 }
+             });
+         });
+
+        $('a[AddSecondCheckRow]').click(function () {
+            $URL =  '/SafetyMng/CheckTBMng/showSecondHalfCheckRowMng';
+            if($('#CurRowId').val()==0){
+                layer.alert('请先在上面选择检查标准!');
+                return;
+            }else{
+                $id = $('#CurRowId').val();
+                $URL += '/opType/Add/CheckStandardID/'+$id;
+            }
+            layer.open({
+                title:'符合性判定标准维护',
+                type: 2,
+                content: $URL,
+                area: ['500px', '600px'],
+                end:function () {
+                    $('#mForm').submit();
+                }
+            });
+        });
+
+         $('input[LinkAge]').blur(function () {
+             SelectLinkage($(this).attr('id'));
+         })
+
+
+        $('#CheckStandard').on("change", function(e) {
+            $('#CheckStandardEdit').text($(this).val());
+
+        });
+
+        $('tr[CheckStandardID]').dblclick(function () {
+            $URL =  '/SafetyMng/CheckTBMng/showSecondHalfCheckRowMng';
+            if($(this).attr('CheckStandardID')==0  || $(this).attr('rowId')==0){
+                layer.alert('未选择检查标准或符合性判定标准!');
+                return;
+            }else{
+                $CheckStandard = $(this).attr('CheckStandardID');
+                $rowId = $(this).attr('rowId');
+                $URL += '/opType/Mdf/CheckStandardID/'+$CheckStandard+'/id/'+$rowId;
+            }
+            layer.open({
+                title:'符合性判定标准维护',
+                type: 2,
+                content: $URL,
+                area: ['500px', '660px'],
+                end:function () {
+                    $('#mForm').submit();
+                }
+            });
+        });
+
+        $('tr[CheckStandardID]').click(function () {
+                $('td[CheckStandardID]').css('background-color','white');
+                $('td[CheckStandardID='+$(this).attr('CheckStandardID')+']').css('background-color','yellow');
+                $('#CurRowId').val($(this).attr('CheckStandardID'));
+        });
+
+         updateDutyCorp2();
+
+         $('#DutyCorp1').change(function () {
+             updateDutyCorp2();
+         })
+
+
+         $('a[AddDB]').click(function () {
+            console.log('AddDB');
+           if($('#CheckDB').val()==''){
+               alert('请输入要增加的法定自查数据库名称!');
+               return;
+           }
+
+            $.ajax({
+                url:"/SafetyMng/CheckTBMng/AddCheckDB",
+                data: 'DBName='+$('#CheckDB').val(),
+                type:'post',
+                dataType:"json",
+                success:function (data,textStatus) {
+                    alert(data);
+                    if(data=='OK'){
+                        window.location.reload();
+                    }
+                },
+                error:function (XMLHttpRequest,textStatus,errorThrown) {
+
+                }
+            });
+
+        });
+    });
+</script>
+</html>

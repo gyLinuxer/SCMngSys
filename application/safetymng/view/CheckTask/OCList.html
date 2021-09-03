@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .xuxian{
+            height:0;
+            border-bottom:#000000 2px dashed;
+        }
+    </style>
+    <script src="__PUBLIC__/js/axios.min.js"></script>
+</head>
+<body class="container-full">
+<datalist id="CorpList2">
+
+</datalist>
+<datalist id="CorpList">
+    {volist name="CorpList" id="v"}
+    <option value="{$v.Corp}">{$v.id}</option>
+    {/volist}
+</datalist>
+<!--
+    检查对象： 父部门 子部门
+    计划检查日期 开始 结束
+    检查状态  检查单未制定 检查已开始 检查已结束
+    检查来源
+    检查任务标题
+    检查类型：我参与的
+-->
+<form class="form-inline" style="text-align: center" action="/SafetyMng/CheckTask/CheckListQry" method="post">
+    <div class="form-group">
+        <label  for="CheckName">检查计划标题:</label>
+        <input  class="form-control" id="CheckName" name="CheckName" value="{$Think.post.CheckName}">
+    </div>
+    <div class="form-group">
+        <label  for="CheckName">检查来源:</label>
+        <select class="form-control js-example-basic-multiple js-states " name="CheckSource" id="CheckSource">
+            <option ></option>
+            {volist name="QuestionSource" id="vo"}
+                <option value="{$vo.SourceName}" {eq name="$vo.$Think.post.CheckSource" value="$vo['SourceName']" } selected {/eq}>{$vo.SourceName}</option>
+            {/volist}
+        </select>
+    </div>
+    <div class="form-group">
+        <label  for="DutyCorp1">检查对象:</label>
+        <input  class="form-control" id="DutyCorp1" name="DutyCorp1" value="{$Think.post.DutyCorp1}" list="CorpList" placeholder="父部门" autocomplete="off">
+        <input  class="form-control" id="DutyCorp2" name="DutyCorp2" value="{$Think.post.DutyCorp2}" list="CorpList2" placeholder="子部门" autocomplete="off">
+    </div>
+    <div class="form-group">
+        <label  for="PlanStartDate">计划完成日期:</label>
+        <input type="date" class="form-control" id="PlanStartDate" name="PlanStartDate" value="{$Think.post.PlanStartDate}">
+        <input type="date" class="form-control" id="PlanEndDate"   name="PlanEndDate"   value="{$Think.post.PlanEndDate}">
+    </div>
+    <div class="form-group">
+        <label  for="CheckStatus">检查状态:</label>
+        <select id="CheckStatus" name="CheckStatus" class="form-control">
+            <option {eq name="$Think.post.CheckStatus" value=""} selected {/eq}></option>
+            <option {eq name="$Think.post.CheckStatus" value="检查单未制定"} selected {/eq}>检查单未制定</option>
+            <option {eq name="$Think.post.CheckStatus" value="检查已开始"} selected {/eq}>检查已开始</option>
+            <option {eq name="$Think.post.CheckStatus" value="检查已结束"} selected {/eq} >检查已结束</option>
+        </select>
+    </div>
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" name="MeIn" value="{$Think.post.MeIn}"> 我参与的
+        </label>
+    </div>
+    <button type="submit" class="btn btn-primary">查询</button>
+</form>
+<div class="row " style="margin-top: 15px;">
+    <div class="col-sm-12 xuxian"></div>
+</div>
+<table class="table table-hover  bootstrap-datatable datatable responsive" >
+    <thead>
+    <tr>
+        <th >序号</th>
+        <th style="width: 200px;"> 检查编号</th>
+        <th>任务标题</th>
+        <th>任务来源</th>
+        <th>检查对象</th>
+        <th>计划完成日期</th>
+        <th>检查组</th>
+        <th>条款数量</th>
+        <th>当前状态</th>
+        <th>进度</th>
+        <th>已花费时长</th>
+        <th>删除</th>
+    </tr>
+    </thead>
+    <tbody>
+    {php}
+    $CT = new app\safetymng\controller\CheckTask();
+    $TC = new app\safetymng\controller\TaskCore();
+    {/php}
+    {volist name="OCTaskList" id="vo"}
+    <tr>
+        <td>
+            {++$OnlineCheckTaskCnt}
+        </td>
+        <td>
+            <span style="font-size: smaller;color:#0e90d2 ">{$vo.CheckCode}</span>
+        </td>
+        <td>
+            <a  href="{php} echo $TC::GetTaskMngUrlByTaskID($vo['TaskID']);{/php}"  style="color: #00A000;" rowId = "{$vo.TaskID}" showQuestionMng TaskID = "{$vo.TaskID}"> {$vo.CheckName}</a>
+
+        </td>
+        <td>
+            {$vo.TaskSource}
+        </td>
+        <td>
+            <label  class="label label-warning">{$vo.DutyCorp}</label>
+
+        </td>
+        <td>
+            {$vo.ScheduleDate}
+        </td>
+        <td>
+            {$vo.Checkers}
+        </td>
+        <td>
+            <label class="label label-default" > {php}  echo $CT->GetCheckunOKRowCnt($vo['CheckListID']);  {/php}/{$vo.CheckRowCnt}项</label>
+
+        </td>
+        <td>
+            {if condition="$vo.Status  eq '检查已结束' "}<label   class="label label-success">检查已结束</label>
+            {elseif condition="$vo.Status eq '检查已开始' "/}<label  class="label label-warning">检查已开始</label>
+            {else /} <label class="label label-default" >{$vo['Status']}</label>
+            {/if}
+
+        </td>
+        <td>
+            {php}  echo $CT->GetCheckListCompleteProgress($vo['CheckListID']);  {/php}
+        </td>
+        <td>
+            {php}  echo $CT->GetCheckTimeCostStr($CT->GetCheckCostTime($vo['CheckListID']));  {/php}
+        </td>
+        <td>
+            <a class="btn btn-info btn-sm" CloseTask rowId = "{$vo.TaskID}">删除</a>
+        </td>
+    </tr>
+    {/volist}
+    </tbody>
+</table>
+<script>
+    function updateDutyCorp2() {
+        $v = $('#DutyCorp1').val();
+        axios({
+            method: 'get',
+            url: '/SafetyMng/CorpMng/GetCorpAllLevelChildrenRows_JSON/ParentCorp/'+$v,
+            data: ''
+        }).then(function (response) {
+            List = response.data;
+            $('#CorpList2').empty();
+            for(i=0;i<List.length;i++){
+                vv = List[i];
+                $("<option value='"+vv+"'>"+vv+"</option>").appendTo('#CorpList2');
+            }
+            $("<option value='全部'>全部</option>").appendTo('#CorpList2');
+        }).catch(function (error) {
+
+        });
+    }
+
+    $(function () {
+
+        updateDutyCorp2();
+        console.log('123');
+        $('#DutyCorp1').change(function () {
+            console.log('456');
+            updateDutyCorp2();
+        })
+
+        $("a[CloseTask]").bind('click',function () {
+            $TaskID = $(this).attr('rowId');
+
+            layer.prompt({title: '请输入删除密码并确认', formType: 1}, function (pass, index) {
+                axios({
+                    method: 'post',
+                    url: '/SafetyMng/CheckTask/DeleteCheckTask',
+                    data: 'TaskID=' + $TaskID + '&Pwd=' + pass
+                }).then(function (response) {
+                    if (response.data == 'OK') {
+                        parent.window.location.reload();
+                    } else {
+                        alert(response.data);
+                    }
+                }).catch(function (error) {
+
+                });
+                layer.close(index);
+
+            });
+
+            /*layer.open({
+                title:'关闭任务',
+                type: 2,
+                shadeClose: true,
+                content: "/SafetyMng/TaskCore/showCloseTask/TaskID/"+$(this).attr("rowId"),
+                area: ['300px', '260px'],
+                end:function () {
+
+                }
+            });*/
+
+        });
+
+
+        });
+</script>
+</body>
+</html>

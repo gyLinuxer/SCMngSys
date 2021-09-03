@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .table>tbody>tr:hover {
+
+        }
+    </style>
+</head>
+<body>
+<form id ="mForm" method="post" action="/SafetyMng/TaskList/Index.html">
+<ul id="myTab" class="nav nav-tabs" >
+<li id="QuestionMng" class="{eq name="ActiveLI" value="QuestionMng"}active{/eq}">
+    <a href="#home" aria-controls="closetab" role="tab" data-toggle="tab">
+        <span>收到的问题列表<span class="badge">{$QCnt}</span></span>
+    </a>
+</li>
+<li id="LiReformList" class="{eq name="ActiveLI" value="LiReformList"}active{/eq}">
+    <a href="#ReformList" id="aReformList" data-toggle="tab">
+        整改通知书列表<span class="badge">{$RFCnt}</span>
+    </a>
+</li>
+<li id="LiOnlineCheckList" class="{eq name="ActiveLI" value="LiOnlineCheckList"}active{/eq}">
+    <a href="#OnlineCheckList" id="aLiOnlineCheckList" data-toggle="tab">
+        在线检查任务列表<span class="badge">{$OCCnt}</span>
+    </a>
+</li>
+    <li id="Li2019FDZC" class="{eq name="ActiveLI" value="LiFDZC"}active{/eq}">
+    <a href="#DivLi2019FDZC" id="aLi2019FDZC" data-toggle="tab">
+        2019年维修单位法定自查及自审整改进度专项汇总单<span class="badge">{$FDZCQsCnt}</span>
+    </a>
+    </li>
+    <li id="Li201905ZXDC" class="{eq name="ActiveLI" value="Li201905ZXDC"}active{/eq}">
+        <a href="#DivLi201905ZXDC" id="aLi201905ZXDC" data-toggle="tab">
+            201905工程技术系统专项督查问题整改实时汇总单<span class="badge">{$ZXDC201905Cnt}</span>
+        </a>
+    </li>
+</ul>
+    {php}
+        $TreeMng = new app\safetymng\controller\TreeMng();
+        $IsSuperCorp = $TreeMng->IsSuperCorp();
+    {/php}
+<div id="myTabContent" class="tab-content">
+      <div class="tab-pane {eq name="ActiveLI" value="QuestionMng"}active{/eq}" id="home" style="">
+            <div class="col-sm-12" style="margin-top: 20px;">
+                <table class="table table-hover bootstrap-datatable datatable responsive">
+                    <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>任务类型</th>
+                        <th>任务名称</th>
+                        <th>来自</th>
+                        <th>处理小组</th>
+                        {eq name="$Think.session.CorpRole" value="领导"}
+                            <th>分配任务</th>
+                        {/eq}
+                        <th>当前状态</th>
+                        <th>关闭</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="QTaskList" id="vo"}
+
+                    <tr>
+                        <td>
+                            {++$Cnt}
+                        </td>
+                        <td>
+                            {php}
+                                $TC = new app\safetymng\controller\TaskCore;
+                                $color = "";
+                                if($vo["TaskType"]== $TC::QUESTION_SUBMITED ){
+                                    $color = "label-default";
+                                }else if($vo["TaskType"]==$TC::QUESTION_REFORM){
+                                    $color = "label-danger";
+                                }else if($vo["TaskType"]==$TC::REFORM_SUBTASK){
+                                    $color = "label-danger";
+                                }else if($vo["TaskType"]==$TC::QUESTION_FAST_REFORM){
+                                    $color = "label-warning";
+                                }else if($vo["TaskType"]==$TC::ONLINE_CheckTask){
+                                    $color = "label-success";
+                            }
+                                echo  "<label class=\"label ".$color."\">".$vo["TaskType"]."</span>";
+                            {/php}
+
+                        </td>
+                        <td class="col-sm-5">
+                            <a  href="{php} echo $TC::GetTaskMngUrlByTaskID($vo['id']);{/php}"  style="color: #00A000;" rowId = "{$vo.id}" showQuestionMng TaskID = "{$vo.id}">{$vo.TaskName}</a>
+                            <br/>
+                            <div style="text-align: right;margin: 0px auto;">
+                                {php}
+                                    $LabelRet  = $TreeMng->GetSubjectLabels('Task',$vo['id']);
+                                {/php}
+                                {volist name="LabelRet" id="vv"}
+                                    <label class="label label-default" style="margin-left: 4px;"><span style="font-size: smaller;">{$vv.NodeName}</span></label>
+                                {/volist}
+                                 <a TaskID="{$vo.id}" class="btn btn-xs btn-default" showLabelSubject style="margin-top: 4px;">+</a>
+
+                            </div>
+                        <td>
+                            {$vo.SenderName}/{$vo.SenderCorp}
+                        </td>
+                        <td>
+                            {$vo.GroupMember}
+                        </td>
+
+                        {eq name="$Think.session.CorpRole" value="领导"}
+
+                            <td>
+                                {if condition= "$vo.GroupMember == ''"}
+                                    <a class="btn btn-default btn-sm" TaskAlign rowId = "{$vo.id}">分配任务</a>
+                                {else/}
+                                    <span style="color: #48484c;">已分配</span>
+                                {/if}
+                            </td>
+                        {/eq}
+                        <td>
+                            {$vo.TaskInnerStatus}
+                        </td>
+                        <td>
+                            <a class="btn btn-info btn-sm" CloseTask rowId = "{$vo.id}">关闭</a>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+       </div>
+          <div class="tab-pane {eq name="ActiveLI" value="LiReformList"}active{/eq}" id="ReformList" style="">
+            <div style=" width:100%;margin-top: 20px;">
+                <table class="table table-hover  bootstrap-datatable datatable responsive" >
+                    <thead>
+                    <tr>
+                        <th >序号</th>
+                        <th style="width: 200px;">整改通知单编号</th>
+                        <th class="col-sm-3">标题</th>
+                        <th style="width: 80px;">督查部门</th>
+                        <th style="width: 80px;">责任部门</th>
+                        <th >当前状态</th>
+                        <th>反馈状态</th>
+                        <th>纠正证据</th>
+                        <th>预防证据</th>
+                        {eq name= "$IsSuperCorp" value="true"}
+                            <th>删除</th>
+                        {/eq}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="ReformList" id="vo"}
+                    {php}
+                        $RF = new app\safetymng\controller\Reform;
+                        $showInfo =  $RF->GetReformMultiStatus($vo['id'],$vo);
+                    {/php}
+                    <tr>
+                        <td>
+                            {$Count++}
+                        </td>
+                        <td>
+                            <span style="font-size: smaller;color: #00A000;">{$vo.Code}</span>
+                        </td>
+                        <td>
+                            <a   TXTZS ChildTaskID = "{$vo.ChildTaskID}" DutyCorp = {$vo.DutyCorp} CurCorp = {$Think.session.Corp} TaskID = "{$vo.ParentTaskID}" Code="RM{$vo.id}" rowId = "{$vo.id}" RCode = {$vo.Code}> {$vo.ReformTitle}</a>
+                            <br/>
+                            <div style="text-align: right;margin: 0px auto;">
+                                {php}
+                                    $LabelRet  = $TreeMng->GetSubjectLabels('RF',$vo['id']);
+                                {/php}
+                                {volist name="LabelRet" id="vv"}
+                                    <label class="label label-default" style="margin-left: 4px;"><span style="font-size: smaller;">{$vv.NodeName}</span></label>
+                                {/volist}
+                                    <a RFID="{$vo['id']}" class="btn btn-xs btn-default" showRFLabelSubject style="margin-top: 4px;">+</a>
+                            </div>
+                        </td>
+                        <td>
+                            {if condition = "$IsSuperCorp==true" }
+                                <span style="color: #0d7bdc;font-weight: bolder;"> {$vo.IssueCorp}</span>
+                            {else/}
+                                <span> {$vo.IssueCorp}</span>
+                            {/if}
+                        </td>
+                        <td>
+                           {$vo.DutyCorp}
+                        </td>
+                        <td>
+                            <label class="label label-{php}
+                                $RF = new app\safetymng\controller\Reform;
+
+                                echo $RF->GetReformStatusColor($vo['ReformStatus']);
+                         {/php}">
+                                {$vo.ReformStatus}
+                            </label>
+                        </td>
+                        <td>
+                            <label class="label label-{$showInfo['FeedBackInfoColor']}">{$showInfo['FeedBackInfo']}</label>
+                            <label class="label label-{$showInfo['FeedBackLeftDaysColor']}">{$showInfo['FeedBackLeftDays']}</label>
+                        </td>
+                        <td>
+                            <label class="label label-{$showInfo['CorrectiveInfoColor']}">{$showInfo['CorrectiveInfo']}</label>
+                            <label class="label label-{$showInfo['CorrectiveLeftDaysColor']}">{$showInfo['CorrectiveLeftDays']}</label>
+                        </td>
+                        <td>
+                            <label class="label label-{$showInfo['PrecautionInfoColor']}">{$showInfo['PrecautionInfo']}</label>
+                            <label class="label label-{$showInfo['PrecautionLeftDaysColor']}">{$showInfo['PrecautionLeftDays']}</label>
+                        </td>
+
+
+
+                        {eq name= "$IsSuperCorp" value="true"}
+                        <td>
+                            <input type="checkbox" EnableDel style="margin-right: 10px;" rowId = "{$vo.id}" /><a BtnID="DelBtn{$vo.id}" DelBtn class="btn btn-sm btn-danger" rowId="{$vo.id}" disabled>删除</a>
+                        </td>
+                        {/eq}
+
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <div class="tab-pane {eq name="ActiveLI" value="LiOnlineCheckList"}active{/eq}" id="OnlineCheckList" style="">
+        <div style=" width:100%;margin-top: 20px;">
+            <table class="table table-hover  bootstrap-datatable datatable responsive" >
+        <thead>
+        <tr>
+            <th >序号</th>
+            <th style="width: 200px;"> 检查编号</th>
+            <th>任务标题</th>
+            <th>检查对象</th>
+            <th>计划日期</th>
+            <th>检查组</th>
+            <th>条款数量</th>
+            <th>当前状态</th>
+            <th>进度</th>
+            <th>已花费时长</th>
+            <th>关闭</th>
+        </tr>
+        </thead>
+        <tbody>
+        {php}
+            $CT = new app\safetymng\controller\CheckTask();
+            $TC = new app\safetymng\controller\TaskCore();
+        {/php}
+        {volist name="OCTaskList" id="vo"}
+        <tr>
+            <td>
+                {++$OnlineCheckTaskCnt}
+            </td>
+            <td>
+                <span style="font-size: smaller;color:#0e90d2 ">{$vo.CheckCode}</span>
+            </td>
+            <td>
+                <a  href="{php} echo $TC::GetTaskMngUrlByTaskID($vo['TaskID']);{/php}"  style="color: #00A000;" rowId = "{$vo.TaskID}" showQuestionMng TaskID = "{$vo.TaskID}"> {$vo.CheckName}</a>
+
+            </td>
+            <td>
+                <label  class="label label-warning">{$vo.DutyCorp}</label>
+
+            </td>
+            <td>
+                {$vo.ScheduleDate}
+            </td>
+            <td>
+                {$vo.Checkers}
+            </td>
+            <td>
+                <label class="label label-default" > {php}  echo $CT->GetCheckunOKRowCnt($vo['CheckListID']);  {/php}/{$vo.CheckRowCnt}项</label>
+
+            </td>
+            <td>
+                {if condition="$vo.Status  eq '检查已结束' "}<label   class="label label-success">检查已结束</label>
+                {elseif condition="$vo.Status eq '检查已开始' "/}<label  class="label label-warning">检查已开始</label>
+                {else /} <label class="label label-default" >{$vo['Status']}</label>
+                {/if}
+
+            </td>
+            <td>
+                {php}  echo $CT->GetCheckListCompleteProgress($vo['CheckListID']);  {/php}
+            </td>
+            <td>
+                {php}  echo $CT->GetCheckTimeCostStr($CT->GetCheckCostTime($vo['CheckListID']));  {/php}
+            </td>
+            <td>
+                <a class="btn btn-info btn-sm" CloseTask rowId = "{$vo.TaskID}">关闭</a>
+            </td>
+         </tr>
+            {/volist}
+         </tbody>
+         </table>
+        </div>
+    </div>
+
+    <div class="tab-pane {eq name="ActiveLI" value="Li2019FDZC"}active{/eq}" id="DivLi2019FDZC" style="">
+        <div style=" width:100%;margin-top: 20px;">
+            <h2 style="text-align: center;">2019年洛阳分院维修单位法定自查及自我质量审核问题整改实时汇总单</h2>
+            <hr/>
+            <table class="table  bootstrap-datatable datatable table-hover responsive"  >
+                <thead>
+                <tr>
+                    <th style="width: 20px;">序号</th>
+                    <th style="width: 120px;">检查项目</th>
+                    <th class="col-sm-3">问题标题</th>
+                    <th style="width: 80px;">检查人</th>
+                    <th style="width: 80px;">问题单位</th>
+                    <th class="col-sm-1">通知书状态</th>
+                    <th >纠正措施</th>
+                    <th style="width: 100px;">纠正期限</th>
+                    <th >预防措施</th>
+                    <th style="width: 100px;">预防期限</th>
+                </thead>
+                <tbody >
+                {php}
+                $RF = new app\safetymng\controller\Reform();
+                {/php}
+                {volist name="FDZC2019RetList" id="vo"}
+                <tr >
+                    <td>
+                        {++$xh1}
+                    </td>
+                    <td>
+                        {$vo.CheckSubject}
+                    </td>
+
+                    <td>
+                        <a href="javascript:;" showTaskCoreInfo TaskID = "{$vo.RelatedTaskID}">{$vo.QuestionTitle}</a>
+                    </td>
+                    <td>
+                        {$vo.Finder}
+                    </td>
+                    <td>
+                        {$vo.DutyCorp}
+                    </td>
+                    <td><label class="label label-{php}echo $RF->GetReformStatusColor($vo['ReformStatus']);{/php}">{$vo.ReformStatus}<label></td>
+                    <td>
+                        {$vo.CorrectiveAction}
+                    </td>
+                    <td>
+                        {$vo.CorrectiveDeadline}
+                    </td>
+                    <td>
+                        {$vo.PrecautionAction}
+                    </td>
+                    <td>
+                        {$vo.PrecautionDeadline}
+                    </td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="tab-pane {eq name="ActiveLI" value="Li201905ZXDC"}active{/eq}" id="DivLi201905ZXDC" style="">
+    <div style=" width:100%;margin-top: 20px;">
+        <h2 style="text-align: center;">201905工程技术系统专项督查问题整改实时汇总单</h2>
+        <hr/>
+        <table class="table  bootstrap-datatable datatable table-hover responsive"  >
+            <thead>
+            <tr>
+                <th style="width: 20px;">序号</th>
+                <th style="width: 120px;">检查项目</th>
+                <th class="col-sm-3">问题标题</th>
+                <th style="width: 80px;">检查人</th>
+                <th style="width: 80px;">问题单位</th>
+                <th class="col-sm-1">通知书状态</th>
+                <th >纠正措施</th>
+                <th style="width: 100px;">纠正期限</th>
+                <th >预防措施</th>
+                <th style="width: 100px;">预防期限</th>
+            </thead>
+            <tbody >
+            {php}
+            $RF = new app\safetymng\controller\Reform();
+            {/php}
+            {volist name="ZXDC201905RetList" id="vo"}
+            <tr >
+                <td>
+                    {++$xh}
+                </td>
+                <td>
+                    {$vo.CheckSubject}
+                </td>
+
+                <td>
+                    <a href="javascript:;" showTaskCoreInfo TaskID = "{$vo.RelatedTaskID}">{$vo.QuestionTitle}</a>
+                </td>
+                <td>
+                    {$vo.Finder}
+                </td>
+                <td>
+                    {$vo.DutyCorp}
+                </td>
+                <td><label class="label label-{php}echo $RF->GetReformStatusColor($vo['ReformStatus']);{/php}">{$vo.ReformStatus}<label></td>
+                <td>
+                    {$vo.CorrectiveAction}
+                </td>
+                <td>
+                    {$vo.CorrectiveDeadline}
+                </td>
+                <td>
+                    {$vo.PrecautionAction}
+                </td>
+                <td>
+                    {$vo.PrecautionDeadline}
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+    </div>
+
+</form>
+</body>
+<script>
+$(function () {
+
+    $('a[XFZG]').click(function () {
+        window.location = '/SafetyMng/Reform/SendReform/TaskID/'+$(this).attr('TaskID')+'/ReformID/'+$(this).attr('rowID')+'/Platform/_SafetyMng_TaskList_Index_ActiveLi_LiReformList';
+    });
+
+    $('a[TXTZS]').click(function () {
+        $RealTaskID = $(this).attr('DutyCorp')==$(this).attr('CurCorp')?$(this).attr('ChildTaskID'):$(this).attr('TaskID');
+        window.open('/SafetyMng/Reform/Index/TaskID/'+$RealTaskID+'/ReformID/'+$(this).attr("rowId")+'/opType/Mdf');
+    });
+
+    $('#myModal').on('hidden.bs.modal', function (e) {
+        $("#mForm").submit();
+    });
+    $("a[TaskAlign]").bind('click',function () {
+        layer.open({
+            title:'任务分配',
+            type: 2,
+            content: "/SafetyMng/TaskCore/showTaskAlign/TaskID/"+$(this).attr("rowId"),
+            area: ['300px', '500px']
+        });
+    });
+
+    $("a[CloseTask]").bind('click',function () {
+        layer.open({
+            title:'关闭任务',
+            type: 2,
+            shadeClose: true,
+            content: "/SafetyMng/TaskCore/showCloseTask/TaskID/"+$(this).attr("rowId"),
+            area: ['300px', '260px'],
+            end:function () {
+               parent.window.location.reload();
+            }
+        });
+    });
+
+    $("a[MsgView]").bind('click',function () {
+        var d1 = dialog({
+            title: '任务消息',
+            url: "/SafetyMng/TaskCore/showMsg/TaskID/"+$(this).attr("rowId"),
+            width:440,
+            okValue:'已阅',
+            ok: function () {}
+        });
+        d1.showModal();
+    });
+    $("a[ShowMyOrentalLog]").bind('click',function () {
+        $("#frm1").attr("src","/Index/StoreOrentalLog/index/id/"+ ""+$(this).attr("rowId"));
+    });
+
+
+    {eq name= "$IsSuperCorp" value="true"}
+    $('input[EnableDel]').click(function () {
+        if($(this).is(":checked")){
+            $("a[BtnID=DelBtn"+$(this).attr('rowId')+"]").removeAttr('disabled');
+        }else{
+            $("a[BtnID=DelBtn"+$(this).attr('rowId')+"]").attr('disabled','disabled');
+        }
+    });
+    $('a[DelBtn]').click(function () {
+        layer.open({
+            title:'删除整改通知书',
+            type: 2,
+            content: "/SafetyMng/Reform/showDeleteReform/ReformID/"+$(this).attr("rowId"),
+            area: ['530px', '400px']
+        });
+    });
+    {/eq}
+
+        $('a[showTaskCoreInfo]').click(function () {
+            layer.open({
+                type: 2,
+                title: false,
+                area: ['680px', '750px'],
+                shade: 0.8,
+                closeBtn: 0,
+                scrollbar: false,
+                shadeClose: true,
+                content: '/SafetyMng/TaskCore/showTaskCoreInfoPage/TaskID/'+$(this).attr('TaskID')
+            });
+        });
+        $('a[showLabelSubject]').click(function () {
+            layer.open({
+                type: 2,
+                title: false,
+                area: ['800px', '600px'],
+                shade: 0.8,
+                closeBtn: 0,
+                scrollbar: false,
+                shadeClose: true,
+                content: '/SafetyMng/TreeMng/showLabelSubject/Type/Task/SubjectID/'+$(this).attr('TaskID'),
+                end:function () {
+                   window.location.reload();
+                }
+            });
+        });
+
+        $('a[showRFLabelSubject]').click(function () {
+            layer.open({
+                type: 2,
+                title: false,
+                area: ['800px', '600px'],
+                shade: 0.8,
+                closeBtn: 0,
+                scrollbar: false,
+                shadeClose: true,
+                content: '/SafetyMng/TreeMng/showLabelSubject/Type/RF/SubjectID/'+$(this).attr('RFID'),
+                end:function () {
+                    window.location.reload();
+                }
+            });
+        });
+
+    });
+</script>
+
+</body>
+</html>

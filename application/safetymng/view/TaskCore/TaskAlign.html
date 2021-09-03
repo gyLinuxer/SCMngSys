@@ -1,0 +1,226 @@
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link id="bs-css" href="__PUBLIC__/css/bootstrap-cerulean.min.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/charisma-app.css" rel="stylesheet">
+    <link href='__PUBLIC__/bower_components/fullcalendar/dist/fullcalendar.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/fullcalendar/dist/fullcalendar.print.css' rel='stylesheet' media='print'>
+    <link href='__PUBLIC__/bower_components/chosen/chosen.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/bootstrap-tour/build/css/bootstrap-tour.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery.noty.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/noty_theme_default.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/elfinder.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/elfinder.theme.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery.iphone.toggle.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/uploadify.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/animate.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/doc.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/MyCss.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery-ui.min.css' rel='stylesheet'>
+
+    <!-- jQuery -->
+    <script src="__PUBLIC__/bower_components/jquery/jquery.min.js"></script>
+
+
+    <script src="__PUBLIC__/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- library for cookie management -->
+    <script src="__PUBLIC__/js/jquery.cookie.js"></script>
+    <!-- calender plugin -->
+
+    <!-- data table plugin -->
+    <script src='__PUBLIC__/js/jquery.dataTables.min.js'></script>
+
+    <!-- select or dropdown enhancer -->
+    <script src="__PUBLIC__/bower_components/chosen/chosen.jquery.min.js"></script>
+    <!-- plugin for gallery image view -->
+    <script src="__PUBLIC__/bower_components/colorbox/jquery.colorbox-min.js"></script>
+    <!-- notification plugin -->
+    <script src="__PUBLIC__/js/jquery.noty.js"></script>
+    <!-- library for making tables responsive -->
+    <script src="__PUBLIC__/bower_components/responsive-tables/responsive-tables.js"></script>
+    <!-- tour plugin -->
+    <script src="__PUBLIC__/bower_components/bootstrap-tour/build/js/bootstrap-tour.min.js"></script>
+    <!-- star rating plugin -->
+    <script src="__PUBLIC__/js/jquery.raty.min.js"></script>
+    <script src="__PUBLIC__/js/moment.js"></script>
+    <!-- for iOS style toggle switch -->
+    <script src="__PUBLIC__/js/jquery.iphone.toggle.js"></script>
+    <!-- autogrowing textarea plugin -->
+    <script src="__PUBLIC__/js/jquery.autogrow-textarea.js"></script>
+    <!-- multiple file upload plugin -->
+    <script src="__PUBLIC__/js/jquery.uploadify-3.1.min.js"></script>
+    <!-- history.js for cross-browser state change on ajax -->
+    <script src="__PUBLIC__/js/jquery.history.js"></script>
+    <link rel="shortcut icon" href="__PUBLIC__/img/favicon.ico">
+    <script type="text/javascript" src="__PUBLIC__/ckeditor/ckeditor.js"></script>
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+    <script src="__PUBLIC__/js/jquery-ui.min.js"></script>
+    <link href="__PUBLIC__/css/select2.min.css" rel="stylesheet" />
+    <script src="__PUBLIC__/js/select2.min.js"></script>
+    <style>
+
+    </style>
+</head>
+<body class="container-full">
+<div class="col-sm-8 col-sm-offset-2" style="margin-top: 20px;">
+    <form class="form-horizontal" method="post" enctype="multipart/form-data" action="/SafetyMng/TaskCore/TaskAlign.html">
+        <div class="form-group">
+            <input type="hidden" name="TaskID" value="{$TaskID}"/>
+            <label for="ManagerSelect" class="col-sm-2 control-label">任务组长:</label>
+            <div class="col-sm-3" style="width: 300px">
+                <select Select2 class="form-control" name="ManagerSelect" id="ManagerSelect">
+                    <option></option>
+                    {php}
+                        $LastCorp = '';
+                        if(!empty($PersonList)){
+                        foreach($PersonList as $v){
+                            if($v['Corp']!=$LastCorp){
+                                if($LastCorp!=''){
+                                echo '</optgroup>';
+                                }
+                                    echo '<optgroup label="<<<<===='.$v['Corp'].'====>>>>">';
+                                    $LastCorp = $v['Corp'];
+                                }
+                                echo '<option>'.$v['Name'].'</option>';
+                            }
+                        }
+                    {/php}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="hidden" name="TaskID" value="{$TaskID}"/>
+            <label for="ManagerSelect" class="col-sm-2 control-label">成员:</label>
+            <div class="col-sm-3"  style="width: 300px;">
+                <select  class="form-control" name="GroupDealer[]" id="GroupDealer" multiple="multiple" >
+                    <option></option>
+                    {php}
+                        $LastCorp = '';
+                        if(!empty($PersonList)){
+                            foreach($PersonList as $v){
+                                if($v['Corp']!=$LastCorp){
+                                    if($LastCorp!=''){
+                                        echo '</optgroup>';
+                                    }
+                                 echo '<optgroup label="<<<<===='.$v['Corp'].'====>>>>">';
+                                 $LastCorp = $v['Corp'];
+                                }
+                            echo '<option>'.$v['Name'].'</option>';
+                            }
+                        }
+                    {/php}
+
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="TaskMsg" class="col-sm-2 control-label">要求:</label>
+            <div class="col-sm-10">
+                <textarea id="TaskMsg" name="TaskMsg" style="width: 270px;height: 200px;"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <button type="submit" style="margin-left:35%" class="btn btn-primary">分配</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    /**
+     * jQuery Select2 Multi checkboxes
+     * - allow to select multi values via normal dropdown control
+     *
+     * author      : wasikuss
+     * repo        : https://github.com/wasikuss/select2-multi-checkboxes
+     * inspired by : https://github.com/select2/select2/issues/411
+     * License     : MIT
+     */
+    (function($) {
+        var S2MultiCheckboxes = function(options, element) {
+            var self = this;
+            self.options = options;
+            self.$element = $(element);
+            var values = self.$element.val();
+            self.$element.removeAttr('multiple');
+            self.select2 = self.$element.select2({
+                allowClear: true,
+                minimumResultsForSearch: options.minimumResultsForSearch,
+                placeholder: options.placeholder,
+                closeOnSelect: false,
+                templateSelection: function() {
+                    return self.options.templateSelection(self.$element.val() || [], $('option', self.$element).length);
+                },
+                templateResult: function(result) {
+                    if (result.loading !== undefined)
+                        return result.text;
+                    return $('<div>').text(result.text).addClass(self.options.wrapClass);
+                },
+                matcher: function(params, data) {
+                    var original_matcher = $.fn.select2.defaults.defaults.matcher;
+                    var result = original_matcher(params, data);
+                    if (result && self.options.searchMatchOptGroups && data.children && result.children && data.children.length != result.children.length) {
+                        result.children = data.children;
+                    }
+                    return result;
+                }
+            }).data('select2');
+            self.select2.$results.off("mouseup").on("mouseup", ".select2-results__option[aria-selected]", (function(self) {
+                return function(evt) {
+                    var $this = $(this);
+
+                    var data = $this.data('data');
+
+                    if ($this.attr('aria-selected') === 'true') {
+                        self.trigger('unselect', {
+                            originalEvent: evt,
+                            data: data
+                        });
+                        return;
+                    }
+
+                    self.trigger('select', {
+                        originalEvent: evt,
+                        data: data
+                    });
+                }
+            })(self.select2));
+            self.$element.attr('multiple', 'multiple').val(values).trigger('change.select2');
+        }
+
+        $.fn.extend({
+            select2MultiCheckboxes: function() {
+                var options = $.extend({
+                    placeholder: '请选择',
+                    templateSelection: function(selected, total) {
+                        return selected.length + ' > ' + total + ' 共';
+                    },
+                    wrapClass: 'wrap',
+                    minimumResultsForSearch: -1,
+                    searchMatchOptGroups: true
+                }, arguments[0]);
+
+                this.each(function() {
+                    new S2MultiCheckboxes(options, this);
+                });
+            }
+        });
+    })(jQuery);
+    $(function () {
+        $('select[multiple]').select2MultiCheckboxes({
+            placeholder: "Choose multiple elements",
+            width: "auto"
+        });
+        $('select[Select2]').select2();
+    });
+</script>
+</body>
+</html>

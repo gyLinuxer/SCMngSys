@@ -1,0 +1,168 @@
+
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/PCUEditor/ueditor.config.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/PCUEditor/ueditor.all.js"> </script>
+    <title>信息提交</title>
+</head>
+<body class="container-fluid">
+        <div class="container-fluid" style="margin-top: 20px;">
+            <form id="form1" class="form-horizontal" role="form" enctype="multipart/form-data" method="post" action="/SafetyMng/QuestionInput/QuestionInput.html">
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        {eq name="Warning" value=""}<div class="alert alert-success" role="alert"><strong>提示：</strong>强制报告或者自愿报告以及随手拍页面。</div>{/eq}
+                        {neq name="Warning" value=""}<div class="alert alert-danger" role="alert"><strong>提示：</strong>{$Warning}</div>{/neq}
+                    </div>
+                </div>
+                    <div class="">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">信息标题：</label>
+                            <div class="col-lg-7 col-md-7 col-sm-10">
+                                <input type="text" class="form-control" id="QuestionTitle" name="QuestionTitle" aria-describedby="" placeholder="必须填写" value="{if condition="$Request.param.QuestionTitle eq '' "}{$QsSel['QuestionSourceName']}-{$QsSel['CheckSubject']}-{else /}{$Request.param.QuestionTitle}{/if}" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">信息来源：</label>
+                            <div class="col-lg-3 col-md-3 col-sm-3">
+                                <select class="form-control js-example-basic-multiple js-states " name="QuestionSourceName" id="QuestionSource">
+                                    <option ></option>
+                                    {volist name="QuestionSource" id="vo"}
+                                    <option value="{$vo.SourceName}" {eq name="$vo.SourceName" value="$QsSel['QuestionSourceName']" } selected {/eq}>{$vo.SourceName}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <label class="control-label col-sm-1">责任单位：</label>
+                            <div class="col-lg-3 col-md-3 col-sm-3">
+                                <select class="form-control js-example-basic-multiple js-states "  name="RelatedCorp"   id="RelatedCorps" >
+                                    <option></option>
+                                    {volist name="CorpList" id="vo"}
+                                        <option value="{$vo.Corp}" {eq name="$vo.Corp" value="$QsSel['DutyCorp']" } selected {/eq}>{$vo.Corp}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">信息依据：</label>
+                            <div class="col-lg-7 col-md-7 col-sm-7">
+                                <input type="text"  name="Basis" class="form-control" placeholder="请填写信息的不符合项依据"  value="{$QsSel['Basis']}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">发现人：</label>
+                            <div class="col-lg-3 col-md-3 col-sm-3">
+                                <select class="form-control js-example-basic-multiple js-states "  name="Finder"   id="Finder"  >
+                                    <option></option>
+                                    {volist name="UserList" id="vo"}
+                                        <option value="{$vo.Name}" {eq name="$vo.Name" value="$QsSel['DutyCorp']" } selected {/eq}>{$vo.Name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+
+                            <label class="control-label col-sm-1">发现日期：</label>
+                            <div class="col-lg-3 col-md-3 col-sm-3">
+                                <input type="date"  name="DateFound" class="form-control" value="{$Today}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">接收部门：</label>
+                            <div class="col-lg-3 col-md-3 col-sm-3">
+                                <select class="form-control js-example-basic-multiple js-states " name="RecvCorp" id="RecvCorp">
+                                    {volist name="ZFCorpList" id="vo"}
+                                        <option value="{$vo}" >{$vo}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="control-label col-sm-2">信息描述：</label>
+                            <div class="col-lg-7 col-md-7 col-sm-12">
+                                <textarea id="summernote"  name="content" >{$Request.param.content}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="">
+                            <div class="row">
+                                <div class="col-sm-offset-5 ">
+                                    <button type="submit" class="btn btn-primary">提交信息</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </form>
+        </div>
+
+<script>
+
+    function PCUEditorInit(id) {
+        var editor = UE.getEditor(id,{
+            //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个
+            serverUrl: "{:url('SafetyMng/UEditorGYHelp/index')}",
+            toolbars: [
+                [
+                    'undo', //撤销
+                    'redo', //重做
+                    'bold', //加粗
+                    'indent', //首行缩进
+                    'italic', //斜体
+                    'subscript', //下标
+                    'fontborder', //字符边框
+                    'preview', //预览
+                    'horizontal', //分隔线
+                    'cleardoc', //清空文档
+                    'fontfamily', //字体
+                    'fontsize' //字号
+                ],[
+                    'simpleupload', //单图上传
+                    'insertimage', //多图上传
+                    'emotion', //表情
+                    'spechars', //特殊字符
+                    'searchreplace', //查询替换
+                    'map', //Baidu地图
+                    'insertvideo', //视频
+                    'justifyleft', //居左对齐
+                    'justifyright', //居右对齐
+                    'justifycenter', //居中对齐
+                    'justifyjustify', //两端对齐
+                    'forecolor', //字体颜色
+                    'backcolor' //背景色
+                ],[
+                    'insertorderedlist', //有序列表
+                    'insertunorderedlist', //无序列表
+                    'fullscreen', //全屏
+                    'attachment', //附件
+                    'imagecenter', //居中
+                    'background', //背景
+                    'template', //模板
+                    'scrawl', //涂鸦
+                    'inserttable', //插入表格
+                ]
+
+            ],
+            //focus时自动清空初始化时的内容
+            autoFloatEnabled:false,
+            //关闭字数统计
+            wordCount:false,
+            //关闭elementPath
+            elementPathEnabled:false,
+            //默认的编辑区域高度
+            initialFrameHeight:300
+            //更多其他参数，请参考ueditor.config.js中的配置项
+        });
+    }
+
+$(function () {
+
+   // $('select').select2();
+    PCUEditorInit('summernote');
+    if($('#QuestionTitle').val()=='--'){
+        $('#QuestionTitle').val('');
+    }
+
+
+
+});
+</script>
+
+</body>
+</html>

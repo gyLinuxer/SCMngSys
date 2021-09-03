@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>下发立即整改通知书</title>
+<style>
+    span[TaskLabel]{
+        font-weight: bold;
+        color: #00A000;
+    }
+    .xuxian{
+        width:100%;
+        height:0;
+        border-bottom:#000000 1px dashed;
+    }
+    img{
+        max-width: 100%;
+    }
+</style>
+</head>
+<body class="container-full">
+<div class="row">
+    <div class="col-sm-12 col-xs-12">
+        {neq name="Warning" value=""}<div class="alert alert-danger" role="alert"><strong>提示：</strong>{$Warning}</div>{/neq}
+        {eq name="Warning" value=""}
+
+        {/eq}
+    </div>
+</div>
+<ul id="myTab" class="nav nav-tabs" style="padding: 0px;margin-left: 0px;">
+    <li id="QuestionMng" class="{neq name="ActiveLI" value="LiReformList"}active{/neq}">
+        <a href="#QuestionMngDiv" aria-controls="closetab" role="tab" data-toggle="tab">
+            <span>任务信息</span>
+        </a>
+    </li>
+    <li id="QuestionLi" class="">
+        <a href="#QuestionDiv" id="Question" data-toggle="tab">
+            关联问题
+        </a>
+    </li>
+    {eq name='showReformList' value='YES'}
+        <li id="LiReformList" class="{eq name="ActiveLI" value="LiReformList"}active{/eq}">
+            <a href="#ReformListDiv" id="aReformList" data-toggle="tab">
+                整改通知书列表
+            </a>
+        </li>
+    {/eq}
+</ul>
+<form id="mForm" method="post" action="">
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane {neq name="ActiveLI" value="LiReformList"}active{/neq}" id="QuestionMngDiv">
+                    <div class="row" style="margin-top: 20px;">
+                        <div class="col-xs-3 col-sm-3" ><span TaskLabel>任务名称:</span></div>
+                        <div class="col-xs-8 col-sm-8" style="padding: 0px;">{$TaskDataRow.TaskName}</div>
+                    </div>
+
+                     <div class="row" style="margin-top: 20px;">
+                         <div class="col-xs-3 col-sm-3 col-lg-3" ><span TaskLabel>任务类型:</span></div>
+                        <div class="col-xs-9 col-sm-9 col-lg-9" style="padding: 0px;">
+                            {php}
+                                $TC = new app\safetymng\controller\TaskCore;
+                                $color = "";
+                                if($TaskDataRow["TaskType"]== $TC::QUESTION_SUBMITED ){
+                                $color = "label-default";
+                                }else if($TaskDataRow["TaskType"]==$TC::QUESTION_REFORM){
+                                $color = "label-danger";
+                                }else if($TaskDataRow["TaskType"]==$TC::REFORM_SUBTASK){
+                                $color = "label-danger";
+                                }else if($TaskDataRow["TaskType"]==$TC::QUESTION_FAST_REFORM){
+                                $color = "label-warning";
+                                }
+                                echo  "<label class=\"label ".$color."\">".$TaskDataRow["TaskType"]."</span>";
+                            {/php}
+                        </div>
+                    </div>
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-xs-3 col-sm-3 col-lg-3" ><span TaskLabel>来&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;自:</span></div>
+                <div class="col-xs-9 col-sm-9 col-lg-9" style="padding: 0px;">
+                    {$TaskDataRow.SenderCorp}({$TaskDataRow.SenderName})
+                </div>
+            </div>
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-xs-3 col-sm-3 col-lg-3" ><span TaskLabel>处理小组:</span></div>
+                <div class="col-xs-9 col-sm-9 col-lg-9" style="padding: 0px;">
+                    {$TaskDataRow.GroupMember}
+                </div>
+            </div>
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-xs-3 col-sm-3 col-lg-3" ><span TaskLabel>任务状态:</span></div>
+                <div class="col-xs-9 col-sm-9 col-lg-9" style="padding: 0px;">
+                    {$TaskDataRow.TaskInnerStatus}
+                </div>
+            </div>
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-xs-3 col-sm-3 col-lg-3" ><span TaskLabel>任务消息:</span></div>
+                <div class="col-xs-9 col-sm-9 col-lg-9" style="padding: 0px;">
+                    {$TaskDataRow.TaskInnerStatus}
+                </div>
+            </div>
+            <div class="row" style="margin-top: 20px;">
+                {neq name='showReformList' value='YES'}
+                    <div class="col-xs-offset-4"><a class="btn btn-danger" XFZG>下发整改通知单</a></div>
+                {/neq}
+            </div>
+        </div>
+    {eq name='showReformList' value='YES'}
+        <div class="tab-pane {eq name="ActiveLI" value="LiReformList"}active{/eq}" id="ReformListDiv" style="width: 98%">
+            <div class="row" style="margin-top: 20px;">
+                    <div class="col-xs-2 col-sm-2" ><span TaskLabel>通知书列表:</span></div>
+                    <div class="col-xs-8 col-sm-8" >
+                        <select id="ReformListSel" class="form-control js-example-basic-multiple js-states " name="ReformList" id="ReformList" >
+                            <option ></option>
+                            {volist name="ReformList" id="vo"}
+                                <option value="{$vo.id}"   {eq name="$vo.id" value="$CurReform['id']" } selected {/eq} >({$vo.DutyCorp}){$vo.ReformTitle}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                {eq name= "$IsSuperCorp" value="true"}
+                    <div class="col-xs-2 col-sm-2">
+                        <a AddReform class="btn btn-success">增加</a>
+                    </div>
+                {/eq}
+            </div>
+
+            <div class="row" style="margin-top: 20px;">
+                <iframe id = "ReformFrm" style="{eq name="ReformID" value="0"}display:none;{/eq}" src="/SafetyMng/Reform/showFastReformIndex/TaskID/{$TaskID}/ReformID/{$ReformID}/AddFastReform/NO" name="ReformFrm" scrolling="no" width="98%" onload="changeFrameHeight('ReformFrm')" frameborder="0"></iframe>
+            </div>
+        </div>
+     {/eq}
+        <div class="tab-pane" id="QuestionDiv" style="">
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-sm-3" ><span TaskLabel>问题标题:</span></div>
+                <div class="col-sm-8" style="padding: 0px;">{$QuestionData['QuestionTitle']}</div>
+            </div>
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-sm-3" ><span TaskLabel>问题标题:</span></div>
+                <div class="col-sm-8" style="padding: 0px;">{$QuestionData['QuestionInfo']|htmlspecialchars_decode}</div>
+            </div>
+        </div>
+
+
+    </div>
+</form>
+<script>
+    function changeFrameHeight(t){
+        var iframeid=document.getElementById(t); //iframe id
+        if (iframeid && !window.opera){
+            if (iframeid.contentDocument && iframeid.contentDocument.body.offsetHeight){
+                iframeid.height = iframeid.contentDocument.body.offsetHeight + 3000;
+            }else if(iframeid.Document && iframeid.Document.body.scrollHeight){
+                iframeid.height = iframeid.Document.body.scrollHeight + 3000;
+            }
+
+        }
+    }
+    $(function () {
+        $('a[AddReform]').click(function () {
+            $('#ReformFrm').attr('src', '/SafetyMng/Reform/index/TaskID/{$TaskID}/ReformID/0/opType/New/Platform/Mobile');
+            $('#ReformFrm').css('display','block');
+            $('#ReformFrm').reload();
+            changeFrameHeight('ReformFrm');
+        });
+        $('#ReformListSel').change(function () {
+            $ReformID = $(this).val();
+            $('#mForm').attr('action','/SafetyMng/TaskList/showMBTaskDetail/TaskID/'+{$TaskID} + '/ReformID/'+$ReformID);
+            $('#mForm').submit();
+        });
+        changeFrameHeight('ReformFrm');
+
+         $("a[XFZG]").bind('click',function () {
+                var d1 = dialog({
+                    title: '确认',
+                    content: '确定进入问题-整改分支？',
+                    width:440,
+                    okValue:'确定',
+                    ok: function () {
+                        window.location = '/SafetyMng/QuestionMng/setQuestionDealType/TaskID/{$TaskID}/Type/0/Platform/Mobile'
+                    },
+                    cancelValue:'再想想',
+                    cancel:function () {
+
+                    }
+                });
+                d1.showModal();
+            });
+
+        });
+</script>
+</body>
+</html>

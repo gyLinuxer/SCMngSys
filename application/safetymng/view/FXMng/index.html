@@ -1,0 +1,195 @@
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+    <link rel="stylesheet" href="__PUBLIC__/css/el-ui.css">
+    <script src="__PUBLIC__/js/vue.js"></script>
+    <script src="__PUBLIC__/js/axios.min.js"></script>
+    <script src="__PUBLIC__/js/el-index.js"></script>
+    <script src="__PUBLIC__/js/vue-router.js"></script>
+    <script src="__PUBLIC__/js/gyComp/mainstorelist.js"></script>
+    <script src="__PUBLIC__/js/jquery.js"></script>
+</head>
+<body>
+<div id="app">
+    <h2 style="text-align: center">安全风险矩阵</h2>
+    <el-row>
+        <table border="1" bordercolor="gray" style="min-width: 75%;margin-left: 10%;text-align: center">
+            <tr>
+                <td style="width: 150px;text-align: center" valign="top" >
+                    <span style="font-size: large;color: #00A000;">安全风险</span>
+                           </td>
+                <td style="text-align: center" :colspan="YZXList.length">
+                    <span style="font-size: large;color: #004b00;">风险严重性</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span style="font-size: large;color: #004b00;">发生可能性</span>
+                </td>
+                <td v-for="item in YZXList" style="text-align: center">
+                    <span style="font-size: medium;">{{item.Name}}({{item.Min}},{{item.Max}}]</span>
+                </td>
+            </tr>
+            <tr v-for="(item,x) in KNXList" >
+                <td style="text-align: center">
+                    <span style="font-size: medium;">{{item.Name}}({{item.Min}},{{item.Max}}]</span>
+                </td>
+                <td v-for="(item,y) in YZXList" style="text-align: center" :style="Table_TD_FX[x*YZXList.length + y].color" @click="FXDJSel(x,y)">
+                    {{Table_TD_FX[x*YZXList.length + y].DX}}
+                </td>
+            </tr>
+        </table>
+
+    </el-row>
+</div>
+<script>
+    var v = new Vue({
+        el: '#app',
+        data () {
+            return {
+                Table_TD_FX:new Array(100),
+                ColorUseArr:[
+                    {
+                        color:'#18b566',
+                        FXDJ:0
+                    },
+                    {
+                        color:'#71d5a1',
+                        FXDJ:0
+                    },
+                    {
+                        color:'#fcbd71',
+                        FXDJ:0
+                    },
+                    {
+                        color:'#f29100',
+                        FXDJ:0
+                    },
+                    {
+                        color:'#fab6b6',
+                        FXDJ:0
+                    },
+                    {
+                        color:'#dd6161',
+                        FXDJ:0
+                    }
+                ],
+                KNXList:[
+
+                ],
+                YZXList:[
+
+                ],
+                FXDJ_Color_Index:[
+
+                ],
+                DXYS : [
+                    {DX:'I'},
+                    {DX:'II'},
+                    {DX:'III'},
+                    {DX:'IV'},
+                    {DX:'V'},
+                    {DX:'VI'},
+                ],
+                curFXTD:{
+                    x:-1,
+                    y:-1
+                }
+            }
+        },
+        mounted(){
+            var i = 0 ;
+            for(i=0;i<100;i++){
+                this.Table_TD_FX[i] = {
+                    FXDJ: 0,
+                    DX:'',
+                    color:''
+                };
+            }
+            this.GetCurFXMatrix();
+        },
+        methods: {
+            gyAjaxPost(url, data, onSuccess, onError) {
+                var _this = this;
+                axios({
+                    method: 'post',
+                    url: url,
+                    data: data
+                }).then(function (response) {
+                    onSuccess(_this, response);
+                }).catch(function (error) {
+                    if (onError != null)
+                        onError(_this, error);
+                });
+            },
+            GetCurFXMatrix(){
+                var _t =this;
+                this.gyAjaxPost("/SafetyMng/FXMng/GetFXMatrix",
+                    '',
+                    function (_this,response) {
+                        FXDJTB = response.data.FXDJTB;
+                        FXKNXTB = response.data.FXKNXTB;
+                        FXYZXTB = response.data.FXYZXTB;
+                        FXMatrixTDTB = response.data.FXMatrixTDTB;
+                        //ColorUseArr   FXDJ_Color_Index
+                        //KNXList  YZXList
+                        //FXDJ_Color_Index
+
+                        _t.FXDJ_Color_Index = [];
+                        _t.KNXList = [];
+                        _t.YZXList = [];
+                        _t.Table_TD_FX = new Array(100);
+
+                        for(i=0;i<FXDJTB.length;i++){
+                            for(j=0;j<_t.ColorUseArr.length;j++){
+                                if(_t.ColorUseArr[j].color == FXDJTB[i].Color){
+                                    _t.ColorUseArr[j].FXDJ = i+1;
+                                }
+                            }
+                            _t.FXDJ_Color_Index.push({
+                                DX: _t.DXYS[i].DX,
+                                color:{
+                                    'background-color':FXDJTB[i].Color
+                                }
+                            });
+                        }
+
+                        for(i=0;i<FXKNXTB.length;i++) {
+                            _t.KNXList.push({
+                                Name : FXKNXTB[i].KNXName,
+                                Min  : FXKNXTB[i].Min,
+                                Max  : FXKNXTB[i].Max,
+                            });
+                        }
+
+                        for(i=0;i<FXYZXTB.length;i++) {
+                            _t.YZXList.push({
+                                Name : FXYZXTB[i].YZXName,
+                                Min  : FXYZXTB[i].Min,
+                                Max  : FXYZXTB[i].Max,
+                            });
+                        }
+
+                        l = FXYZXTB.length * FXKNXTB.length;
+                        console.log('l:'+l +","+_t.FXDJ_Color_Index.length);
+                        for(i=0;i<l;i++){
+                            _t.Table_TD_FX[i]=({
+                                FXDJ: FXMatrixTDTB[i].FXDJ,
+                                DX  : _t.DXYS[FXMatrixTDTB[i].FXDJ].DX,
+                                color:{
+                                    'background-color':FXDJTB[FXMatrixTDTB[i].FXDJ].Color
+                                }
+                            });
+                        }
+
+
+                    },null);
+            }
+        }
+    })
+</script>
+</body>
+</html>

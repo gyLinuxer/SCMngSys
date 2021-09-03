@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        span[LBSpan]{
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+<body class="container-full">
+<form action="/SafetyMng/CheckTask/CreateCheckTask" method="post" enctype="application/x-www-form-urlencoded">
+<div class="row">
+    <div class="col-sm-12" style="margin-top: 10px;">
+        {neq name="Warning" value=""}
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <div class="alert alert-danger" role="alert"><strong>提示：</strong>{$Warning}</div>
+                </div>
+            </div>
+        {/neq}
+        {eq name="Warning" value=""}
+        <div class="alert alert-warning" role="alert">
+            <strong>提示：</strong>本页面用生成法定自查检查任务。
+        </div>
+        {/eq}
+    </div>
+</div>
+<div class="col-sm-offset-3">
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-sm-2"><span LBSpan>检查名称:</span></div>
+        <div class="col-sm-8">
+            <input class="form-control" name="CheckName"/>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-sm-2"><span LBSpan>检查组长:</span></div>
+        <div class="col-sm-3">
+            <select class="form-control" name="ManagerSelect" S2>
+                <option></option>
+                {volist name = "UserList" id="vo"}
+                    <option value="{$vo.Name}">{$vo.Name}</option>
+                {/volist}
+            </select>
+        </div>
+        <div class="col-sm-2"><span LBSpan>任务来源:</span></div>
+        <div class="col-sm-3">
+            <select class="form-control" name="CheckSource" >
+                <option></option>
+                {volist name = "QuestionSource" id="vo"}
+                    <option value="{$vo.SourceName}">{$vo.SourceName}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-sm-2"><span LBSpan>小组成员:</span></div>
+        <div class="col-sm-3">
+            <select class="form-control" multiple="multiple"  name="GroupDealer[]"  S2>
+                <option></option>
+                    {php}
+                    $LastCorp = '';
+                    if(!empty($UserList)){
+                    foreach($UserList as $v){
+                    if($v['Corp']!=$LastCorp){
+                    if($LastCorp!=''){
+                    echo '</optgroup>';
+                    }
+                    echo '<optgroup label="<<<<===='.$v['Corp'].'====>>>>">';
+                    $LastCorp = $v['Corp'];
+                    }
+                    echo '<option>'.$v['Name'].'</option>';
+                    }
+                    }
+                {/php}
+            </select>
+        </div>
+        <div class="col-sm-2"><span LBSpan>计划日期:</span></div>
+        <div class="col-sm-3">
+            <input type="date" class="form-control" name="ScheduleDate" value="{$Today}"/>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-sm-2"><span LBSpan style="color: blue;">检查对象:</span></div>
+        <div class="col-sm-3">
+            <select class="form-control" name="Corp"  S2>
+                <option></option>
+                {volist name = "CorpList" id="vo"}
+                    <option value="{$vo.Corp}">{$vo.Corp}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-sm-offset-5"><button type="submit" class="btn btn-success">确认生成</button></div>
+    </div>
+</div>
+</form>
+<script>
+    (function($) {
+        var S2MultiCheckboxes = function(options, element) {
+            var self = this;
+            self.options = options;
+            self.$element = $(element);
+            var values = self.$element.val();
+            self.$element.removeAttr('multiple');
+            self.select2 = self.$element.select2({
+                allowClear: true,
+                minimumResultsForSearch: options.minimumResultsForSearch,
+                placeholder: options.placeholder,
+                closeOnSelect: false,
+                templateSelection: function() {
+                    return self.options.templateSelection(self.$element.val() || [], $('option', self.$element).length);
+                },
+                templateResult: function(result) {
+                    if (result.loading !== undefined)
+                        return result.text;
+                    return $('<div>').text(result.text).addClass(self.options.wrapClass);
+                },
+                matcher: function(params, data) {
+                    var original_matcher = $.fn.select2.defaults.defaults.matcher;
+                    var result = original_matcher(params, data);
+                    if (result && self.options.searchMatchOptGroups && data.children && result.children && data.children.length != result.children.length) {
+                        result.children = data.children;
+                    }
+                    return result;
+                }
+            }).data('select2');
+            self.select2.$results.off("mouseup").on("mouseup", ".select2-results__option[aria-selected]", (function(self) {
+                return function(evt) {
+                    var $this = $(this);
+
+                    var data = $this.data('data');
+
+                    if ($this.attr('aria-selected') === 'true') {
+                        self.trigger('unselect', {
+                            originalEvent: evt,
+                            data: data
+                        });
+                        return;
+                    }
+
+                    self.trigger('select', {
+                        originalEvent: evt,
+                        data: data
+                    });
+                }
+            })(self.select2));
+            self.$element.attr('multiple', 'multiple').val(values).trigger('change.select2');
+        }
+
+        $.fn.extend({
+            select2MultiCheckboxes: function() {
+                var options = $.extend({
+                    placeholder: '请选择',
+                    templateSelection: function(selected, total) {
+                        return selected.length + ' > ' + total + ' 共';
+                    },
+                    wrapClass: 'wrap',
+                    minimumResultsForSearch: -1,
+                    searchMatchOptGroups: true
+                }, arguments[0]);
+
+                this.each(function() {
+                    new S2MultiCheckboxes(options, this);
+                });
+            }
+        });
+    })(jQuery);
+    $(function () {
+        $('select[S2]').select2();
+    });
+</script>
+</body>
+</html>

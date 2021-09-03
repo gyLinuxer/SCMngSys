@@ -1,0 +1,500 @@
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+
+              中国民用航空飞行学院洛阳分院　
+                       机务工程部　
+                        李光耀　
+                 email: gyLinuxer@163.com
+                    QQ: 447649795
+                  微信: 447649795
+-->
+
+    <meta charset="utf-8">
+    <title>生产统计报表导出程序</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="author" content="author">
+    <!-- 网页描述 -->
+    <meta name="description" content="hello">
+    <!-- 关键字使用","分隔 -->
+    <meta name="keywords" content="a,b,c">
+    <!-- 禁止浏览器从本地机的缓存中调阅页面内容 -->
+    <meta http-equiv="Pragma" content="no-cache">
+    <!-- 用来防止别人在框架里调用你的页面 -->
+    <meta http-equiv="Window-target" content="_top">
+    <!-- content的参数有all，none，index，noindex，follow，nofollow，默认是all -->
+    <meta name="robots" content="none">
+    <!-- 收藏图标 -->
+    <link rel="Shortcut Icon" href="favicon.ico" rel="external nofollow" >
+    <!-- 网页不会被缓存 -->
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <!-- 解决部分兼容性问题，如果安装了GCF，则使用GCF来渲染页面，如果未安装GCF，则使用最高版本的IE内核进行渲染。 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 页面按原比例显示 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--[if lt IE 9]>
+    <![endif]-->
+    <!-- The styles -->
+    <link id="bs-css" href="__PUBLIC__/css/bootstrap-cerulean.min.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/charisma-app.css" rel="stylesheet">
+    <link href='__PUBLIC__/bower_components/fullcalendar/dist/fullcalendar.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/fullcalendar/dist/fullcalendar.print.css' rel='stylesheet' media='print'>
+    <link href='__PUBLIC__/bower_components/chosen/chosen.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/bootstrap-tour/build/css/bootstrap-tour.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery.noty.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/noty_theme_default.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/elfinder.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/elfinder.theme.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery.iphone.toggle.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/uploadify.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/animate.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/doc.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/MyCss.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery-ui.min.css' rel='stylesheet'>
+
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/bootstrap-editable.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/ui-dialog.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="__PUBLIC__/js/jquery.js"></script>
+    <script src="__PUBLIC__/js//bootstrap.js"></script>
+
+    <!-- include summernote css/js -->
+    <script src="__PUBLIC__/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- library for cookie management -->
+    <script src="__PUBLIC__/js/bootstrap-datetimepicker.zh-CN.js"></script>
+    <!-- calender plugin -->
+
+    <!-- data table plugin -->
+    <script src='__PUBLIC__/js/jquery.dataTables.min.js'></script>
+
+    <!-- select or dropdown enhancer -->
+    <script src="__PUBLIC__/bower_components/chosen/chosen.jquery.min.js"></script>
+    <!-- plugin for gallery image view -->
+    <script src="__PUBLIC__/bower_components/colorbox/jquery.colorbox-min.js"></script>
+    <!-- notification plugin -->
+    <script src="__PUBLIC__/js/jquery.noty.js"></script>
+    <!-- library for making tables responsive -->
+    <script src="__PUBLIC__/bower_components/responsive-tables/responsive-tables.js"></script>
+    <!-- tour plugin -->
+    <script src="__PUBLIC__/bower_components/bootstrap-tour/build/js/bootstrap-tour.min.js"></script>
+    <!-- star rating plugin -->
+    <!-- for iOS style toggle switch -->
+    <!-- autogrowing textarea plugin -->
+    <script src="__PUBLIC__/js/jquery.autogrow-textarea.js"></script>
+    <!-- multiple file upload plugin -->
+    <script src="__PUBLIC__/js/jquery.uploadify-3.1.min.js"></script>
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+    <script src="__PUBLIC__/js/jquery-ui.min.js"></script>
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+    <script src="__PUBLIC__/js//bootstrap-slider.min.js"></script>
+    <link href="__PUBLIC__/css/select2.min.css" rel="stylesheet" />
+    <script src="__PUBLIC__/js/select2.min.js"></script>
+    <link href="__PUBLIC__/css/bootstrap-datetimepicker.css" rel="stylesheet">
+    <script src="__PUBLIC__/js/dialog-plus-min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/jquery.treegrid.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/css/jquery.treegrid.css">
+
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/UEditor/lang/zh-cn/zh-cn.js"></script>
+    <script src="__PUBLIC__/js/GY.js"></script>
+    <link href="__PUBLIC__/css/dialog.css" rel="stylesheet">
+    <script src="__PUBLIC__/js/dialog-plus.js"></script>
+    <script src="__PUBLIC__/layer/layer.js"></script>
+    <script src="__PUBLIC__/js/GY.js"></script>
+    <script src="__PUBLIC__/js/jquery.ztree.all.min.js"></script>
+    <style>
+        .select2-container .select2-selection--single{
+            height:36px;
+            line-height: 36px;
+        }
+    </style>
+</head>
+<body class="container-full">
+<form action="/FlightTimeExp" enctype="application/x-www-form-urlencoded" method="post" id="mForm">
+    <div class="alert alert-info" style="margin-top: 10px;"><strong>提示:</strong>本页面用来查询与导出生产统计数据,选择要导出或查询的类型(飞机或者发动机),选择飞机范围,选择时间段(如需要),点击生产报表即可.</div>
+    <div class="row">
+        <div class="col-sm-11 col-sm-offset-1" style="margin-bottom: 20px;">
+            <div class="form-inline" style="">
+                <div class="form-group">
+
+                    <label for="typeSel">类型：</label>
+                    <select id="typeSel" name="typeSel" class="form-control"><option value="Plane" {eq name="$Think.post.typeSel" value="Plane"}selected{/eq}>飞机</option><option value="Eng" {eq name="$Think.post.typeSel" value="Eng"}selected{/eq}>发动机</option></select>
+                    <label for="FW">范围：</label>
+
+                    <a href="#" id="FW" ><span style="color: #0d7bdc;min-width: 50px;" id="FWCnt">0架</span></a>
+                    <label >开始日期:</label>
+                    <input Date type="text" name="StartDate" class="form-control"  id="StoreOwner"  value="{$Think.post.StartDate}" autocomplete="off">
+                    <label >结束日期：</label>
+                    <input Date type="text" name="EndDate" class="form-control"  id="ContactCode"   value="{$Think.post.EndDate}" autocomplete="off">
+                </div>
+                    <div class="form-group">
+                        <label for="OutA">报表下载:</label>
+                        <a type="submit"  id="OutA" style="margin-left: 15px;"  href="{$MHJ_FILE}">民航局格式</a>
+                        <a type="submit"  style="margin-left: 15px;" href="{$JWC_FILE}">机务处格式</a>
+                    </div>
+                <a type="submit" class="btn btn-info" style="margin-left: 20px;" CX >生成报表</a>
+                <a style="margin-left: 10px;font-size: smaller;color: #00A000" CXPDF >PM-006</a>
+                <a style="margin-left: 10px;font-size: smaller;color: #00A000" KFXJ >小记</a>
+            </div>
+
+        </div>
+        <div id="showDiv" style="display: none;padding-left: 20px;">
+
+            <div class="row" style="margin-top: 10px;margin-bottom: 0px;border-bottom:#000000 2px dashed;">
+                <span style="color: #1b961b;font-size: larger;">CESSNA 172R:</span>
+                <a class="btn btn-xs btn-default" style="margin-left: 50%;" SELALLP>全选</a>
+                <a class="btn btn-xs btn-warning" DESELALLP >全不选</a>
+            </div>
+            <div class="row" id="C172Div">
+
+                <span style="margin-left: 5px;"><input Model="172R" id="7920" type="checkbox"/>B-7920</span>
+                <span style="margin-left: 5px;"><input Model="172R" id="7921" type="checkbox"/>B-79201</span>
+
+                <a class="btn btn-xs btn-success" SELALL Model="172R">全选</a>
+                <a class="btn btn-xs btn-danger" DESELALL Model="172R">全不选</a>
+            </div>
+
+            <div class="row" style="margin-top: 10px;margin-bottom: 0px;border-bottom:#000000 2px dashed;">
+                <span style="color: #1b961b;font-size: larger;">LE500:</span>
+            </div>
+            <div class="row" id="LE500Div">
+                {volist name="LE500List" id="vo"}
+                <span style="margin-left: 5px;"><input Model="LE500" id="{$vo.JH}" type="checkbox"/>B-{$vo.JH}</span>
+                {php}
+                if($LE500Cnt%7==0){
+                echo "<br/>";
+                }
+                $LE500Cnt++;
+                {/php}
+                {/volist}
+                <a class="btn btn-xs btn-success" SELALL Model="LE500">全选</a>
+                <a class="btn btn-xs btn-danger" DESELALL Model="LE500">全不选</a>
+            </div>
+
+            <div class="row" style="margin-top: 10px;margin-bottom: 0px;border-bottom:#000000 2px dashed;">
+                <span style="color: #1b961b;font-size: larger;">Cirrus SR20:</span>
+            </div>
+            <div class="row" id="SR20Div">
+                {volist name="SR20List" id="vo"}
+                <span style="margin-left: 5px;"><input Model="SR20" id="{$vo.JH}" type="checkbox"/>B-{$vo.JH}</span>
+                {php}
+                if($S20Cnt%7==0){
+                echo "<br/>";
+                }
+                $S20Cnt++;
+                {/php}
+                {/volist}
+                <a class="btn btn-xs btn-success" SELALL Model="SR20">全选</a>
+                <a class="btn btn-xs btn-danger" DESELALL Model="SR20">全不选</a>
+            </div>
+
+            <div class="row" style="margin-top: 10px;margin-bottom: 0px;border-bottom:#000000 2px dashed;">
+                <span style="color: #1b961b;font-size: larger;">PA-44-180:</span>
+            </div>
+            <div class="row" id="PA44Div">
+                <span style="margin-left: 5px;"><input Model="PA44" id="3697"  type="checkbox"/>B-3697</span>
+                <span style="margin-left: 5px;"><input Model="PA44" id="3691"  type="checkbox"/>B-3691</span>
+                <span style="margin-left: 5px;"><input Model="PA44" id="3695"  type="checkbox"/>B-3695</span>
+                <span style="margin-left: 5px;"><input Model="PA44" id="8888"  type="checkbox"/>B-8888</span>
+                <span style="margin-left: 5px;"><input Model="PA44" id="3693"  type="checkbox"/>B-3693</span>
+                <span style="margin-left: 5px;"><input Model="PA44" id="3696"  type="checkbox"/>B-3696</span>
+                <br/>
+                <a class="btn btn-xs btn-success" SELALL Model="PA44">全选</a>
+                <a class="btn btn-xs btn-danger" DESELALL Model="PA44">全不选</a>
+            </div>
+            <div class="row" style="margin-top: 10px;margin-bottom: 0px;border-bottom:#000000 2px dashed;">
+                <span style="color: #1b961b;font-size: larger;">DA42NG:</span>
+            </div>
+            <div class="row" id="DA42NGDiv">
+                <span style="margin-left: 5px;"><input Model="DA42NG" id="10T3"  type="checkbox"/>B-10T3</span>
+                <span style="margin-left: 5px;"><input Model="DA42NG" id="10T5"  type="checkbox"/>B-10T5</span>
+                <span style="margin-left: 5px;"><input Model="DA42NG" id="10U5"  type="checkbox"/>B-10U5</span>
+                <span style="margin-left: 5px;"><input Model="DA42NG" id="10U6"  type="checkbox"/>B-10U6</span>
+                <span style="margin-left: 5px;"><input Model="DA42NG" id="10U7"  type="checkbox"/>B-10U7</span>
+                <span style="margin-left: 5px;"><input Model="DA42NG" id="10U8"  type="checkbox"/>B-10U8</span>
+                <span style="margin-left: 5px;"><input Model="DA42NG" id="10U9"  type="checkbox"/>B-10U9</span>
+                <br/>
+                <a class="btn btn-xs btn-success" SELALL Model="DA42NG">全选</a>
+                <a class="btn btn-xs btn-danger" DESELALL Model="DA42NG">全不选</a>
+            </div>
+
+            <div class="row" style="margin-top: 10px;margin-bottom: 0px;border-bottom:#000000 2px dashed;">
+                <span style="color: #1b961b;font-size: larger;">MA600:</span>
+            </div>
+            <div class="row" id="MA600Div">
+                {volist name="MA600List" id="vo"}
+                <span style="margin-left: 5px;"><input Model="MA600" id="{$vo.JH}" type="checkbox"/>B-{$vo.JH}</span>
+                {php}
+                if($MA600Cnt%7==0){
+                echo "<br/>";
+                }
+                $MA600Cnt++;
+                {/php}
+                {/volist}
+                <a class="btn btn-xs btn-success" SELALL Model="MA600">全选</a>
+                <a class="btn btn-xs btn-danger" DESELALL Model="MA600">全不选</a>
+            </div>
+        </div>
+        <div style="margin-top: 20px;margin-left: 30px;">
+            {eq name="SelType" value="Plane"}
+            <table class="table  table-bordered bootstrap-datatable datatable table-hover responsive" id="PlaneInfo"  >
+                <thead>
+                <tr>
+                    <th style="width: 60px;">序号</th>
+                    <th >注册号</th>
+                    <th>机型</th>
+                    <th>空中时间</th>
+                    <th>修后空中时间</th>
+                    <th>自新空中时间</th>
+                    <th >空地时间</th>
+                    <th>修后空地时间</th>
+                    <th >自新空地时间</th>
+                    <th >正常起落</th>
+                    <th >修后起落</th>
+                    <th >自新起落</th>
+                    <th>循环次数</th>
+                    <th>修后循环</th>
+                    <th>自新循环</th>
+                </thead>
+                <tbody >
+                {volist name="PlaneInfoList" id="vo"}
+                <tr >
+                    <td>
+                        {++$xh}
+                    </td>
+                    <td>
+                        <label class="label label-warning">B-{$vo.JH}</label>
+                    </td>
+
+                    <td>
+                        <label class="label label-default">{$vo.JX}</label>
+                    </td>
+                    <td>
+                        {$vo.FH_INQR}
+                    </td>
+                    <td>
+                        {$vo.FH_TSO}
+                    </td>
+                    <td>
+                        {$vo.FH_TSN}
+                    </td>
+                    <td>
+                        {$vo.FGH_INQR}
+                    </td>
+                    <td>
+                        {$vo.FGH_TSO}
+                    </td>
+                    <td>
+                        {$vo.FGH_TSN}
+                    </td>
+                    <td>
+                        {$vo.QL_INQR}
+                    </td>
+                    <td>
+                        {$vo.QL_TSO}
+                    </td>
+                    <td>
+                        {$vo.QL_TSN}
+                    </td>
+                    <td>
+                        {eq name="vo['JX']" value="MA600"}
+                        {$vo.FC_INQR}
+                        {/eq}
+
+                    </td>
+                    <td>
+
+                        {eq name="vo.JX" value="MA600"}
+                        {$vo.FC_TSO}
+                        {/eq}
+                    </td>
+                    <td>
+                        {eq name="vo.JX" value="MA600"}
+                        {$vo.FC_TSN}
+                        {/eq}
+
+                    </td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+            {/eq}
+
+
+            {eq name="SelType" value="Eng"}
+                <table class="table  table-bordered bootstrap-datatable datatable table-hover responsive table-stripped" id="EngineInfo"   >
+                    <thead>
+                    <tr>
+                        <th style="width: 60px;">序号</th>
+                        <th>发动机型号</th>
+                        <th>发动机序号</th>
+                        <th>安装位置</th>
+                        <th>安装日期</th>
+                        <th >机号</th>
+                        <th>机型</th>
+                        <th>空中时间</th>
+                        <th>修后空中时间</th>
+                        <th>自新空中时间</th>
+                        <th>循环次数</th>
+                        <th>修后循环</th>
+                        <th>自新循环</th>
+                    </thead>
+                    <tbody >
+                    {volist name="EngInfo" id="vo"}
+                    <tr >
+                       <td>
+                           {++$CntEng}
+                       </td>
+                        <td>
+                            {$vo.EngPN}
+                        </td>
+                        <td>
+                            {$vo.EngXH}
+                        </td>
+                        <td>
+                            {$vo.INS_POS}
+                        </td>
+                        <td>
+                            {$vo.INS_Date}
+                        </td>
+                        <td>
+                            <label class="label label-warning">B-{$vo.JH}</label>
+                        </td>
+
+                        <td>
+                            <label class="label label-default">{$vo.JX}</label>
+                        </td>
+                        <td>
+                            {$vo.FH_INQR}
+                        </td>
+                        <td>
+                            {$vo.FH_TSO}
+                        </td>
+                        <td>
+                            {$vo.FH_TSN}
+                        </td>
+                        <td>
+                            {$vo.FC_INQR}
+                        </td>
+                        <td>
+                            {$vo.FC_TSO}
+                        </td>
+                        <td>
+                            {$vo.FC_TSN}
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            {/eq}
+
+
+
+        </div>
+    </div>
+    <input name="PlaneHid" id="PlaneHid" type="hidden" value=""/>
+</form>
+
+<script>
+    $PlaneSel = [{$PlaneSel}];
+    $(function(){
+        $('#FW').click(function () {
+            layer.open({
+                type: 1,
+                title: false,
+                area: ['500px', '420'],
+                shadeClose: true,
+                content: $('#showDiv'),
+                end:function () {
+                    $Cks = $('input[Model]:checked');
+                    $('#FWCnt').text($Cks.length+'架');
+                },
+            });
+        });
+
+        $('a[SELALL]').click(function () {
+            Model = $(this).attr('Model');
+            $('input[Model='+Model+']').attr('checked','checked');
+        });
+
+        $('a[SELALLP]').click(function () {
+            $('input[Model]').attr('checked','checked');
+        });
+
+        $('a[DESELALLP]').click(function () {
+            $('input[Model]').removeAttr('checked');
+        });
+
+
+        $('a[DESELALL]').click(function () {
+            Model = $(this).attr('Model');
+            $('input[Model='+Model+']').removeAttr('checked');
+        });
+
+        $('a[CX]').click(function () {
+            $FW_P = '';
+            $Cks = $('input[Model]:checked');
+            $Cks.each(function () {
+                if($FW_P!=''){
+                    $FW_P+="|'"+$(this).attr('id')+"'";
+                }else{
+                    $FW_P ="'"+ $(this).attr('id')+"'";
+                }
+            });
+            $('#PlaneHid').val($FW_P);
+            $('#mForm').submit();
+        });
+        for(i=0;i<$PlaneSel.length;i++){
+            $('#'+$PlaneSel[i]).attr('checked','checked');
+        }
+        $('#FWCnt').text($PlaneSel.length+'架');
+
+        $('a[KFXJ]').click(function () {
+            layer.open({
+                type: 2,
+                title: false,
+                area: ['720px', '750px'],
+                shade: 0.8,
+                closeBtn: 0,
+                shadeClose: true,
+                content: '__PUBLIC__/KFXJ.pdf'
+            });
+        });
+        $('a[CXPDF]').click(function () {
+            layer.open({
+                type: 2,
+                title: false,
+                area: ['720px', '750px'],
+                shade: 0.8,
+                closeBtn: 0,
+                shadeClose: true,
+                content: '__PUBLIC__/PM-006.pdf'
+            });
+        });
+
+        $('input[Date]').datetimepicker({
+            weekStart: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            forceParse: 0,
+            language: 'zh-CN',
+            format: 'yyyy-mm-dd',
+            pickerPosition: 'bottom-left',
+            showMeridian: 1
+            , minView: "month"
+        });
+
+
+    });
+</script>
+</body>
+</html>

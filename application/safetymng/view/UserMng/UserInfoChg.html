@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户信息修改</title>
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+    <link rel="stylesheet" href="__PUBLIC__/css/el-ui.css">
+    <script src="__PUBLIC__/js/vue.js"></script>
+    <script src="__PUBLIC__/js/axios.min.js"></script>
+    <script src="__PUBLIC__/js/el-index.js"></script>
+    <script src="__PUBLIC__/js/vue-router.js"></script>
+    <script src="__PUBLIC__/js/gyComp/mainstorelist.js"></script>
+    <script src="__PUBLIC__/js/jquery.js"></script>
+</head>
+<body>
+<div id="app">
+    <el-row>
+        <el-alert
+                title="用户信息修改"
+                type="warning"
+                description="可以在本页面修改用户名和密码.">
+        </el-alert>
+    </el-row>
+    <el-row>
+        <el-col :span="12">
+            <el-form ref="form" :model="form" label-width="80px">
+                <el-form-item>
+
+                </el-form-item>
+                <el-form-item label="部门">
+                    <el-input v-model="form.Corp" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="姓名">
+                    <el-input v-model="form.Name" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="类别">
+                    <el-input v-model="form.CorpRole" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="账户">
+                    <el-input v-model="form.UserName"></el-input>
+                </el-form-item>
+                <el-form-item label="密码">
+                    <el-input v-model="form.Pwd" show-password></el-input>
+                </el-form-item>
+                <el-form-item >
+                    <el-button type="danger" plain @click="ChgUserNameAndPwd">修改</el-button>
+                </el-form-item>
+            </el-form>
+        </el-col>
+
+    </el-row>
+</div>
+<script>
+    var v = new Vue({
+        el: '#app',
+        data () {
+            return {
+                form:{
+
+                }
+            }
+        },
+        mounted(){
+            this.GetUserInfo();
+        },
+        methods: {
+            gyAjaxPost(url, data, onSuccess, onError) {
+                var _this = this;
+                axios({
+                    method: 'post',
+                    url: url,
+                    data: data
+                }).then(function (response) {
+                    onSuccess(_this, response);
+                }).catch(function (error) {
+                    if (onError != null)
+                        onError(_this, error);
+                });
+            },
+            GetUserInfo(){
+                var  _t =this;
+                this.gyAjaxPost("/SafetyMng/UserMng/GetUserInfo",
+                    '',
+                    function (_this,response) {
+                        _t.form = response.data;
+                    },null);
+            },
+            ChgUserNameAndPwd(){
+                var  _t =this;
+                this.gyAjaxPost("/SafetyMng/UserMng/ChgUserNameAndPwd",
+                    this.form,
+                    function (_this,response) {
+                        _t.$message(response.data);
+                    },null);
+            }
+        }
+    })
+</script>
+</body>
+</html>

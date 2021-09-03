@@ -1,0 +1,542 @@
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta charset="utf-8">
+    <title>安全管理系统</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="author" content="author">
+    <!-- 网页描述 -->
+    <meta name="description" content="hello">
+    <!-- 关键字使用","分隔 -->
+    <meta name="keywords" content="a,b,c">
+    <!-- 禁止浏览器从本地机的缓存中调阅页面内容 -->
+    <meta http-equiv="Pragma" content="no-cache">
+    <!-- 用来防止别人在框架里调用你的页面 -->
+    <meta http-equiv="Window-target" content="_top">
+    <!-- content的参数有all，none，index，noindex，follow，nofollow，默认是all -->
+    <meta name="robots" content="none">
+    <!-- 收藏图标 -->
+    <link rel="Shortcut Icon" href="favicon.ico" rel="external nofollow" >
+    <!-- 网页不会被缓存 -->
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <!-- 解决部分兼容性问题，如果安装了GCF，则使用GCF来渲染页面，如果未安装GCF，则使用最高版本的IE内核进行渲染。 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 页面按原比例显示 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--[if lt IE 9]>
+
+    <![endif]-->
+    <!-- The styles -->
+    <link id="bs-css" href="__PUBLIC__/css/bootstrap-cerulean.min.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/charisma-app.css" rel="stylesheet">
+    <link href='__PUBLIC__/bower_components/fullcalendar/dist/fullcalendar.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/fullcalendar/dist/fullcalendar.print.css' rel='stylesheet' media='print'>
+    <link href='__PUBLIC__/bower_components/chosen/chosen.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/bootstrap-tour/build/css/bootstrap-tour.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery.noty.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/noty_theme_default.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/elfinder.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/elfinder.theme.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery.iphone.toggle.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/uploadify.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/animate.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/doc.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/MyCss.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery-ui.min.css' rel='stylesheet'>
+
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/bootstrap-editable.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/ui-dialog.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="__PUBLIC__/js/jquery.js"></script>
+    <script src="__PUBLIC__/js//bootstrap.js"></script>
+
+    <!-- include summernote css/js -->
+    <link href="__PUBLIC__/css/summernote.css" rel="stylesheet">
+    <script src="__PUBLIC__/js/summernote.js"></script>
+
+    <!-- library for cookie management -->
+    <script src="__PUBLIC__/js/jquery.cookie.js"></script>
+    <!-- calender plugin -->
+
+    <!-- data table plugin -->
+    <script src='__PUBLIC__/js/jquery.dataTables.min.js'></script>
+
+    <!-- select or dropdown enhancer -->
+    <script src="__PUBLIC__/bower_components/chosen/chosen.jquery.min.js"></script>
+    <!-- plugin for gallery image view -->
+    <script src="__PUBLIC__/bower_components/colorbox/jquery.colorbox-min.js"></script>
+    <!-- notification plugin -->
+    <script src="__PUBLIC__/js/jquery.noty.js"></script>
+    <!-- library for making tables responsive -->
+    <script src="__PUBLIC__/bower_components/responsive-tables/responsive-tables.js"></script>
+    <!-- tour plugin -->
+    <script src="__PUBLIC__/bower_components/bootstrap-tour/build/js/bootstrap-tour.min.js"></script>
+    <!-- star rating plugin -->
+    <!-- for iOS style toggle switch -->
+    <!-- autogrowing textarea plugin -->
+    <script src="__PUBLIC__/js/jquery.autogrow-textarea.js"></script>
+    <!-- multiple file upload plugin -->
+    <script src="__PUBLIC__/js/jquery.uploadify-3.1.min.js"></script>
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+    <script src="__PUBLIC__/js/jquery-ui.min.js"></script>
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+    <script src="__PUBLIC__/js//bootstrap-slider.min.js"></script>
+    <link href="__PUBLIC__/css/select2.min.css" rel="stylesheet" />
+    <script src="__PUBLIC__/js/select2.min.js"></script>
+    <link href="__PUBLIC__/css/bootstrap-datetimepicker.css" rel="stylesheet">
+    <script src="__PUBLIC__/js/dialog-plus-min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/jquery.treegrid.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/css/jquery.treegrid.css">
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/UEditor/ueditor.config.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/UEditor/ueditor.all.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/UEditor/lang/zh-cn/zh-cn.js"></script>
+    <script src="__PUBLIC__/js/GY.js"></script>
+    <link href="__PUBLIC__/css/dialog.css" rel="stylesheet">
+    <script src="__PUBLIC__/js/dialog-plus.js"></script>
+    <script src="__PUBLIC__/layer/layer.js"></script>
+    <script src="__PUBLIC__/js/GY.js"></script>
+    <style>
+        .select2-container .select2-selection--single{
+            height:34px;
+            line-height: 34px;
+        }
+        img{
+            max-width: 100%;
+        }
+        video{
+            max-width: 100%;
+        }
+
+        span[LBSpan]{
+            font-weight: bold;
+            font-size: medium;
+            color: #00A000;
+        }
+        span[CTSpan]{
+            font-size: medium;
+
+        }
+
+        div[gyRow]{
+            margin-top: 20px;
+
+        }
+
+        div[TKR]{
+            margin-top: 3px;
+        }
+
+        div[DYL]{
+            padding: 0px;
+        }
+        div[DEL]{
+            padding: 0px;
+        }
+    </style>
+
+
+
+</head>
+<body class="container-fluid">
+<form id ="mForm" method="post" action="/SafetyMng/CheckTask/saveCheckRowResult">
+    <input name="CheckResult" id="CheckResult" type="hidden" value="{$CheckRowData['IsOk']}"/>
+    <input name="CheckRowID"  id="CheckRowID" type="hidden" value="{$CheckRowData['id']}">
+    <input name="CurOrderID"  id="CurOrderID" type="hidden" value="{$CurOrderID}">
+    <input name="CheckListID"  id="CheckListID" type="hidden" value="{$CheckListID}">
+    <div class="row">
+        <table class="table" style="margin-bottom: 1px;{border:1px solid #ffffff} ">
+            <tbody>
+            <tr >
+                <div class="alert alert-success" role="alert" style="text-align: center;margin: 0px auto;"><span style="font-size: large;font-weight: bold;">安全管理系统在线检查单</span><br/>
+                    <span style="font-size: smaller;font-weight: bold;">编号:{$CheckInfoRow['CheckCode']}</span></div>
+            </tr>
+            {neq name="Warning" value=""}
+            <tr>
+                 <div class="alert alert-danger" role="alert"><strong>提示：</strong>{$Warning}</div>
+            </tr>
+            {/neq}
+            <tr>
+                <td>
+                    <label >检查名称:</label>
+                </td>
+                <td colspan="2">
+                    <span style="color: #0e90d2;font-weight: bold;">{$CheckInfoRow['CheckName']}</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 20%;">
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-default">第 {$CurOrderID} 条</button>
+                        <button type="button" class="btn btn-sm btn-default dropdown-toggle"
+                                data-toggle="dropdown" id="UL">
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" style="min-width: 15px;" id="DWUL" >
+
+                        </ul>
+                    </div>
+                </td>
+                <td style="width:50%;" colspan="2">
+                    <div class="progress" style="margin-top:3px;">
+                        <div  id="Pbar" class="progress-bar  progress-bar-default  progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                        <span class="" id="PBarSpan" >0%</span>
+                    </div>
+                    </div>
+                </td>
+
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="panel-group" id="accordion" style="margin-bottom: 2px;">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="padding-left: 1px">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion"
+                                       href="#collapseOne">
+                                        <span style="font-size: smaller;">详细条款(可展开):</span>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse out">
+                                <div class="panel-body">
+                                   <div class="row" TKR style="background-color: #c0e0f7 ">
+                                       <div class="col-xs-4">专业名称:</div>
+                                       <div class="col-xs-8">{$CheckRowData['ProfessionName']}</div>
+                                   </div>
+                                    <div class="row" TKR >
+                                        <div class="col-xs-4">业务名称:</div>
+                                        <div class="col-xs-8">{$CheckRowData['BusinessName']}</div>
+                                    </div>
+                                    <div class="row" TKR style="background-color: #c0e0f7 ">
+                                        <div class="col-xs-4">检查项目:</div>
+                                        <div class="col-xs-8">{$CheckRowData['CheckSubject']}</div>
+                                    </div>
+                                    <div class="row" TKR >
+                                        <div class="col-xs-4">编号1:</div>
+                                        <div class="col-xs-8">{$CheckRowData['Code1']}</div>
+                                    </div>
+                                    <div class="row" TKR style="background-color: #c0e0f7 ">
+                                        <div class="col-xs-4">编号2:</div>
+                                        <div class="col-xs-8">{$CheckRowData['Code2']}</div>
+                                    </div>
+                                    <div class="row" TKR >
+                                        <div class="col-xs-4">检查内容:</div>
+                                        <div class="col-xs-8">{$CheckRowData['CheckContent']}</div>
+                                    </div>
+                                    <div class="row" TKR style="background-color: #c0e0f7 ">
+                                        <div class="col-xs-4">检查标准:</div>
+                                        <div class="col-xs-8">{$CheckRowData['CheckStandSnap']}</div>
+                                    </div>
+                                    <div class="row" TKR >
+                                        <div class="col-xs-4">检查方法:</div>
+                                        <div class="col-xs-8">{$CheckRowData['CheckMethods']}</div>
+                                    </div>
+                                    <div class="row" TKR style="background-color: #c0e0f7 ">
+                                        <div class="col-xs-4">依据名称:</div>
+                                        <div class="col-xs-8">{$CheckRowData['BasisName']}</div>
+                                    </div>
+                                    <div class="row" TKR >
+                                        <div class="col-xs-4">依据条款:</div>
+                                        <div class="col-xs-8">{$CheckRowData['BasisTerm']}</div>
+                                    </div>
+                                    <div class="row" TKR style="background-color: #c0e0f7 ">
+                                        <div class="col-xs-4">单位手册:</div>
+                                        <div class="col-xs-8">{$CheckRowData['InnerManual']}</div>
+                                    </div>
+                                    <div class="row" TKR >
+                                        <div class="col-xs-4">涉及部门:</div>
+                                        <div class="col-xs-8">{$CheckRowData['RelatedCorps']}</div>
+                                    </div>
+                                    <div class="row" TKR style="background-color: #c0e0f7 ">
+                                        <div class="col-xs-4">检查频次:</div>
+                                        <div class="col-xs-8">{$CheckRowData['CheckFrequency']}</div>
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label >判定标准:</label>
+                </td>
+                <td colspan="2">
+                <textarea class="form-control" style="height: 150px;" disabled="disabled"  >{$CheckRowData['ComplianceStandard']}</textarea>
+
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label >检查对象:</label>
+                </td>
+                <td>
+                    <label class="label label-warning">{$CheckInfoRow['DutyCorp']}</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label >检查状态:</label>
+                </td>
+                <td colspan="2">
+                    {if condition="$CheckRowData['IsOk'] neq '' "}
+                        <label class="label label-success" style="margin-left: 5px;">本条已被{$CheckRowData['Checker']|trim}检查</label>
+                    {else /}
+                        <label class="label label-default" style="margin-left: 5px;">尚未检查</label>
+                    {/if}
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label >检查结果:</label>
+                </td>
+                <td colspan="3">
+                    <div class="btn-group" role="group" >
+                        <button SEL type="button" OK class="btn btn-default btn-sm " {neq name = "$CheckRowData.IsOk" value=""} disabled="disabled" {/neq}>符合</button>
+                        <button SEL type="button" NotOK class="btn btn-default btn-sm" {neq name = "$CheckRowData.IsOk" value=""} disabled="disabled" {/neq}>不符合</button>
+                        <a id="FeedBack"    style="margin-left: 50px;" class="btn btn-sm btn-default">反馈{neq name="$CheckRowData.FeedBack" value=""}<div class="badge">1</div>{/neq}</a>
+                    </div>
+                </td>
+            </tr>
+
+            {eq name = "$CheckRowData.IsOk" value=""}
+                <tr style="display:none;" DEALTR>
+                    <td>
+                        <label >处理结果:</label>
+                    </td>
+                    <td colspan="2">
+                        <div class="btn-group" role="group" >
+                            <button DEAL type="button" QsSubmit class="btn btn-default btn-sm">提交问题</button>
+                            <button DEAL type="button" FastReform class="btn btn-default btn-sm">下发立即整改</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="display:none;" CKProof>
+                    <td>
+                        <label >正向证据:</label>
+                    </td>
+                    <td colspan="2">
+                        <div class="btn-group" role="group" >
+                            <a LookCkProof  style="" class="btn btn-sm btn-default">正向证据管理<span class="badge" id="ProofCntSpan">0</span></a>
+                        </div>
+                    </td>
+                </tr>
+                <tr >
+                    <td colspan="3">
+                            <div style="margin: 0px auto;text-align: center;">
+                                <button NEXT type="submit"  class="btn btn-success btn-sm" style="">提交结果</button>
+                                <button RealLast  style="margin-left: 15px;" class="btn btn-default btn-sm"><==</button>
+                                <button RealNEXT  style="margin-left: 15px;" class="btn btn-default btn-sm">==></button>
+                                <a id="ExitFinish"    style="margin-left: 15px;" class="btn btn-sm btn-danger">离开</a>
+                            </div>
+                    </td>
+                </tr>
+            {/eq}
+            {eq name = "$CheckRowData.IsOk" value="NO"}
+                <tr >
+                    <td>
+                        <label >关联问题:</label>
+                    </td>
+                    <td colspan="2">
+                        <a href="#" QsDetail TaskID = "{$CheckRowData['RelatedTaskID']}" >{$CheckRowData['DealType']}</a>
+                    </td>
+                </tr>
+            {/eq}
+            {eq name = "$CheckRowData.IsOk" value="YES"}
+            <tr >
+                <td>
+                    <label >正向证据:</label>
+                </td>
+                <td colspan="2">
+                    <div class="btn-group" role="group" >
+                        <a LookCkProof  style="" class="btn btn-sm btn-default">正向证据管理<span class="badge" id="ProofCntSpan">0</span></a>
+                    </div>
+                </td>
+            </tr>
+            {/eq}
+
+            {neq name = "$CheckRowData.IsOk" value=""}
+                <tr >
+                    <td colspan="3">
+                        <div style="margin: 0px auto;text-align: center;">
+                            <button NEXT type="submit"  class="btn btn-warning btn-sm" disabled="disabled">已检查</button>
+                            <button RealLast  style="margin-left: 15px;" class="btn btn-default btn-sm"><==</button>
+                            <button RealNEXT  style="margin-left: 15px;" class="btn btn-default btn-sm">==></button>
+                            <a id="ExitFinish"    style="margin-left: 15px;" class="btn btn-sm btn-danger">离开</a>
+                        </div>
+
+                    </td>
+                </tr>
+            {/neq}
+    </tbody>
+    </table>
+    </div>
+
+</form>
+<script>
+
+    function fomatFloat(src,pos){
+        return Math.round(src*Math.pow(10, pos))/Math.pow(10, pos);
+    }
+    
+    function updateCkProofCnt() {
+        $.ajax({
+            url:"/SafetyMng/CheckTask/GetCheckProofCnt/CheckListID/{$CheckListID}/CheckListDetailID/{$CheckRowData['id']}",
+            type:'get',
+            dataType:"json",
+            success:function (data,textStatus) {
+                $('#ProofCntSpan').text(data.ProofCnt);
+            },
+            error:function (XMLHttpRequest,textStatus,errorThrown) {
+
+            }
+        });
+    }
+    
+    function updateCPT() {
+        $o =  {'CheckListId':{$CheckListID}};
+        $.ajax({
+            url:"/SafetyMng/Help/Ajax_GetCheckListCompleteStatus",
+            data: JSON.stringify($o),
+            type:'post',
+            dataType:"json",
+            success:function (data,textStatus) {
+                $CPT = Math.floor(data.CPT*10000)/100;
+                $('#Pbar').css('width',$CPT+'%');
+                $('#PBarSpan').text($CPT+'%');
+                $('#DWUL').empty();
+                $Stats_Arr = data.Detail;
+                $i = 0;
+                $Stats_Arr.forEach(function ($v) {
+                    //<li><a href="'.U('Exam/showNextSubject').'&Direction=Down&SubjectRankID='.$i.'" class="label-lg label-success">题'.$i.'
+                    ++$i;
+                    $('<li><a href="/SafetyMng/CheckTask/showOnlineCheckPage/CheckListID/'+{$CheckListID}+'/CurOrderID/'+$i+'" class="label-lg label-'+$v.Status+'">第'+($i)+'条  ---  ' + $v.CheckSubject+'</a></li>').appendTo($('#DWUL'));
+                });
+                if($CPT>=100){
+                    $('#CheckFinished').css('display','');
+                }
+            },
+            error:function (XMLHttpRequest,textStatus,errorThrown) {
+                layer.alert('设置状态失败!');
+            }
+        });
+    }
+
+    $CurOrder = {$CurOrderID};
+    $NextOrder = $CurOrder + 1;
+    $(function () {
+        $('button[OK]').click(function () {
+            $(this).addClass('btn-success');
+            $('button[NotOK]').removeClass('btn-warning');
+            $('tr[DEALTR]').css('display','none');
+            $('tr[CKProof]').css('display','table-row');
+            $('#CheckResult').val('YES');
+            updateCkProofCnt();
+        });
+
+        $('button[NotOK]').click(function () {
+            $(this).addClass('btn-warning');
+            $('button[OK]').removeClass('btn-success');
+            $('tr[DEALTR]').css('display','table-row');
+            $('#CheckResult').val('NO');
+        });
+
+        $('button[QsSubmit]').click(function () {
+            $(this).addClass('btn-danger');
+            $('button[FastReform]').removeClass('btn-danger');
+            window.open('/SafetyMng/CheckTask/showQuestionInputByCheckRow/CheckRowID/{$CheckRowData["id"]}');
+        });
+
+        $('button[FastReform]').click(function () {
+            $(this).addClass('btn-danger');
+            $('button[QsSubmit]').removeClass('btn-danger');
+            $(this).blur();
+            window.open('/SafetyMng/CheckTask/showFastReformByCheckRow/CheckRowID/{$CheckRowData["id"]}');
+        });
+
+       if($('#CheckResult').val()=='YES'){
+           $('button[OK]').addClass('btn-success');
+           $('button[NotOK]').removeClass('btn-warning');
+       }else if($('#CheckResult').val()=='NO'){
+           $('button[OK]').removeClass('btn-success');
+           $('button[NotOK]').addClass('btn-warning');
+           $('tr[DEALTR]').css('display','table-row');
+       }
+
+       $('#UL').click(function () {
+           updateCPT();
+       });
+        updateCPT();
+        $('#CheckFinished').click(function () {
+            window.location = '/SafetyMng/CheckTask/showCheckIsFinished/CheckListID/{$CheckListID}';
+        });
+
+        $('#ExitFinish').click(function () {
+            layer.confirm('确定离开检查？离开不会丢失检查结果.', {
+                btn: ['确定','取消'] //按钮
+            }, function(){
+                window.location = '/SafetyMng/MyRelatedQuestion';
+            }, function(){
+
+            });
+
+        });
+        $('#FeedBack').click(function () {
+            layer.open({
+                title:'检查条款问题反馈',
+                type: 2,
+                content: '/SafetyMng/CheckTask/showFeedBackPage/CheckRowID/{$CheckRowData["id"]}',
+                area: ['300px', '295px'],
+                closeBtn: 0,
+                shadeClose: true,
+                end:function () {
+                    window.parent.location.reload();
+                }
+            });
+        });
+
+        $('button[RealNEXT]').click(function () {
+            $('#mForm').attr('action','/SafetyMng/CheckTask/showOnlineCheckPage/CheckListID/{$CheckListID}/CurOrderID/'+$NextOrder);
+            $('#mForm').submit();
+        });
+
+
+        $('button[RealLast]').click(function () {
+            $('#mForm').attr('action','/SafetyMng/CheckTask/showOnlineCheckPage/CheckListID/{$CheckListID}/CurOrderID/'+$CurOrder-1<1?1:$CurOrder-1);
+            $('#mForm').submit();
+        });
+
+        $('a[QsDetail]').click(function () {
+            window.open('/SafetyMng/TaskCore/showTaskCoreInfoPage/TaskID/'+$(this).attr('TaskID'));
+        });
+        
+        $('a[LookCkProof]').click(function () {
+            layer.open({
+                title:'正向证据管理',
+                type: 2,
+                content: '/SafetyMng/CheckTask/showLookCkProof/CheckListID/{$CheckListID}/CheckListDetailID/{$CheckRowData["id"]}',
+                area: [document.body.offsetWidth-20+'px', document.body.offsetHeight-90+'px'],
+                closeBtn: 1,
+                shadeClose: true,
+                end:function () {
+                    updateCkProofCnt();
+                }
+            });
+        });
+        updateCkProofCnt();
+    });
+</script>
+</body>
+</html>

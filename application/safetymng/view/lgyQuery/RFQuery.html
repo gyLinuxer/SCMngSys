@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据查询</title>
+    <script src="__PUBLIC__/js/vue.js"></script>
+    <script src="__PUBLIC__/js/axios.min.js"></script>
+    <style>
+        div[DTRow] {
+            margin-top: 15px;
+        }
+        span[CS]{
+            color: #0d7bdc;
+        }
+
+        span[JZZJ]{
+            color: #1b961b;
+        }
+
+        span[YFZJ]{
+            color: #c10802;
+        }
+    </style>
+</head>
+<body class="container-full">
+<datalist id="RFSourceList">
+    {volist name="RFSourceList" id="v"}
+        <option value="{$v.SourceName}">{$v.CodePre}</option>
+    {/volist}
+</datalist>
+<datalist id="CorpList">
+    {volist name="CorpList" id="v"}
+    <option value="{$v.Corp}">{$v.id}</option>
+    {/volist}
+</datalist>
+<datalist id="CorpList2">
+
+</datalist>
+<datalist id="UserList">
+    {volist name="UserList" id="v"}
+    <option value="{$v.Name}">{$v.Corp}</option>
+    {/volist}
+</datalist>
+<datalist id="RFStatusList">
+    {volist name="RFStatusList" id="v"}
+        <option value="{$v}"><=======>整改通知书状态</option>
+    {/volist}
+</datalist>
+{php}
+$TreeMng = new app\safetymng\controller\TreeMng();
+{/php}
+
+
+<div class="alert alert-warning col-sm-12" role="alert"><strong>提示：</strong>整改通知书查询</div>
+        <form id="QsForm" action="/SafetyMng/lgyQuery/RFQuery.html" method="post" enctype="application/x-www-form-urlencoded">
+             <input type="hidden" id="QsLabelCalc" name="QsLabelCalc" value="">
+             <div class="col-sm-10 col-sm-offset-2" style="margin-bottom: 10px;">
+                 <div class="row" >
+                     <div class="col-sm-1"><label class="control-label" for="RFSource">问题来源:</label></div>
+                     <div class="col-sm-4"><input class="form-control" name="RFSource" id="RFSource" list="RFSourceList" value="{$Think.post.RFSource}"/></div>
+                     <div class="col-sm-1 "><label>标题:</label></div>
+                     <div class="col-sm-3"><input class="form-control" name="RFTitle" id="RFTitle" value="{$Think.post.RFTitle}"/></div>
+                     <div class="col-sm-1" style="vertical-align: center;"><a SuperQry>高级</a></div>
+                     <div class="col-sm-1"><button type="submit" class="btn btn-warning">搜索</button></div>
+                 </div>
+                 <div class="row" DTRow>
+                     <div class="col-sm-1"><label class="control-label" for="DutyCorp1">责任部门:</label></div>
+                     <div class="col-sm-2"><input class="form-control" autocomplete="off" name="DutyCorp1" id="DutyCorp1" placeholder="父部门" list="CorpList" value="{$Think.post.DutyCorp1}" /></div>
+                     <div class="col-sm-2"><input class="form-control" autocomplete="off" name="DutyCorp2" id="DutyCorp2" placeholder="子部门" list="CorpList2" value="{$Think.post.DutyCorp2}" /></div>
+                     <div class="col-sm-1 "><label>下发日期:</label></div>
+                     <div class="col-sm-2"><input Date class="form-control" name="IssueSDate" id="IssueSDate" value="{$Think.post.IssueSDate}"/></div>
+                     <div class="col-sm-2"><input Date class="form-control" name="IssueEDate" id="IssueEDate" value="{$Think.post.IssueEDate}"/></div>
+                 </div>
+                 <div class="row" DTRow style="min-height: 30px;height: 30px;">
+                     <div class="col-sm-1"><label class="control-label" for="RFLabelForCalcList"><span style="color: #00A000;">标签系统:</span></label></div>
+                     <div class="col-sm-10 wrapper" >
+                         <div  id="RFLabelForCalcList" >
+
+                         </div>
+                     </div>
+                     <div class="col-sm-1">
+                         <a RFID="{$dataRow['id']}" class="btn btn-xs btn-success" showLabelSelectForCalc style="margin-top: 4px;">+</a>
+                     </div>
+                 </div>
+             </div>
+            <div style="">
+
+            </div>
+
+         </form>
+        <div class="row" DTRow style="margin-top: 10px;">
+            <table class="table table-hover bootstrap-datatable datatable responsive">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th style="width: 150px;">整改通知单编号</th>
+                    <th class="col-sm-3">标题</th>
+                    <th  style="width: 80px;">责任单位</th>
+                    <th>当前处理部门</th>
+                    <th>当前状态</th>
+                    <th>反馈状态</th>
+                    <th>纠正证据</th>
+                    <th>预防证据</th>
+                    {eq name= "$IsSuperCorp" value="true"}
+                    <th>删除</th>
+                    {/eq}
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="ReformList" id="vo"}
+                {php}
+                $RF = new app\safetymng\controller\Reform;
+                $showInfo =  $RF->GetReformMultiStatus($vo['id'],$vo);
+                {/php}
+                <tr>
+                    <td>
+                        {++$Count}
+                    </td>
+                    <td>
+                        <span style="font-size: smaller;">{$vo.Code}</span>
+                    </td>
+                    <td>
+
+                        <a   TXTZS ChildTaskID = "{$vo.ChildTaskID}" DutyCorp = {$vo.DutyCorp} CurCorp = {$Think.session.Corp} TaskID = "{$vo.ParentTaskID}" Code="RM{$vo.id}" rowId = "{$vo.id}" RCode = {$vo.Code} style="color: #00A000;"> {$vo.ReformTitle}</a>
+                        <br/>
+                        <div style="text-align: right;margin: 0px auto;">
+                            <span style="font-size: xx-small;color: #0e90d2;">{$vo.QuestionSourceName}</span>
+                        </div>
+                        {eq name= "$IsSuperCorp" value="true"}
+                        <div style="text-align: right;margin: 0px auto;">
+                            {php}
+                            $LabelRet  = $TreeMng->GetSubjectLabels('RF',$vo['id']);
+                            {/php}
+                            {volist name="LabelRet" id="vv"}
+                            <label class="label label-default" style="margin-left: 4px;"><span style="font-size: smaller;">{$vv.NodeName}</span></label>
+                            {/volist}
+                            <a RFID="{$vo['id']}" class="btn btn-xs btn-default" showLabelSubject style="margin-top: 4px;">+</a>
+                        </div>
+                        {/eq}
+                    </td>
+                    <td>
+                        {$vo.DutyCorp}
+                    </td>
+                    <td>
+
+                        {neq name= "$vo.CurDealCorp" value="$Think.session.Corp"}
+                        <label class="label label-warning">{$vo.CurDealCorp}</label>
+                        {/neq}
+                        {eq name= "$vo.CurDealCorp" value="$Think.session.Corp"}
+                        <label class="label label-default">{$vo.CurDealCorp}</label>
+                        {/eq}
+                    </td>
+                    <td>
+                        <label class="label label-{php}
+                            $RF = new app\safetymng\controller\Reform;
+
+                            echo $RF->GetReformStatusColor($vo['ReformStatus']);
+                     {/php}">
+                            {$vo.ReformStatus}
+                        </label>
+                    </td>
+                    <td>
+                        <label class="label label-{$showInfo['FeedBackInfoColor']}">{$showInfo['FeedBackInfo']}</label>
+                        <label class="label label-{$showInfo['FeedBackLeftDaysColor']}">{$showInfo['FeedBackLeftDays']}</label>
+                    </td>
+                    <td>
+                        <label class="label label-{$showInfo['CorrectiveInfoColor']}">{$showInfo['CorrectiveInfo']}</label>
+                        <label class="label label-{$showInfo['CorrectiveLeftDaysColor']}">{$showInfo['CorrectiveLeftDays']}</label>
+                    </td>
+                    <td>
+                        <label class="label label-{$showInfo['PrecautionInfoColor']}">{$showInfo['PrecautionInfo']}</label>
+                        <label class="label label-{$showInfo['PrecautionLeftDaysColor']}">{$showInfo['PrecautionLeftDays']}</label>
+                    </td>
+
+                    {eq name= "$IsSuperCorp" value="true"}
+                    <td>
+                        <input type="checkbox" EnableDel style="margin-right: 10px;" rowId = "{$vo.id}" /><a BtnID="DelBtn{$vo.id}" DelBtn class="btn btn-sm btn-danger" rowId="{$vo.id}" disabled>删除</a>
+                    </td>
+                    {/eq}
+
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+        </div>
+
+
+<script>
+
+    var QsLabel = {$QsLabelCalc|default='[]'};//[{NodeCode:'',NodeName:'',MatchType:0/1,CalcType:0/1,TreeCode:,TreeName:}]
+
+    function updateDutyCorp2() {
+        $v = $('#DutyCorp1').val();
+        axios({
+            method: 'get',
+            url: '/SafetyMng/CorpMng/GetCorpAllLevelChildrenRows_JSON/ParentCorp/'+$v,
+            data: ''
+        }).then(function (response) {
+            List = response.data;
+            $('#CorpList2').empty();
+            for(i=0;i<List.length;i++){
+                vv = List[i];
+                $("<option value='"+vv+"'>"+vv+"</option>").appendTo('#CorpList2');
+            }
+            $("<option value='全部'>全部</option>").appendTo('#CorpList2');
+        }).catch(function (error) {
+
+        });
+    }
+
+
+    function showLabelForCalcInRequirePos($LabelVal,$PosID) {
+        $('#'+$PosID).empty();
+        lbStr = '';
+        for(i=0;i<$LabelVal.length;i++){
+            MatchType = '模';
+            CalcType = '且';
+             if($LabelVal[i].MatchType==1){
+                MatchType = '精';
+            }
+            if($LabelVal[i].CalcType==1){
+                CalcType = '或';
+            }
+            lbStr += '<label class="label label-success" style="margin-left: 14px;"><span style="font-size: smaller;">'+$LabelVal[i].NodeName+'</span></label>' +
+                '<label class="label label-'+(MatchType=='模'?'default':'danger')+'" style="margin-left: 4px;"><span style="font-size: smaller;">'+MatchType+'</span></label>'+
+                '<label class="label label-'+(CalcType=='且'?'default':'danger')+'" style="margin-left: 4px;"><span style="font-size: smaller;">'+CalcType+'</span></label>';
+        }
+        $(lbStr).appendTo('#'+$PosID);
+    }
+
+    $(function () {
+
+        /*$(document).bind("contextmenu",function(e){
+            return false;});*/
+
+        $('a[SuperQry]').click(function () {
+            layer.open({
+                title:'整改通知书高级检索',
+                type: 1,
+                shadeClose: true,
+                area: ['800px', '700px'],
+                content: $('#showDiv'),
+                end:function () {
+                    $('#showDiv').css('display','none');
+                }
+            });
+        });
+        $('input').attr('autocomplete','off');
+
+        $('input[name=ActionIsMaked]').click(function () {
+            $Val = $(this).val();
+            if($Val=='NO'){
+                $('div[CS]').hide(1000);
+            }else{
+                $('div[CS]').show(1000);
+            }
+        });
+
+        $('input[name=PrecautionActionProofIsUpload]').click(function () {
+            $Val = $(this).val();
+            if($Val=='NO'){
+                $('div[YFZJ]').hide(1000);
+            }else{
+                $('div[YFZJ]').show(1000);
+            }
+        });
+
+        $('input[name=CorrectActionProofIsUpload]').click(function () {
+            $Val = $(this).val();
+            if($Val=='NO'){
+                $('div[JZZJ]').hide(1000);
+            }else{
+                $('div[JZZJ]').show(1000);
+            }
+        });
+
+        {eq name= "$IsSuperCorp" value="true"}
+            $('a[DelBtn]').click(function () {
+                layer.open({
+                    title:'删除整改通知书',
+                    type: 2,
+                    content: "/SafetyMng/Reform/showDeleteReform/ReformID/"+$(this).attr("rowId"),
+                    area: ['530px', '400px']
+                });
+            });
+        {/eq}
+            updateDutyCorp2();
+
+            $('#DutyCorp1').change(function () {
+                updateDutyCorp2();
+            })
+
+            $('a[TXTZS]').click(function () {
+                $RealTaskID = $(this).attr('DutyCorp')==$(this).attr('CurCorp')?$(this).attr('ChildTaskID'):$(this).attr('TaskID');
+                window.open('/SafetyMng/Reform/Index/TaskID/'+$RealTaskID+'/ReformID/'+$(this).attr("rowId")+'/opType/Mdf');
+            });
+    });
+
+</script>
+<div class="col-sm-12" style="display: none;" id="showDiv">
+    <div class="row">
+        <div class="alert alert-success" role="alert">
+            <strong>提示：</strong>整改通知书的高级搜索页面,各条件之间的逻辑关系为'且'.
+        </div>
+    </div>
+    <div class="row" DTRow>
+        <div class="col-xs-3" style=""><span style="font-weight: bold;">当前状态:</span></div>
+        <div class="col-xs-8">
+            <input class="form-control" name="RFStatus" list="RFStatusList" placeholder="整改通知书当前状态" value="{$Think.post.RFStatus}" />
+        </div>
+    </div>
+    <div class="row" DTRow>
+        <div class="col-xs-3" ><span style="font-weight: bold;">超期状态:</span></div>
+        <div class="col-xs-8">
+                         <span>原因分析措施制定==><label class="label label-success"><input type="radio" name="FeedBackBeyond" {eq name="$Think.post.FeedBackBeyond" value="NO"}checked="checked"{/eq} value="NO"/>未超期</label>
+                         <label class="label label-danger"><input type="radio" name="FeedBackBeyond"  value="YES" {eq name="$Think.post.FeedBackBeyond" value="YES"}checked="checked"{/eq} />超期</label></span>
+            <label class="label label-default"><input type="radio" name="FeedBackBeyond"  value="ANY" {eq name="$Think.post.FeedBackBeyond" value="ANY"}checked="checked"{/eq} />任意</label></span>
+            <br/>
+            <span>纠正措施证据上传==><label class="label label-success"><input type="radio" name="CorrectBeyond" value="NO" {eq name="$Think.post.CorrectBeyond" value="NO"}checked="checked"{/eq}/>未超期</label>
+                         <label class="label label-danger"><input type="radio" name="CorrectBeyond" value="YES" {eq name="$Think.post.CorrectBeyond" value="YES"}checked="checked"{/eq}/>超期</label></span>
+            <label class="label label-default"><input type="radio" name="CorrectBeyond"  value="ANY" {eq name="$Think.post.CorrectBeyond" value="ANY"}checked="checked"{/eq}/>任意</label></span>
+            <br/>
+            <span>预防措施证据上传==><label class="label label-success"><input type="radio" name="PrecautionBeyond" value="NO" {eq name="$Think.post.PrecautionBeyond" value="NO"}checked="checked"{/eq}/>未超期</label>
+                         <label class="label label-danger"><input type="radio" name="PrecautionBeyond" value="YES" {eq name="$Think.post.PrecautionBeyond" value="YES"}checked="checked"{/eq}/>超期</label></span>
+            <label class="label label-default"><input type="radio" name="PrecautionBeyond"  value="ANY" {eq name="$Think.post.PrecautionBeyond" value="ANY"}checked="checked"{/eq}/>任意</label></span>
+            <br/>
+        </div>
+    </div>
+    <div class="row" DTRow>
+        <div class="col-xs-3" ><span style="font-weight: bold;">通知书编号:</span></div>
+        <div class="col-xs-8">
+            <input class="form-control" name="RFCode" value="{$Think.post.RFCode}" placeholder="整改通知书编号"/>
+        </div>
+
+    </div>
+    <div class="row" DTRow>
+        <div class="col-xs-3" ><span style="font-weight: bold;">检查日期:</span></div>
+        <div class="col-xs-4"><input type="date" class="form-control" name="CheckStartDate" id="CheckStartDate" value="{$Think.post.CheckStartDate}" placeholder="开始日期"/></div>
+        <div class="col-xs-4"><input type="date" class="form-control" name="CheckEndDate" id="CheckEndDate" value="{$Think.post.CheckEndDate}" placeholder="结束日期"/></div>
+    </div>
+    <div class="row" DTRow>
+        <div class="col-xs-3" ><span style="font-weight: bold;">督查人员:</span></div>
+        <div class="col-xs-8">
+            <input class="form-control" name="Inspector" value="{$Think.post.Inspector}" list="UserList" placeholder="搜索督查人员"/>
+        </div>
+
+    </div>
+    <div class="row" DTRow>
+        <div class="col-xs-3" ><span style="font-weight: bold;">要求的反馈日期:</span></div>
+        <div class="col-xs-4"><input type="date" class="form-control" name="RequireFeedBackStartDate" id="RequireFeedBackStartDate" value="{$Think.post.RequireFeedBackStartDate}" placeholder="开始日期" /></div>
+        <div class="col-xs-4"><input type="date" class="form-control" name="RequireFeedBackEndDate" id="RequireFeedBackEndDate" value="{$Think.post.RequireFeedBackEndDate}" placeholder="结束日期" /></div>
+    </div>
+    <div class="row" DTRow>
+        <div class="col-xs-3" ><span style="font-weight: bold;" aria-autocomplete="none">不符合项描述:</span></div>
+        <div class="col-xs-8">
+            <input class="form-control" name="NonConfirmDesc" value="{$Think.post.NonConfirmDesc}" placeholder="不符合项描述"/>
+        </div>
+    </div>
+    <div class="row" DTRow>
+        <div class="col-xs-3" ><span style="font-weight: bold;">不符合项依据:</span></div>
+        <div class="col-xs-8">
+            <input class="form-control" name="Basis" value="{$Think.post.Basis}" placeholder="不符合项依据"/>
+        </div>
+    </div>
+    <div class="row" DTRow>
+        <div class="col-xs-3" ><span style="font-weight: bold;">督查部门:</span></div>
+        <div class="col-xs-8">
+            <input class="form-control" name="IssueCorp" value="{$Think.post.IssueCorp}"  list="CorpList" placeholder="下发整改通知书的部门"/>
+        </div>
+    </div>
+    <div class="row" DTRow>
+        <div class="col-xs-3" ><span style="font-weight: bold;">当前部门:</span></div>
+        <div class="col-xs-8">
+            <input class="form-control" name="CurDealCorp" value="{$Think.post.CurDealCorp}"  list="CorpList" placeholder="整改通知书当前处理部门"/>
+        </div>
+    </div>
+    <div class="row" DTRow>
+        <div class="col-xs-3" ><span style="font-weight: bold;">整改要求:</span></div>
+        <div class="col-xs-8">
+            <input class="form-control" name="RFRequire" value="{$Think.post.RFRequire}" placeholder="下发整改通知书时的整改要求"/>
+        </div>
+    </div>
+    <div class="row" DTRow>
+        <div class="col-xs-3" ><span style="font-weight: bold;">原因分析与措施制定:</span></div>
+        <div class="col-xs-8">
+            <span><input type="radio" name="WhichRoleMakeAction" value="YES"  {eq name="$Think.post.WhichRoleMakeAction" value="YES"}checked="checked"{/eq} />责任单位分析制定</span>
+            <span><input type="radio" name="WhichRoleMakeAction" value="NO" {eq name="$Think.post.WhichRoleMakeAction" value="NO"}checked="checked"{/eq} />下发单位分析制定</span>
+            <span><input type="radio" name="WhichRoleMakeAction" value="ANY" {eq name="$Think.post.WhichRoleMakeAction" value="ANY"}checked="checked"{/eq} />任意</span>
+        </div>
+    </div>
+    <div class="row" DTRow >
+        <div class="col-xs-3" ><span style="font-weight: bold;" CS>措施制定情况:</span></div>
+        <div class="col-xs-4" style="margin-top: 8px;">
+            <label class="label label-success"><input type="radio" name="ActionIsMaked" value="YES" {eq name="$Think.post.ActionIsMaked" value="YES"}checked="checked"{/eq} />已制定</label>
+            <label class="label label-danger"><input type="radio" name="ActionIsMaked" value="NO" {eq name="$Think.post.ActionIsMaked" value="NO"}checked="checked"{/eq} />未制定</label>
+            <label class="label label-default"><input type="radio" name="ActionIsMaked" value="ANY" {eq name="$Think.post.ActionIsMaked" value="ANY"}checked="checked"{/eq} />任意</label>
+        </div>
+    </div>
+    <div class="row" DTRow CS>
+        <div class="col-xs-3" ><span style="font-weight: bold;" CS>纠正措施:</span></div>
+        <div class="col-xs-8">
+            <input class="form-control" name="CorrectAction" value="{$Think.post.CorrectAction}"  placeholder="纠正措施关键字"/>
+        </div>
+    </div>
+    <div class="row" DTRow CS>
+        <div class="col-xs-3" ><span style="font-weight: bold;" CS>纠正措施期限:</span></div>
+        <div class="col-xs-4"><input type="date" class="form-control" name="CorrectDeadLineStartDate" id="CorrectDeadLineStartDate" value="{$Think.post.CorrectDeadLineStartDate}" placeholder="开始日期" /></div>
+        <div class="col-xs-4"><input type="date"  class="form-control" name="CorrectDeadLineEndDate" id="CorrectDeadLineEndDate" value="{$Think.post.CorrectDeadLineEndDate}" placeholder="结束日期" /></div>
+    </div>
+    <div class="row" DTRow CS>
+        <div class="col-xs-3" ><span style="font-weight: bold;" CS>预防措施:</span></div>
+        <div class="col-xs-8">
+            <input class="form-control" name="PrecautionAction" value="{$Think.post.PrecautionAction}"  placeholder="预防措施关键字"/>
+        </div>
+    </div>
+    <div class="row" DTRow CS>
+        <div class="col-xs-3" ><span style="font-weight: bold;" CS>预防措施期限:</span></div>
+        <div class="col-xs-4"><input type="date" class="form-control" name="PrecautionDeadLineStartDate" id="PrecautionActionStartDate" value="{$Think.post.PrecautionDeadLineStartDate}" placeholder="开始日期" /></div>
+        <div class="col-xs-4"><input type="date" class="form-control" name="PrecautionDeadLineEndDate" id="PrecautionActionEndDate" value="{$Think.post.PrecautionDeadLineEndDate}" placeholder="结束日期" /></div>
+
+    </div>
+    <div class="row" DTRow CS>
+        <div class="col-xs-3" ><span style="font-weight: bold;" CS>措施制定人:</span></div>
+        <div class="col-xs-8">
+            <input class="form-control" type="text"  name="ActionMaker" value="{$Think.post.ActionMaker}" list="UserList"  placeholder="分析原因和制定措施的人"/>
+        </div>
+    </div>
+    <div class="row" DTRow CS>
+        <div class="col-xs-3" ><span style="font-weight: bold;" CS>措施制定日期:</span></div>
+        <div class="col-xs-4"><input type="date" class="form-control" name="ActionMakeStartDate" id="ActionMakeStartDate" value="{$Think.post.ActionMakeStartDate}" placeholder="开始日期"/></div>
+        <div class="col-xs-4"><input type="date" class="form-control" name="ActionMakeEndDate"   id="ActionMakeEndDate"   value="{$Think.post.ActionMakeEndDate}" placeholder="结束日期"/></div>
+    </div>
+    <div class="row" DTRow CS>
+        <div class="col-xs-3" ><span style="font-weight: bold;" CS>措施审核人:</span></div>
+        <div class="col-xs-8">
+            <input class="form-control" type="text" name="ActionEvalerName" value="{$Think.post.ActionEvalerName}" list="UserList" placeholder="原因与措施审核人"/>
+        </div>
+    </div>
+    <div class="row" DTRow CS>
+        <div class="col-xs-3" ><span style="font-weight: bold;" CS>措施审核日期:</span></div>
+        <div class="col-xs-4"><input type="date" class="form-control" name="ActionEvalStartDate" id="ActionEvalStartDate" value="{$Think.post.ActionEvalStartDate}" placeholder="开始日期"/></div>
+        <div class="col-xs-4"><input type="date" class="form-control" name="ActionEvalEndDate" id="ActionEvalEndDate" value="{$Think.post.ActionEvalEndDate}" placeholder="结束日期"/></div>
+    </div>
+    <div class="row" DTRow CS>
+        <div class="col-xs-3" ><span style="font-weight: bold;" CS>措施审核效率:</span></div>
+        <div class="col-xs-9 form-inline">
+            措施制定之日起
+            <span ><input type="radio" name="ActionEvalDateCP" value="GT" {eq name="$Think.post.ActionEvalDateCP" value="GT" }checked="checked"{/eq}/>大于</span>
+            <span ><input type="radio" name="ActionEvalDateCP" value="LT" {eq name="$Think.post.ActionEvalDateCP" value="LT" }checked="checked"{/eq}/>小于</span>
+            <input class="form-control" style="height: 30px;width: 45px;" name="ActionEvalDays" value="{$Think.post.ActionEvalDays}" />天完成审核
+        </div>
+    </div>
+    <div class="row" DTRow CS>
+        <div class="col-xs-3" style="margin-top: 10px;"><span style="font-weight: bold;" CS>措施审核结果:</span></div>
+        <div class="col-xs-5" style="margin-top: 10px;">
+            <label class="label label-success"><input type="radio" name="ActionIsOK" value="YES" {eq name="$Think.post.ActionIsOK" value="YES"}checked="checked"{/eq}/>接受</label>
+            <label class="label label-danger"><input type="radio" name="ActionIsOK"  value="NO" {eq name="$Think.post.ActionIsOK" value="NO"}checked="checked"{/eq}/>不接受</label>
+            <label class="label label-warning"><input type="radio" name="ActionIsOK" value="UNDO" {eq name="$Think.post.ActionIsOK" value="UNDO"}checked="checked"{/eq} />未审核</label>
+            <label class="label label-default"><input type="radio" name="ActionIsOK" value="ANY" {eq name="$Think.post.ActionIsOK" value="ANY"}checked="checked"{/eq} />任意</label>
+        </div>
+        <div class="col-xs-3">
+            <input class="form-control" name="ActionEvaler" value="{$Think.post.ActionEvaler}" list="UserList" placeholder="措施审核人"/>
+        </div>
+    </div>
+    <div class="row" DTRow>
+        <div class="col-xs-3" ><span style="font-weight: bold;" JZZJ>纠正措施整改证据:</span></div>
+        <div class="col-xs-8" style="">
+            <label class="label label-success"><input type="radio" name="CorrectActionProofIsUpload" value="YES" {eq name="$Think.post.CorrectActionProofIsUpload" value="YES"}checked="checked"{/eq} />已上传</label>
+            <label class="label label-danger"><input type="radio" name="CorrectActionProofIsUpload" value="NO" {eq name="$Think.post.CorrectActionProofIsUpload" value="NO"}checked="checked"{/eq} />未上传</label>
+            <label class="label label-default"><input type="radio" name="CorrectActionProofIsUpload" value="ANY" {eq name="$Think.post.CorrectActionProofIsUpload" value="ANY"}checked="checked"{/eq} />任意</label>
+        </div>
+    </div>
+    <div class="row" DTRow JZZJ>
+        <div class="col-xs-3" ><span style="font-weight: bold;" JZZJ>纠正措施上传日期:</span></div>
+        <div class="col-xs-4"><input Type="Date"class="form-control" name="CorrectActionProofUploadStartDate" id="CorrectActionProofUploadStartDate" value="{$Think.post.CorrectActionProofUploadStartDate}" placeholder="开始日期"/></div>
+        <div class="col-xs-4"><input Type="Date"class="form-control" name="CorrectActionProofUploadEndDate" id="CorrectActionProofUploadEndDate" value="{$Think.post.CorrectActionProofUploadEndDate}" placeholder="结束日期"/></div>
+    </div>
+    <div class="row" DTRow JZZJ>
+        <div class="col-xs-3" style="margin-top: 10px;"><span style="font-weight: bold;" JZZJ>纠正措施审核结果:</span></div>
+        <div class="col-xs-5" style="margin-top: 10px;">
+            <label class="label label-success"><input type="radio" name="CorrectActionProofIsOK" value="YES" {eq name="$Think.post.CorrectActionProofIsOK" value="YES"}checked="checked"{/eq} />接受</label>
+            <label class="label label-danger"><input type="radio" name="CorrectActionProofIsOK" value="NO" {eq name="$Think.post.CorrectActionProofIsOK" value="NO"}checked="checked"{/eq} />不接受</label>
+            <label class="label label-warning"><input type="radio" name="CorrectActionProofIsOK" value="UNDO" {eq name="$Think.post.CorrectActionProofIsOK" value="UNDO"}checked="checked"{/eq} />未审核</label>
+            <label class="label label-default"><input type="radio" name="CorrectActionProofIsOK" value="ANY" {eq name="$Think.post.CorrectActionProofIsOK" value="ANY"}checked="checked"{/eq} />任意</label>
+        </div>
+        <div class="col-xs-3" JZZJ>
+            <input class="form-control" name="CorrectActionEvaler" value="{$Think.post.CorrectActionEvaler}" list="UserList" placeholder="纠正证据审核人"/>
+        </div>
+    </div>
+    <div class="row" DTRow JZZJ>
+        <div class="col-xs-3" ><span style="font-weight: bold;" JZZJ>纠正措施证据审核日期:</span></div>
+        <div class="col-xs-4"><input type="date" class="form-control" name="CorrectActionProofEvalStartDate" id="CorrectActionProofEvalStartDate" value="{$Think.post.CorrectActionProofEvalStartDate}" placeholder="开始日期"/></div>
+        <div class="col-xs-4"><input type="date" class="form-control" name="CorrectActionProofEvalEndDate" id="CorrectActionProofEvalEndDate" value="{$Think.post.CorrectActionProofEvalEndDate}" placeholder="结束日期"/></div>
+    </div>
+    <div class="row" DTRow JZZJ>
+        <div class="col-xs-3" ><span style="font-weight: bold;" JZZJ>纠正措施证据审核效率:</span></div>
+        <div class="col-xs-9 form-inline">
+            证据上传之日起
+            <span ><input type="radio" name="CorrectActionEvalCP" value="GT" {eq name="$Think.post.CorrectActionEvalCP" value="GT"}checked="checked"{/eq}/>大于</span>
+            <span ><input type="radio" name="CorrectActionEvalCP" value="LT" {eq name="$Think.post.CorrectActionEvalCP" value="LT"}checked="checked"{/eq}/>小于</span>
+            <input class="form-control" style="height: 30px;width: 45px;" name="CorrectActionProofEvalDays" value="{$Think.post.CorrectActionProofEvalDays}" />天完成审核
+
+        </div>
+    </div>
+    <div class="row" DTRow >
+        <div class="col-xs-3" ><span style="font-weight: bold;" YFZJ>预防措施整改证据:</span></div>
+        <div class="col-xs-8" style="">
+            <label class="label label-success"><input type="radio" name="PrecautionActionProofIsUpload" value="YES" {eq name="$Think.post.PrecautionActionProofIsUpload" value="YES"}checked="checked"{/eq} />已上传</label>
+            <label class="label label-danger"><input type="radio" name="PrecautionActionProofIsUpload" value="NO" {eq name="$Think.post.PrecautionActionProofIsUpload" value="NO"}checked="checked"{/eq}/>未上传</label>
+            <label class="label label-default"><input type="radio" name="PrecautionActionProofIsUpload" value="ANY" {eq name="$Think.post.PrecautionActionProofIsUpload" value="ANY"}checked="checked"{/eq}/>任意</label>
+        </div>
+    </div>
+    <div class="row" DTRow YFZJ>
+        <div class="col-xs-3" ><span style="font-weight: bold;" YFZJ>预防措施上传日期:</span></div>
+        <div class="col-xs-4"><input Type="Date" class="form-control" name="PrecautionActionUploadStartDate" id="PrecautionActionUploadStartDate" value="{$Think.post.PrecautionActionUploadStartDate}" placeholder="开始日期"/></div>
+        <div class="col-xs-4"><input Type="Date" class="form-control" name="PrecautionActionUploadEndDate" id="PrecautionActionUploadEndDate" value="{$Think.post.PrecautionActionUploadEndDate}" placeholder="结束日期"/></div>
+    </div>
+    <div class="row" DTRow YFZJ>
+        <div class="col-xs-3" style="margin-top: 10px;"><span style="font-weight: bold;" YFZJ> 预防措施审核结果:</span></div>
+        <div class="col-xs-5" style="margin-top: 10px;">
+            <label class="label label-success"><input type="radio" name="PrecautionActionProofIsOK" value="YES" {eq name="$Think.post.PrecautionActionProofIsOK" value="YES"}checked="checked"{/eq}/>接受</label>
+            <label class="label label-danger"><input type="radio" name="PrecautionActionProofIsOK" value="NO" {eq name="$Think.post.PrecautionActionProofIsOK" value="NO"}checked="checked"{/eq}/>不接受</label>
+            <label class="label label-warning"><input type="radio" name="PrecautionActionProofIsOK" value="UNDO" {eq name="$Think.post.PrecautionActionProofIsOK" value="UNDO"}checked="checked"{/eq} />未审核</label>
+            <label class="label label-default"><input type="radio" name="PrecautionActionProofIsOK" value="ANY" {eq name="$Think.post.PrecautionActionProofIsOK" value="ANY"}checked="checked"{/eq}/>任意</label>
+        </div>
+        <div class="col-xs-3" YFZJ>
+            <input class="form-control" name="PrecautionActionEvaler" value="{$Think.post.PrecautionActionEvaler}" list="UserList" placeholder="预防证据审核人"/>
+        </div>
+    </div>
+    <div class="row" DTRow YFZJ>
+        <div class="col-xs-3" ><span style="font-weight: bold;" YFZJ>预防措施证据审核日期:</span></div>
+        <div class="col-xs-4"><input type="date" class="form-control" name="PrecautionActionProofEvalStartDate" id="PrecautionActionProofEvalStartDate" value="{$Think.post.PrecautionActionProofEvalStartDate}" placeholder="开始日期"/></div>
+        <div class="col-xs-4"><input type="date" class="form-control" name="PrecautionActionProofEvalEndDate"   id="PrecautionActionProofEvalEndDate"   value="{$Think.post.PrecautionActionProofEvalEndDate}" placeholder="结束日期"/></div>
+    </div>
+    <div class="row" DTRow YFZJ>
+        <div class="col-xs-3" ><span style="font-weight: bold;" YFZJ>预防措施审核效率:</span></div>
+        <div class="col-xs-9 form-inline">
+            证据上传之日起
+            <span ><input type="radio" name="PrecautionActionProofEvalCP" value="GT" {eq name="$Think.post.PrecautionActionProofEvalCP" value="GT"}checked="checked"{/eq} />大于</span>
+            <span ><input type="radio" name="PrecautionActionProofEvalCP" value="LT" {eq name="$Think.post.PrecautionActionProofEvalCP" value="LT"}checked="checked"{/eq} />小于</span>
+            <input class="form-control" style="height: 30px;width: 45px;" name="PrecautionActionProofEvalDays" value="{$Think.post.PrecautionActionProofEvalDays}" />天完成审核
+        </div>
+    </div>
+    <p></p>
+</div>
+</body>
+</html>

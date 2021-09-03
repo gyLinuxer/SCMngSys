@@ -1,0 +1,35 @@
+.MyTable
+{
+
+    padding: 0px;
+    margin: 0px;
+    border-collapse:collapse;
+
+}
+
+.MyTable td {
+    border: 1px solid #C1DAD7;
+    background: #fff;
+    font-size:11px;
+    padding: 6px 6px 6px 12px;
+    color: #4f6b72;
+}
+/*td {
+    align:center;
+    valign: center;
+}*/
+
+
+
+td.alt {
+    background: #F5FAFA;
+    color: #797268;
+}
+
+/*.table th, .table td {
+    vertical-align:middle!important;
+}*/
+
+th {
+    background: rgb(232, 232, 232);
+}

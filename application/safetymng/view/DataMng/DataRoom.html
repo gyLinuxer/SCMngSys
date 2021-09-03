@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>资料室</title>
+</head>
+<body class="container-full">
+<form action="/SafetyMng/TreeMng/AddTree.html" method="post" enctype="application/x-www-form-urlencoded">
+    <div class="row">
+
+        <div class="col-sm-3" style="border-right: dashed 1px;min-height: 800px;">
+            <h4 style="text-align: center;">资料类型列表</h4>
+            <div class="list-group">
+                {volist name="DataTypeList" id = "vo"}
+                    <a href="#" class="list-group-item {eq name="$DataType" value="$vo.KeyName"} active {/eq} " DType = "{$vo.KeyName}">{$vo.KeyName}
+                <span class="badge">{$vo.Cnt}</span>
+                </a>
+                {/volist}
+            </div>
+
+        </div>
+        <div class="col-sm-9" >
+            <table id="table" class="table  table-hover"
+                   data-toggle="table"
+                   data-classes="table table-hover"
+                   data-show-columns="true"
+                   data-striped="true"
+                   data-show-toggle="true"
+                   data-search="true"
+                   data-show-refresh="true"
+                   data-toolbar="#toolbar"
+                   data-height="500">
+                <thead>
+                <tr>
+                    <th style="width: 50px;">序号</th>
+                    <th class="col-sm-3">资料编号</th>
+                    <th class="col-sm-5">资料名称</th>
+                    <th class="">版本</th>
+                    <th>有效性</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="DataRet" id="vo"}
+                    <tr>
+                        <td>{++$QsCnt}</td>
+                        <td>
+                            <span style="font-size: smaller;color: #00A000;">{$vo.DataCode}</span>
+
+                        </td>
+                        <td>
+                            <a QsHover  QsID="{$vo.id}">{$vo.DataName}</a></td>
+                        <td><label class="label label-default">{$vo.DataVer}</label></td>
+                        <td>
+                            {eq name="$vo.IsValid" value="YES"}
+                            <label class="label label-success">有效</label>
+                            {/eq}
+                            {eq name="$vo.IsValid" value="NO"}
+                            <label class="label label-danger">失效</label>
+                            {/eq}
+                            {eq name="$vo.IsValid" value="CK"}
+                            <label class="label label-warning">参考资料</label>
+                            {/eq}
+                        </td>
+                    </tr>
+                {/volist}
+                </tbody>
+            </table>
+        </div>
+        <div id="showDiv" style="display: none;">
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-xs-2">节点名称:</div>
+                <div class="col-xs-8"><input id="NewNodeName" class="form-control "/></div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+
+    $(function () {
+
+        $(document).bind("contextmenu",function(e){
+            return false;});
+
+        $('a[DType]').click(function () {
+            window.location = '/SafetyMng/DataMng/showDataRoom/DataType/'+$(this).attr('DType');
+        });
+        $('a[QsHover]').click(function(){
+            layer.open({
+                type: 2,
+                title: '资料详情',
+                maxmin: true,
+                area: ['720px', '650px'],
+                content: '/SafetyMng/DataMng/showDataPage/id/'+$(this).attr('QsID'),
+            });
+        });
+    });
+</script>
+</body>
+</html>

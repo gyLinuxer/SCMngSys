@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+    <link rel="stylesheet" href="__PUBLIC__/css/el-ui.css">
+    <script src="__PUBLIC__/js/vue2614.js"></script>
+    <script src="__PUBLIC__/js/axios.min.js"></script>
+    <script src="__PUBLIC__/js/el-index.js"></script>
+    <script src="__PUBLIC__/js/vue-router.js"></script>
+    <script src="__PUBLIC__/js/gyComp/mainstorelist.js"></script>
+    <script src="__PUBLIC__/js/jquery.js"></script>
+</head>
+<body>
+<div id="app">
+    <h2 style="text-align: center">安全风险矩阵设定</h2>
+    <hr/>
+    <el-row>
+        <table border="1" bordercolor="gray" style="min-width: 75%;margin-left: 10%;text-align: center">
+            <tr>
+                <td style="width: 150px;text-align: center" valign="top" >
+                    <span style="font-size: large;color: #00A000;">安全风险</span>
+                    <el-button type="error" size="mini" icon="el-icon-setting" @click="FXDJSetDialogShow=true"  circle ></el-button>
+                </td>
+                <td style="text-align: center" :colspan="YZXList.length">
+                    <span style="font-size: large;color: #004b00;">风险严重性</span>
+                    <el-button type="error" size="mini" icon="el-icon-plus"  @click="YZXDJSetDialogShow=true" circle ></el-button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span style="font-size: large;color: #004b00;">发生可能性</span>
+                    <el-button type="error" size="mini" icon="el-icon-plus" @click="KNXDJSetDialogShow=true" circle ></el-button>
+                </td>
+                <td v-for="item in YZXList" style="text-align: center">
+                    <span style="font-size: medium;">{{item.Name}}({{item.Min}},{{item.Max}}]</span>
+                </td>
+            </tr>
+            <tr v-for="(item,x) in KNXList" >
+                <td style="text-align: center">
+                    <span style="font-size: medium;">{{item.Name}}({{item.Min}},{{item.Max}}]</span>
+                </td>
+                <td v-for="(item,y) in YZXList" style="text-align: center" :style="Table_TD_FX[x*YZXList.length + y]!=undefined?Table_TD_FX[x*YZXList.length + y].color:''" @click="FXDJSel(x,y)">
+                    <span style="font-weight: bolder">{{Table_TD_FX[x*YZXList.length + y]!=undefined?Table_TD_FX[x*YZXList.length + y].DX:''}}</span>
+                </td>
+            </tr>
+        </table>
+        <el-dialog title="风险等级设定" :visible.sync="FXDJSetDialogShow" :modal="false">
+            <el-row style="text-align: center">
+                    <div  style="float:left;background-color: #18b566;width: 90px;height: 70px;border-radius:5px 5px 0  0;margin-left: 10px;">
+                    </div>
+                    <div  style="float:left;background-color: #71d5a1;width: 90px;height: 70px;border-radius:5px 5px 0  0;margin-left: 10px;"></div>
+                    <div  style="float:left;background-color: #fcbd71;width: 90px;height: 70px;border-radius:5px 5px 0  0;margin-left: 10px;"></div>
+                    <div  style="float:left;background-color: #f29100;width: 90px;height: 70px;border-radius:5px 5px 0  0;margin-left: 10px;"></div>
+                    <div  style="float:left;background-color: #fab6b6;width: 90px;height: 70px;border-radius:5px 5px 0  0;margin-left: 10px;"></div>
+                    <div  style="float:left;background-color: #dd6161;width: 90px;height: 70px;border-radius:5px 5px 0  0;margin-left: 10px;"></div>
+            </el-row>
+            <el-row style="margin-top: 10px;">
+                <div  style="float:left;width: 70px;border-radius:5px 5px 0  0;margin-left: 10px;">
+                    <el-checkbox v-model="ColorUseArr[0].FXDJ>0" disabled=true><el-input size="mini" v-model="ColorUseArr[0].FXDJ"></el-input></el-checkbox>
+                </div>
+                <div  style="float:left;width: 70px;border-radius:5px 5px 0  0;margin-left: 25px;">
+                    <el-checkbox v-model="ColorUseArr[1].FXDJ>0" disabled=true><el-input size="mini" v-model="ColorUseArr[1].FXDJ"></el-input></el-checkbox>
+                </div>
+                <div  style="float:left;width: 70px;border-radius:5px 5px 0  0;margin-left: 30px;">
+                    <el-checkbox v-model="ColorUseArr[2].FXDJ>0" disabled=true><el-input size="mini" v-model="ColorUseArr[2].FXDJ"></el-input></el-checkbox>
+                </div>
+                <div  style="float:left;width: 70px;border-radius:5px 5px 0  0;margin-left: 35px;">
+                    <el-checkbox v-model="ColorUseArr[3].FXDJ>0" disabled=true><el-input size="mini" v-model="ColorUseArr[3].FXDJ"></el-input></el-checkbox>
+                </div>
+                <div  style="float:left;width: 70px;border-radius:5px 5px 0  0;margin-left: 35px;">
+                    <el-checkbox v-model="ColorUseArr[4].FXDJ>0" disabled=true><el-input size="mini" v-model="ColorUseArr[4].FXDJ"></el-input></el-checkbox>
+                </div>
+                <div  style="float:left;width: 70px;border-radius:5px 5px 0  0;margin-left: 35px;">
+                    <el-checkbox v-model="ColorUseArr[5].FXDJ>0" disabled=true><el-input size="mini" v-model="ColorUseArr[5].FXDJ"></el-input></el-checkbox>
+                </div>
+            </el-row>
+            <el-row>
+                <div style="text-align: center;margin-top: 10px;">
+                    <el-button type="info" size="mini" @click="FXJZQR">确定</el-button>
+                </div>
+            </el-row>
+        </el-dialog>
+
+
+        <el-dialog title="风险等级选择" :visible.sync="FXDJSelDialogShow" :modal="false">
+            <el-row style="text-align: center">
+                <div v-for="(item,k) in  FXDJ_Color_Index" @click="FXSel(k)" :style="FXDJ_Color_Index[k].color" style="float:left;width: 90px;height: 70px;border-radius:5px 5px 0  0;margin-left: 10px;">
+                    <el-input size="mini" v-model="FXDJ_Color_Index[k].DX" style="text-align: center;font-weight: bolder;" disabled></el-input>
+                </div>
+            </el-row>
+        </el-dialog>
+
+        <el-dialog title="增加严重性等级" :visible.sync="YZXDJSetDialogShow" :modal="false">
+                <el-form :inline="true"  class="demo-form-inline">
+                    <el-row >
+                    <el-form-item label="严重性名称">
+                        <el-input  placeholder="严重性名称" v-model="YZXInput.Name" size="mini"></el-input>
+                    </el-form-item>
+                    <el-form-item label="分值范围">
+                        ( <el-input-number  :min="0" :max="100" size="mini" v-model="YZXInput.Min" label="描述文字"></el-input-number> 至
+                        <el-input-number  :min="0" :max="100" size="mini" v-model="YZXInput.Max"  label="描述文字"></el-input-number> ]
+                    </el-form-item>
+                    </el-row>
+                    <el-row style="text-align: center">
+                        <el-form-item>
+                            <el-button type="primary" size="mini" @click="AddYZX">增加</el-button>
+                        </el-form-item>
+                    </el-row>
+                </el-form>
+        </el-dialog>
+
+        <el-dialog title="增加可能性等级" :visible.sync="KNXDJSetDialogShow" :modal="false">
+            <el-form :inline="true"  class="demo-form-inline">
+                <el-row >
+                    <el-form-item label="可能性名称">
+                        <el-input  placeholder="可能性名称" v-model="KNXInput.Name" size="mini"></el-input>
+                    </el-form-item>
+                    <el-form-item label="分值范围">
+                        ( <el-input-number  :min="0" :max="100" size="mini" v-model="KNXInput.Min" label="描述文字"></el-input-number> 至
+                        <el-input-number  :min="0" :max="100" size="mini" v-model="KNXInput.Max" label="描述文字"></el-input-number> ]
+                    </el-form-item>
+                </el-row>
+                <el-row style="text-align: center">
+                    <el-form-item>
+                        <el-button type="warning" size="mini" @click="AddKNX">增加</el-button>
+                    </el-form-item>
+                </el-row>
+            </el-form>
+        </el-dialog>
+    </el-row>
+    <hr/>
+    <el-row style="text-align: center">
+
+        <el-button type="primary" @click="saveFXMatrix">保存风险矩阵</el-button>
+        <el-button type="info" @click="GetCurFXMatrix">重新加载风险矩阵</el-button>
+        <el-button type="danger" @click="ClearFXMatrix">清空风险矩阵</el-button>
+
+    </el-row>
+</div>
+<script>
+    var v = new Vue({
+        el: '#app',
+        data () {
+            return {
+                FXDJSetDialogShow : false,
+                YZXDJSetDialogShow : false,
+                KNXDJSetDialogShow  :false,
+                FXDJSelDialogShow   :false,
+                I1:'1',
+                YZXInput:{
+                    Name:'',
+                    Min:0,
+                    Max:0,
+                },
+                KNXInput:{
+                    Name:'',
+                    Min:0,
+                    Max:0,
+                },
+                Table_TD_FX:[],
+                ColorUseArr:[
+                    {
+                        color:'#18b566',
+                        FXDJ:0
+                    },
+                    {
+                        color:'#71d5a1',
+                        FXDJ:0
+                    },
+                    {
+                        color:'#fcbd71',
+                        FXDJ:0
+                    },
+                    {
+                        color:'#f29100',
+                        FXDJ:0
+                    },
+                    {
+                        color:'#fab6b6',
+                        FXDJ:0
+                    },
+                    {
+                        color:'#dd6161',
+                        FXDJ:0
+                    }
+                ],
+                KNXList:[
+
+                ],
+                YZXList:[
+
+                ],
+                FXDJ_Color_Index:[
+
+                ],
+                DXYS : [
+                    {DX:'I'},
+                    {DX:'II'},
+                    {DX:'III'},
+                    {DX:'IV'},
+                    {DX:'V'},
+                    {DX:'VI'},
+                ],
+                curFXTD:{
+                    x:-1,
+                    y:-1
+                }
+            }
+        },
+        mounted(){
+            var i = 0 ;
+            for(i=0;i<200;i++){
+                var o = {};
+                o.FXDJ = 0;
+                o.DX = '';
+                o.color = '';
+                this.Table_TD_FX[i] = o;
+            }
+            this.GetCurFXMatrix();
+            console.log(this.Table_TD_FX[20]);
+        },
+        computed:{
+
+        },
+        methods: {
+
+            gyAjaxPost(url, data, onSuccess, onError) {
+                var _this = this;
+                axios({
+                    method: 'post',
+                    url: url,
+                    data: data
+                }).then(function (response) {
+                    onSuccess(_this, response);
+                }).catch(function (error) {
+                    if (onError != null)
+                        onError(_this, error);
+                });
+            },
+            FindCD(Min1,Max1,Min2,Max2){
+                var bCD =false;
+
+                if(Min2>=Min1 && Min2<Max1){
+                    bCD = true;
+                }
+
+                if(Max2>=Min1 && Max2<=Max1){
+                    bCD = true;
+                }
+
+                if(Min2<=Min1 && Max2>=Max1){
+                    bCD = true;
+                }
+
+                return bCD;
+
+            },
+            AddYZX(){
+                var i =0 ;
+
+                if(this.YZXInput.Name == '' || this.YZXInput.Min>=this.YZXInput.Max){
+                    this.$message('请输入名称及分值,且最小分值应小于最大分值!');
+                    return;
+                }
+                for(i=0;i<this.YZXList.length;i++){
+
+                    if(this.FindCD(
+                            this.YZXList[i].Min,
+                            this.YZXList[i].Max,
+                            this.YZXInput.Min,
+                            this.YZXInput.Max,
+                        )){
+                        this.$message('该严重性的分值与前面集合重叠!');
+                        return;
+                    }
+                    if(this.YZXList[i].Name == this.YZXInput.Name){
+                        console.log(this.YZXList[i]);
+                        console.log(i);
+                        this.$message('该严重性的名称已存在!');
+                        return;
+                    }
+                }
+                this.YZXList.push({
+                    Name:this.YZXInput.Name,
+                    Min:this.YZXInput.Min,
+                    Max:this.YZXInput.Max
+                });
+
+            },
+            AddKNX(){
+                var i =0 ;
+
+                if(this.KNXInput.Name == '' || this.KNXInput.Min>=this.KNXInput.Max){
+                    this.$message('请输入名称及分值,且最小分值应小于最大分值!');
+                    return;
+                }
+                for(i=0;i<this.KNXList.length;i++){
+
+                    if(this.FindCD(
+                            this.KNXList[i].Min,
+                            this.KNXList[i].Max,
+                            this.KNXInput.Min,
+                            this.KNXInput.Max,
+                        )){
+                        this.$message('该可能性的分值与前面集合重叠!');
+                        return;
+                    }
+                    if(this.KNXList[i].Name == this.KNXInput.Name){
+                        console.log(this.KNXList[i]);
+                        console.log(i);
+                        this.$message('该可能性的名称已存在!');
+                        return;
+                    }
+                }
+                console.log(this.KNXInput.Name +':' + this.KNXInput.Min + ','+this.KNXInput.Max);
+                this.KNXList.push({
+                    Name:this.KNXInput.Name,
+                    Min:this.KNXInput.Min,
+                    Max:this.KNXInput.Max
+                });
+
+            },
+            FXJZQR(){
+                var i = 0 ,ArrTest = [],ColorArr = [],DXYS = [
+                    {DX:'I'},
+                    {DX:'II'},
+                    {DX:'III'},
+                    {DX:'IV'},
+                    {DX:'V'},
+                    {DX:'VI'},
+                ],MaxFXDJ = 0;
+                this.FXDJ_Color_Index = [];
+                for(i=0;i<this.ColorUseArr.length;i++){
+                    if(this.ColorUseArr[i].FXDJ>0){
+
+                        for(var j = 0 ; j < ArrTest.length ; j++){
+                            if(ArrTest[j]==this.ColorUseArr[i].FXDJ){
+                                this.$message('风险等级有重复,请自查!');
+                                return;
+                            }
+                        }
+
+                        ArrTest.push(parseInt(this.ColorUseArr[i].FXDJ));
+                        ColorArr[parseInt(this.ColorUseArr[i].FXDJ)] = {
+                            'background-color':this.ColorUseArr[i].color
+                        };
+
+                        if(MaxFXDJ < parseInt(this.ColorUseArr[i].FXDJ)){
+                            MaxFXDJ = parseInt(this.ColorUseArr[i].FXDJ);
+                        }
+                    }
+                }
+                if(ArrTest.length < MaxFXDJ){
+                    this.$message('风险等级不连续!');
+                    return;
+                }
+
+                if(ArrTest.length<3){
+                    this.$message('风险等级级别必须大于3!');
+                    return;
+                }
+
+                for(i=0;i<ArrTest.length;i++){
+                    this.FXDJ_Color_Index[i] = {
+                        DX:DXYS[i].DX,
+                        color:ColorArr[i+1]
+                    }
+                }
+
+                console.log(this.FXDJ_Color_Index);
+                console.log(this.FXDJ_Color_Index.length);
+
+            },
+            FXDJSel(x,y){
+                this.FXDJSelDialogShow = true;
+                this.curFXTD.x = x;
+                this.curFXTD.y = y;
+                console.log(x + ':'+y);
+            },
+            FXSel(k){
+                console.log(k);
+                console.log(this.FXDJ_Color_Index[k]);
+                console.log(this.Table_TD_FX);
+                console.log('index:' + (this.curFXTD.x*this.YZXList.length + this.curFXTD.y));
+                console.log(this.Table_TD_FX[this.curFXTD.x*this.YZXList.length + this.curFXTD.y]);
+                this.Table_TD_FX[this.curFXTD.x*this.YZXList.length + this.curFXTD.y].color = this.FXDJ_Color_Index[k].color;
+                this.Table_TD_FX[this.curFXTD.x*this.YZXList.length + this.curFXTD.y].FXDJ = k;
+                this.Table_TD_FX[this.curFXTD.x*this.YZXList.length + this.curFXTD.y].DX = this.DXYS[k].DX;
+                this.FXDJSelDialogShow = false;
+            },
+            saveFXMatrix(){
+                /*
+                * $FXSetArr = input('FXSetArr');
+                  $YZXList = input('YZXList');
+                  $KNXList = input('KNXList');
+                  $FXTDList = input('FXTDList');
+                */
+
+                this.gyAjaxPost("/SafetyMng/FXMng/SaveFXMatrix",
+                    'FXSetArr=' + JSON.stringify(this.FXDJ_Color_Index)
+                     + '&YZXList=' + JSON.stringify(this.YZXList)
+                     + '&KNXList=' + JSON.stringify(this.KNXList)
+                     + '&FXTDList=' + JSON.stringify(this.Table_TD_FX),
+                    function (_this,response) {
+
+                    },null);
+            },
+            GetCurFXMatrix(){
+                var _t =this;
+                this.gyAjaxPost("/SafetyMng/FXMng/GetFXMatrix",
+                    '',
+                    function (_this,response) {
+                        FXDJTB = response.data.FXDJTB;
+                        FXKNXTB = response.data.FXKNXTB;
+                        FXYZXTB = response.data.FXYZXTB;
+                        FXMatrixTDTB = response.data.FXMatrixTDTB;
+                        //ColorUseArr   FXDJ_Color_Index
+                        //KNXList  YZXList
+                        //FXDJ_Color_Index
+
+                        _t.FXDJ_Color_Index = [];
+                        _t.KNXList = [];
+                        _t.YZXList = [];
+
+
+                        if(FXDJTB.length==0){
+                            return;
+                        }
+
+                        _t.Table_TD_FX = new Array(100);
+
+                        for(i=0;i<FXDJTB.length;i++){
+                            for(j=0;j<_t.ColorUseArr.length;j++){
+                                if(_t.ColorUseArr[j].color == FXDJTB[i].Color){
+                                    _t.ColorUseArr[j].FXDJ = i+1;
+                                }
+                            }
+                            _t.FXDJ_Color_Index.push({
+                                DX: _t.DXYS[i].DX,
+                                color:{
+                                    'background-color':FXDJTB[i].Color
+                                }
+                            });
+                        }
+
+                        for(i=0;i<FXKNXTB.length;i++) {
+                            _t.KNXList.push({
+                                Name : FXKNXTB[i].KNXName,
+                                Min  : FXKNXTB[i].Min,
+                                Max  : FXKNXTB[i].Max,
+                            });
+                        }
+
+                        for(i=0;i<FXYZXTB.length;i++) {
+                            _t.YZXList.push({
+                                Name : FXYZXTB[i].YZXName,
+                                Min  : FXYZXTB[i].Min,
+                                Max  : FXYZXTB[i].Max,
+                            });
+                        }
+
+                        l = FXYZXTB.length * FXKNXTB.length;
+                        console.log('l:'+l +","+_t.FXDJ_Color_Index.length);
+                        for(i=0;i<l;i++){
+                            _t.Table_TD_FX[i]=({
+                                FXDJ: FXMatrixTDTB[i].FXDJ,
+                                DX  : _t.DXYS[FXMatrixTDTB[i].FXDJ].DX,
+                                color:{
+                                    'background-color':FXDJTB[FXMatrixTDTB[i].FXDJ].Color
+                                }
+                            });
+                        }
+
+
+                    },null);
+            },
+            ClearFXMatrix(){
+                this.FXDJ_Color_Index = [];
+                this.KNXList = [];
+                this.YZXList = [];
+                this.Table_TD_FX = new Array(100);
+                var i = 0 ;
+                for(i=0;i<200;i++){
+                    var o = {};
+                    o.FXDJ = 0;
+                    o.DX = '';
+                    o.color = '';
+                    this.Table_TD_FX[i] = o;
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>

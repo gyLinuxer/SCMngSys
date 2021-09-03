@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安全管理系统</title>
+
+    <link href="__PUBLIC__/css/bootstrap.min.css" rel="stylesheet">
+    <link href="__PUBLIC__/fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <!--link href="__PUBLIC__/css/animate.css" rel="stylesheet"-->
+    <link href="__PUBLIC__/css/style.css" rel="stylesheet">
+
+    <link href='__PUBLIC__/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+    <link rel="stylesheet" href="__PUBLIC__/css/el-ui.css">
+    <link href='__PUBLIC__/css/MyCss.css' rel='stylesheet'>
+
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+
+    <link href="__PUBLIC__/css/bootstrap-editable.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/ui-dialog.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="__PUBLIC__/js/jquery.js"></script>
+    <script src="__PUBLIC__/js/bootstrap.js"></script>
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+
+    <link href="__PUBLIC__/css/select2.min.css" rel="stylesheet" />
+    <script src="__PUBLIC__/js/select2.min.js"></script>
+    <script src="__PUBLIC__/js/GY.js"></script>
+    <script src="__PUBLIC__/layer/layer.js"></script>
+    <script src="__PUBLIC__/js/el-index.js"></script>
+    <script src="__PUBLIC__/js/jquery-3.1.1.min.js"></script>
+    <script src="__PUBLIC__/js/bootstrap.min.js"></script>
+    <link href="__PUBLIC__/css/select2.min.css" rel="stylesheet" />
+
+
+
+    <style>
+        .select2-container .select2-selection--single{
+            height:36px;
+            line-height: 36px;
+        }
+        .ztree li span.button.add {margin-left:2px; margin-right: -1px; background-position:-144px 0; vertical-align:top; *vertical-align:middle}
+
+    </style>
+
+</head>
+
+<body class="mini-navbar">
+
+<div id="wrapper">
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav metismenu" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element">
+                        <a  href="#">
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">安全管理系统</strong>
+                             </span> <span class="text-muted text-xs block">机场运行支持管理平台</span> </span> </a>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                            <li></li>
+                        </ul>
+                    </div>
+                    <div class="logo-element">
+                       SFMng
+                    </div>
+                </li>
+                {eq name="Think.session.UserType" value="普通用户"}
+                <li >
+                    <a href="/SafetyMng/DataView/Index.html"  >
+                        安全形势与趋势
+                    </a>
+                </li>
+                <li >
+                    <a href="/SafetyMng/TaskList/showTaskList.html">任务列表</a>
+                </li>
+                <li >
+                    <a href="#"  >
+                        信息报告<b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li ><a href="/SafetyMng/QuestionInput/Index.html">提交安全信息</a></li>
+                        <li ></li>
+                    </ul>
+                </li>
+                <li >
+                    <a href="#"  >
+                        安全管理<b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li ><a href="/SafetyMng/FXMng/showMyAQYHList.html">安全隐患列表</a></li>
+                        <li ></li>
+                        <li ><a href="/SafetyMng/FXMng/showMyWXYList.html">危险源列表</a></li>
+                        <li ><a href="/SafetyMng/TaskList/showRFList.html">整改通知书列表</a></li>
+                        <li ></li>
+
+                    </ul>
+                </li>
+                <li >
+                    <a href="#"  >
+                        法定自查<b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li ><a href="/SafetyMng/FDZCRoot/showFDZCCorpCheckInfoView.html">条款检查情况概览</a></li>
+                        <li ></li>
+                        <li ><a href="/SafetyMng/CheckTask/Index.html">生成检查计划</a></li>
+                        <li ></li>
+                        <li ><a href="/SafetyMng/CheckTask/showOCList.html" href="#">检查计划列表</a></li>
+                        {eq name="IsSuperCorp" value="true"}
+                            <li ></li>
+                            <li ><a href="#" onclick="window.open('/SafetyMng/CheckTBMng/Index.html')">法定自查事项库管理</a></li>
+                        {/eq}
+                        {eq name="IsSuperCorp" value="true"}
+                        <li ></li>
+                        <li ><a href="/SafetyMng/FDZCExcelMng#">事项库导入与导出</a></li>
+                        {/eq}
+                    </ul>
+                </li>
+                <li >
+                    <a href="#"  >
+                        数据查询 <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li ><a href="/SafetyMng/lgyQuery/Index.html">安全信息查询</a></li>
+                        <li ></li>
+                        <li ><a href="/SafetyMng/lgyQuery/showRFQuery.html" href="#">整改通知书查询</a></li>
+                        <li ></li>
+                        <li ><a href="/SafetyMng/lgyQuery/showFXQry.html">风险查询</a></li>
+                        <li ></li>
+                        <li ><a href="/SafetyMng/lgyQuery/showSMSQry.html">危险源查询</a></li>
+                        <li ></li>
+                        <li ><a href="/SafetyMng/lgyQuery/showYHQry.html">安全隐患查询</a></li>
+                        <li ></li>
+                    </ul>
+                </li>
+                    {eq name="$IsSuperCorp" value="true"}
+                        <li >
+                            <a href="#"  >
+                                系统元数据管理 <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li ><a href="/SafetyMng/SysConf/Index.html">系统配置</a></li>
+                                <li ></li>
+                                <li ><a href="/SafetyMng/FXMng/showMatrix.html">风险矩阵</a></li>
+                                <li ></li>
+                                <li ><a href="/SafetyMng/TreeMng/Index.html" href="#">标签树管理</a></li>
+                            </ul>
+                        </li>
+                    {/eq}
+                {/eq}
+                {eq name="Think.session.UserType" value="局方用户"}
+                <li ><a href="/SafetyMng/TaskList/showJFView">局方视图</a></li>
+                {/eq}
+                    <li >
+                        <a href="">用户管理<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li ><a href="/SafetyMng/UserMng/showUserInfoChg">密码修改</a></li>
+                            {eq name="Think.session.UserType" value="管理用户"}
+                                <li ><a href="/SafetyMng/UserMng/showUserMng">用户管理</a></li>
+                            {/eq}
+                        </ul>
+                    </li>
+                {eq name="Think.session.UserType" value="管理用户"}
+                    <li ><a href="/SafetyMng/JFUserViewMng/index">局方视图管理</a></li>
+                {/eq}
+
+
+                <li ><a href="/SafetyMng/Login/ExitSYS">退出登陆</a></li>
+                <li ><a href="#">{$Think.session.Name}({$Think.session.Corp}) </a></li>
+            </ul>
+
+        </div>
+    </nav>
+
+    <div id="page-wrapper" class="gray-bg">
+        <div class="row border-bottom">
+            <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header">
+                    <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                </div>
+                <ul class="nav navbar-top-links ">
+                    <li>
+                        <img style="width: 65px;height:80px;margin-left: 10px;margin-top: -7px" src="__PUBLIC__/img/cafuclyjc.png"  />
+                    </li>
+                    <li >
+                        <span class="m-l-sm text-muted welcome-message" style="font-size: 28px;">机场运行管理支持平台 - 安全管理系统v2021</span>
+                    </li>
+                    <li class="dropdown" style="margin-left: 220px">
+                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                            <i class="fa fa-tasks">分系统</i>  <span class="label label-primary">5</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts">
+                            <li>
+
+                                <i class="fa fa-heart fa-fw"></i>  安全管理系统v2021
+                                <span class="pull-right text-muted small" style="color: #00A000">运行中...</span>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+
+                                <i class="fa fa-tasks fa-fw"></i>  运行品质系统
+                                <span class="pull-right text-muted small">未授权...</span>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <div>
+                                    <i class="fa fa-envelope fa-fw"></i> 人力资源系统
+                                    <span class="pull-right text-muted small">未授权...</span>
+                                </div>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <div>
+                                    <i class="fa fa-twitter fa-fw"></i> 数据资料系统
+                                    <span class="pull-right text-muted small">未授权...</span>
+                                </div>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <div>
+                                    <i class="fa fa-upload fa-fw"></i> 资产管理系统
+                                    <span class="pull-right text-muted small">未授权...</span>
+                                </div>
+
+
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="/SafetyMng/Login/ExitSYS">
+                            <i class="fa fa-sign-out"></i> 退出
+                        </a>
+                    </li>
+                </ul>
+
+
+            </nav>
+        </div>
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    {__CONTENT__}
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="pull-right">
+                 <strong>v20210829</strong>
+            </div>
+            <div>
+                <strong>Copyright</strong> 北京创异联合公司&copy; 2021-
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Mainly scripts -->
+<script src="__PUBLIC__/js/jquery-3.1.1.min.js"></script>
+<script src="__PUBLIC__/js/bootstrap.min.js"></script>
+<script src="__PUBLIC__/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="__PUBLIC__/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+<!-- Custom and plugin javascript -->
+<script src="__PUBLIC__/js/inspinia.js"></script>
+<script src="__PUBLIC__/js/plugins/pace/pace.min.js"></script>
+<script src="__PUBLIC__/js/jquery.ztree.all.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.ztree.exhide.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/fuzzysearch.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.ztree.exedit.js"></script>
+
+<script src="__PUBLIC__/js/select2.min.js"></script>
+
+</body>
+
+</html>

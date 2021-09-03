@@ -1,0 +1,263 @@
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安全管理系统</title>
+
+    <link href="__PUBLIC__/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <link href='__PUBLIC__/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+
+    <link href='__PUBLIC__/css/MyCss.css' rel='stylesheet'>
+
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+
+    <link href="__PUBLIC__/css/bootstrap-editable.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/ui-dialog.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="__PUBLIC__/js/jquery.js"></script>
+    <script src="__PUBLIC__/js/bootstrap.js"></script>
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+
+    <script src="__PUBLIC__/js/jquery-3.1.1.min.js"></script>
+    <script src="__PUBLIC__/js/bootstrap.min.js"></script>
+
+    <script src="__PUBLIC__/js/vue.js"></script>
+    <script src="__PUBLIC__/js/axios.min.js"></script>
+
+    <script src="__PUBLIC__/js/jquery.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/el-index2155/el-css.css">
+    <!-- 引入组件库 -->
+    <script src="__PUBLIC__/el-index2155/el-index.js"></script>
+    <style>
+        .select2-container .select2-selection--single{
+            height:36px;
+            line-height: 36px;
+        }
+        .ztree li span.button.add {margin-left:2px; margin-right: -1px; background-position:-144px 0; vertical-align:top; *vertical-align:middle}
+
+    </style>
+
+</head>
+<body>
+<div id="app">
+   <div class="row" DTRow style="margin-top: 10px;">
+       <table id="table" class="table table-hover"
+              data-toggle="table"
+              data-classes="table table-hover"
+              data-show-columns="true"
+              data-striped="true"
+              data-show-toggle="true"
+              data-search="true"
+              data-show-refresh="true"
+              data-toolbar="#toolbar"
+              style="width: 100%;min-width: 100%;margin-left: 10px;"
+       >
+
+           <thead>
+           <tr>
+               <th>序号</th>
+               <th>SMS代码</th>
+               <th style="width: 80px;">依据风险</th>
+               <th>风险描述与危害描述</th>
+               <th style="width: 80px;">识别部门<br/>责任部门</th>
+               <th style="width: 100px;">风险评定记录</th>
+               <th>风险等级</th>
+               <th>原因及措施</th>
+               <th>措施后风险等级</th>
+               <th style="width: 100px;">措施后风险评定记录</th>
+               <th style="width: 100px;">措施制定人</th>
+               <th style="width: 100px;">整改通知书与关联问题</th>
+           </tr>
+           </thead>
+           <tbody>
+           {volist name="SMSList" id="vo"}
+           <tr>
+               <td>{++$QsCnt}</td>
+               <td>
+                   <label class="label label-warning">{$vo.SMSCode}</label>
+                   <br/>
+                   <br/>
+                   <span style="color: #00A000">{$vo.SMSSource}</span>
+                   <br/>
+                   <br/>
+                   {eq  name="vo['Status']" value="已关闭"}<span style="color: #B1B1B8;font-weight: bold"> {$vo.Status}</span>{/eq}
+                   {neq name="vo['Status']" value="已关闭"}<span style="color: #003eff;font-weight: bold"> {$vo.Status}</span>{/neq}
+               </td>
+               <td>
+                   <el-popover
+                           placement="right"
+                           width="400"
+                           trigger="click"
+                           @show="showFX('{$vo.FXCode}')"
+                   >
+                       <el-descriptions class="margin-top"  :column="2" size="small" border>
+                           <el-descriptions-item>
+                               <template slot="label">
+                                   <i class="el-icon-user"></i>
+                                   风险代码
+                               </template>
+                               {{curFX.FXCode}}
+                           </el-descriptions-item>
+
+                           <el-descriptions-item>
+                               <template slot="label">
+                                   <i class="el-icon-location-outline"></i>
+                                   风险类型
+                               </template>
+                               {{curFX.FXJudgeType}}
+                           </el-descriptions-item>
+                           <el-descriptions-item>
+                               <template slot="label">
+                                   <i class="el-icon-tickets"></i>
+                                   识别人
+                               </template>
+                               {{curFX.CreaterName}}
+                           </el-descriptions-item>
+                           <el-descriptions-item>
+                               <template slot="label">
+                                   <i class="el-icon-office-building"></i>
+                                   识别时间
+                               </template>
+                               {{curFX.CreateTime}}
+                           </el-descriptions-item>
+                           <el-descriptions-item>
+                               <template slot="label">
+                                   <i class="el-icon-tickets"></i>
+                                   判定人
+                               </template>
+                               {{curFX.JudgePerson}}
+                           </el-descriptions-item>
+                           <el-descriptions-item>
+                               <template slot="label">
+                                   <i class="el-icon-office-building"></i>
+                                   判定时间
+                               </template>
+                               {{curFX.JudgeTime}}
+                           </el-descriptions-item>
+                           <el-descriptions-item>
+                               <template slot="label">
+                                   <i class="el-icon-mobile-phone"></i>
+                                   责任部门
+                               </template>
+                               <span v-for="(item,i) in curFX.DutyCorps" style="margin-left: 5px;">{{item.Corp}}</span>
+                           </el-descriptions-item>
+                       </el-descriptions>
+                       <el-link slot="reference">
+
+                           {$vo.FXCode}
+                       </el-link >
+                   </el-popover>
+               </td>
+               <td>
+                   <span style="color: #003eff;font-weight: bold">风险描述:</span>{$vo.FXMS}
+                   <br/>
+                   <br/>
+                   <span style="color: #8f0000;font-weight: bold">危害描述:</span>{$vo.WHMS}
+               </td>
+               <td style="text-align: center">
+                   {$vo.ClaimCorp}
+                   <br/>
+                   ⬇️
+                   <br/>
+                   {$vo.DutyCorp}</td>
+               <td>
+                   {neq name="$vo['KNXAvg1']" value=""}
+                   可能性:<label class="label label-default table-bordered">{$vo.KNXAvg1}</label> <br/> <br/> 严重性:<label class="label label-default table-bordered">{$vo.YZXAvg1}</label>
+                   {/neq}
+               </td>
+               <td>{neq name="$vo['Color1']" value=""}<div style="width: 20px;text-align:center;background-color:{$vo.Color1};font-weight:bolder;border: solid 1px">{$vo.FXDJ1}</div>{/neq}</td>
+               <td>
+                   <span style="color:#8b0be6;font-weight: bold">直接原因:</span>{$vo.ZJYY}<br/>
+                   <span style="color:#0078a5;font-weight: bold">根本原因:</span>{$vo.GBYY}<br/>
+                   <span style="color:#00A000;font-weight: bold">纠正措施:</span>{$vo.JZCS}<span style="color:#242a2b;font-size: xx-small;font-weight: bold">  {$vo.JZQX}</span><br/>
+                   <span style="color:#c10802;font-weight: bold">预防措施:</span>{$vo.YFCS}<span style="color:#242a2b;font-size: xx-small;font-weight: bold">  {$vo.YFQX}</span><br/>
+               </td>
+               <td>{neq name="$vo['Color2']" value=""}<div style="width: 20px;text-align:center;background-color:{$vo.Color2};font-weight:bolder;border: solid 1px">{$vo.FXDJ2}</div>{/neq}</td>
+               <td>
+                   {neq name="$vo['KNXAvg1']" value=""}
+                   可能性:<label class="label label-default table-bordered">{$vo.KNXAvg2}</label>
+                   <br/>   <br/>严重性:<label class="label label-default table-bordered">{$vo.YZXAvg2}</label>
+                   {/neq}
+               </td>
+               <td>
+                   {$vo.CSCreater}
+                   <br/>
+                   {$vo.CSCreateTime}
+               </td>
+               <td>
+                            <span style="font-size: xx-small">
+                                 <a onclick="window.open('/SafetyMng/QuestionInput/showQuestionInfoWithoutLayout/id/{$vo.QuestionID}');">整改通知书</a>
+                            </span>
+                   <br/>
+                   <a onclick="window.open('/SafetyMng/QuestionInput/showQuestionInfoWithoutLayout/id/{$vo.QuestionID}');">关联的问题</a>
+               </td>
+           </tr>
+           {/volist}
+           </tbody>
+       </table>
+</div>
+</div>
+
+
+<!-- Mainly scripts -->
+<script src="__PUBLIC__/js/jquery-3.1.1.min.js"></script>
+<script src="__PUBLIC__/js/bootstrap.min.js"></script>
+<script src="__PUBLIC__/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="__PUBLIC__/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+<!-- Custom and plugin javascript -->
+<script src="__PUBLIC__/js/inspinia.js"></script>
+<script src="__PUBLIC__/js/plugins/pace/pace.min.js"></script>
+<script src="__PUBLIC__/js/jquery.ztree.all.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.ztree.exhide.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/fuzzysearch.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.ztree.exedit.js"></script>
+
+<script src="__PUBLIC__/js/select2.min.js"></script>
+<script>
+    new Vue({
+        el : '#app',
+        data () {
+            return {
+                curFX:{
+
+                }
+            }
+        },
+        methods : {
+            gyAjaxPost(url, data, onSuccess, onError) {
+                var _this = this;
+                axios({
+                    method: 'post',
+                    url: url,
+                    data: data
+                }).then(function (response) {
+                    onSuccess(_this, response);
+                }).catch(function (error) {
+                    if (onError != null)
+                        onError(_this, error);
+                });
+            },
+            showFX(code){
+                this.GetFXRow(code);
+            },
+            GetFXRow(code){
+                var _t =this;
+                this.gyAjaxPost("/SafetyMng/FXMng/GetFXByCode",
+                    'FXCode='+code,
+                    function (_this,response) {
+                        _t.curFX  = response.data[0];
+                    },null);
+            },
+
+        }});
+</script>
+</body>
+</html>

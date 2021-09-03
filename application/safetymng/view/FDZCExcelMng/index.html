@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .xuxian{
+            height:0;
+            border-bottom:#000000 2px dashed;
+        }
+    </style>
+
+    <script src="__PUBLIC__/js/axios.min.js"></script>
+</head>
+<datalist id="DBList">
+    {volist name="DBList" id="v"}
+    <option value="{$v.BaseName}">{$v.BaseName}</option>
+    {/volist}
+</datalist>
+
+<datalist id="CorpList">
+    {volist name="CorpList" id="v"}
+    <option value="{$v.Corp}">{$v.id}</option>
+    {/volist}
+</datalist>
+<datalist id="CorpList2">
+
+</datalist>
+<div id="app1">
+    <body>
+
+        <div class="row">
+
+                <img  style="width: 99.5%" src="__PUBLIC__/img/uploadStd.png"  />
+
+        </div>
+        <div class="row xuxian" style="margin-top: 30px;"></div>
+        <form action="/SafetyMng/FDZCExcelMng/exportFDZCSJK" method="post" enctype="multipart/form-data">
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-sm-1"><label class="control-label" for="DBNameOut">数据库选择:</label></div>
+            <div class="col-sm-2" style="width: 300px;"><input class="form-control" name="DBNameOut" id="DBNameOut" list="DBList" value="{$Think.post.DBName}" autocomplete="off"/></div>
+            <div class="col-sm-1"><label class="control-label" for="DutyCorp1">适用部门:</label></div>
+            <div class="col-sm-2"><input class="form-control" name="DutyCorp1" id="DutyCorp1" placeholder="父部门" list="CorpList" value="{$Think.post.DutyCorp1}" autocomplete="off"/></div>
+            <div class="col-sm-2"><input class="form-control" name="DutyCorp2" id="DutyCorp2" placeholder="子部门" list="CorpList2" value="{$Think.post.DutyCorp2}" autocomplete="off" /></div>
+
+            <div class="col-sm-1">
+                <input type="submit" class="btn btn-info" value="导出">
+            </div>
+        </div>
+        </form>
+        <div class="row xuxian" style="margin-top: 10px;"></div>
+        <form action="/SafetyMng/FDZCExcelMng/updateFDZCSJK" method="post" enctype="multipart/form-data">
+        <div class="row" style="margin-top: 10px;">
+                <div class="col-sm-1"><label class="control-label" for="DBName" >数据库选择:</label></div>
+                <div class="col-sm-2" style="width: 300px;"><input class="form-control" name="DBName" id="DBName" list="DBList" value="{$Think.post.DBName}" autocomplete="off"/></div>
+                <div class="col-sm-1"><label>文件选择:</label></div>
+                <div class="col-sm-2">
+                    <input type="file" name="file"/>
+                </div>
+                <div class="col-sm-1"><label>标题行行号:</label></div>
+                <div class="col-sm-1">
+                    <input type="number" name="TitleRowNum" class="form-control"/>
+                </div>
+                <div class="col-sm-1">
+                    <input type="submit" class="btn btn-warning" value="导入">
+                </div>
+        </div>
+
+
+    </form>
+    </body>
+</div>
+<script>
+
+    function updateDutyCorp2() {
+        $v = $('#DutyCorp1').val();
+        axios({
+            method: 'get',
+            url: '/SafetyMng/CorpMng/GetCorpAllLevelChildrenRows_JSON/ParentCorp/'+$v,
+            data: ''
+        }).then(function (response) {
+            List = response.data;
+            $('#CorpList2').empty();
+            for(i=0;i<List.length;i++){
+                vv = List[i];
+                $("<option value='"+vv+"'>"+vv+"</option>").appendTo('#CorpList2');
+            }
+            $("<option value='全部'>全部</option>").appendTo('#CorpList2');
+        }).catch(function (error) {
+
+        });
+    }
+
+    $(function () {
+        updateDutyCorp2();
+
+        $('#DutyCorp1').change(function () {
+            updateDutyCorp2();
+        })
+        console.log('123123123');
+    });
+
+</script>
+</html>

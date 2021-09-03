@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+{php}
+$TreeMng = new app\safetymng\controller\TreeMng();
+$IsSuperCorp = $TreeMng->IsSuperCorp();
+$IsLeader = (session('CorpRole')=='领导');
+{/php}
+<body class="container-full">
+
+<div class="col-sm-12" style="margin-top: 20px;">
+    <table class="table table-hover  bootstrap-datatable datatable responsive" >
+        <thead>
+        <tr>
+            <th >序号</th>
+            <th style="width: 200px;">整改通知单编号</th>
+            <th class="col-sm-3">标题</th>
+            <th style="width: 80px;">督查部门</th>
+            <th style="width: 80px;">责任部门</th>
+            <th >当前状态</th>
+            <th>反馈状态</th>
+            <th>纠正证据</th>
+            <th>预防证据</th>
+            {eq name= "$IsSuperCorp" value="true"}
+            <th>删除</th>
+            {/eq}
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="ReformList" id="vo"}
+        {php}
+        $RF = new app\safetymng\controller\Reform;
+        $showInfo =  $RF->GetReformMultiStatus($vo['id'],$vo);
+        {/php}
+        <tr>
+            <td>
+                {$RFCnt++}
+            </td>
+            <td>
+                <span style="font-size: smaller;color: #00A000;">{$vo.Code}</span>
+            </td>
+            <td>
+                <a   TXTZS ChildTaskID = "{$vo.ChildTaskID}" DutyCorp = {$vo.DutyCorp} CurCorp = {$Think.session.Corp} TaskID = "{$vo.ParentTaskID}" Code="RM{$vo.id}" rowId = "{$vo.id}" RCode = {$vo.Code}> {$vo.ReformTitle}</a>
+                <br/>
+                {eq name= "$IsSuperCorp" value="true"}
+                    <div style="text-align: right;margin: 0px auto;">
+                        {php}
+                        $LabelRet  = $TreeMng->GetSubjectLabels('RF',$vo['id']);
+                        {/php}
+                        {volist name="LabelRet" id="vv"}
+                        <label class="label label-default" style="margin-left: 4px;"><span style="font-size: smaller;">{$vv.NodeName}</span></label>
+                        {/volist}
+                        <a RFID="{$vo['id']}" class="btn btn-xs btn-default" showRFLabelSubject style="margin-top: 4px;">+</a>
+                    </div>
+                {/eq}
+            </td>
+            <td>
+                {if condition = "$IsSuperCorp==true" }
+                <span style="color: #0d7bdc;font-weight: bolder;"> {$vo.IssueCorp}</span>
+                {else/}
+                <span> {$vo.IssueCorp}</span>
+                {/if}
+            </td>
+            <td>
+                {$vo.DutyCorp}
+            </td>
+            <td>
+                <label class="label label-{php}
+                                $RF = new app\safetymng\controller\Reform;
+
+                                echo $RF->GetReformStatusColor($vo['ReformStatus']);
+                         {/php}">
+                    {$vo.ReformStatus}
+                </label>
+            </td>
+            <td>
+                <label class="label label-{$showInfo['FeedBackInfoColor']}">{$showInfo['FeedBackInfo']}</label>
+                <label class="label label-{$showInfo['FeedBackLeftDaysColor']}">{$showInfo['FeedBackLeftDays']}</label>
+            </td>
+            <td>
+                <label class="label label-{$showInfo['CorrectiveInfoColor']}">{$showInfo['CorrectiveInfo']}</label>
+                <label class="label label-{$showInfo['CorrectiveLeftDaysColor']}">{$showInfo['CorrectiveLeftDays']}</label>
+            </td>
+            <td>
+                <label class="label label-{$showInfo['PrecautionInfoColor']}">{$showInfo['PrecautionInfo']}</label>
+                <label class="label label-{$showInfo['PrecautionLeftDaysColor']}">{$showInfo['PrecautionLeftDays']}</label>
+            </td>
+
+
+
+            {eq name= "$IsSuperCorp" value="true"}
+            <td>
+                <input type="checkbox" EnableDel style="margin-right: 10px;" rowId = "{$vo.id}" /><a BtnID="DelBtn{$vo.id}" DelBtn class="btn btn-sm btn-danger" rowId="{$vo.id}" disabled>删除</a>
+            </td>
+            {/eq}
+
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</div>
+<script>
+    $(function () {
+
+
+        {eq name= "$IsSuperCorp" value="true"}
+            $('input[EnableDel]').click(function () {
+                if($(this).is(":checked")){
+                    $("a[BtnID=DelBtn"+$(this).attr('rowId')+"]").removeAttr('disabled');
+                }else{
+                    $("a[BtnID=DelBtn"+$(this).attr('rowId')+"]").attr('disabled','disabled');
+                }
+            });
+            $('a[DelBtn]').click(function () {
+                layer.open({
+                    title:'删除整改通知书',
+                    type: 2,
+                    content: "/SafetyMng/Reform/showDeleteReform/ReformID/"+$(this).attr("rowId"),
+                    area: ['530px', '400px']
+                });
+            });
+        {/eq}
+
+            $('a[showRFLabelSubject]').click(function () {
+                layer.open({
+                    type: 2,
+                    title: false,
+                    area: ['800px', '600px'],
+                    shade: 0.8,
+                    closeBtn: 0,
+                    scrollbar: false,
+                    shadeClose: true,
+                    content: '/SafetyMng/TreeMng/showLabelSubject/Type/RF/SubjectID/'+$(this).attr('RFID'),
+                    end:function () {
+                        window.location.reload();
+                    }
+                });
+            });
+            $('a[XFZG]').click(function () {
+                window.location = '/SafetyMng/Reform/SendReform/TaskID/'+$(this).attr('TaskID')+'/ReformID/'+$(this).attr('rowID')+'/Platform/_SafetyMng_TaskList_Index_ActiveLi_LiReformList';
+            });
+
+            $('a[TXTZS]').click(function () {
+                $RealTaskID = $(this).attr('DutyCorp')==$(this).attr('CurCorp')?$(this).attr('ChildTaskID'):$(this).attr('TaskID');
+                window.open('/SafetyMng/Reform/Index/TaskID/'+$RealTaskID+'/ReformID/'+$(this).attr("rowId")+'/opType/Mdf');
+            });
+        });
+
+</script>
+</body>
+</html>

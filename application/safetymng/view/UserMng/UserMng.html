@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理</title>
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+    <link rel="stylesheet" href="__PUBLIC__/css/el-ui.css">
+    <script src="__PUBLIC__/js/vue.js"></script>
+    <script src="__PUBLIC__/js/axios.min.js"></script>
+    <script src="__PUBLIC__/js/el-index.js"></script>
+    <script src="__PUBLIC__/js/vue-router.js"></script>
+    <script src="__PUBLIC__/js/gyComp/mainstorelist.js"></script>
+    <script src="__PUBLIC__/js/jquery.js"></script>
+</head>
+<body>
+<div id="app">
+    <el-row>
+        <el-alert
+                title="用户管理"
+                type="warning"
+                description="可以在本页面对用户信息进行修改">
+        </el-alert>
+    </el-row>
+    <el-row style="text-align: center;margin-top: 10px">
+        <el-select v-model="curCorp" placeholder="请选择" @change="onChg">
+            <el-option
+                    v-for="item in CorpList"
+                    :label="item.Corp"
+                    :value="item.Corp">
+            </el-option>
+        </el-select>
+        <el-button type="primary" @click="UserMng(0,'New')">新增用户</el-button>
+    </el-row>
+    <el-row style="margin-top: 10px;">
+        <el-table
+                :data="tableData"
+                style="width: 100%;min-height: 800px;"
+                min-height="800"
+        >
+            <el-table-column
+                    type="index"
+            >
+            </el-table-column>
+            <el-table-column
+                    label="姓名"
+                    prop="Name"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    label="用户类型"
+                    prop="UserType"
+            >
+            <template slot-scope="scope">
+                <el-tag :type="calcuType(scope.row.UserType)" effect="dark" size="small">{{scope.row.UserType}}</el-tag>
+            </template>
+            </el-table-column>
+            <el-table-column
+                    label="部门"
+                    prop="Corp"
+            >
+            </el-table-column>
+            <el-table-column
+                    label="成员类型"
+                    prop="CorpRole"
+            >
+            </el-table-column>
+            <el-table-column
+                    label="用户状态"
+                    prop="Status"
+            >
+                <template slot-scope="scope">
+                    <el-tag :type="calcStatus(scope.row.Status)" effect="dark" size="small">{{scope.row.Status}}</el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="操作"
+                    prop=""
+            >
+            <template slot-scope="scope">
+                    <el-button type="default" size="small" @click="UserMng(scope.$index,'Mdf')">编辑</el-button>
+            </template>
+            </el-table-column>
+        </el-table>
+    </el-row>
+    <el-dialog title="管理" :visible.sync="showUserMng" width="45%" :modal="false">
+        <el-form :model="userMngform" label-width="124px">
+            <el-form-item label="部门:">
+                <el-select v-model="userMngform.Corp" placeholder="请选择" >
+                    <el-option
+                            v-for="item in CorpList"
+                            :label="item.Corp"
+                            :value="item.Corp">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="姓名:">
+                <el-input v-model="userMngform.Name" :disabled="userMngform.nameDis" style="width: 150px;"></el-input>
+            </el-form-item>
+            <el-form-item label="用户名:">
+                <el-input v-model="userMngform.UserName" style="width: 150px;"></el-input>
+            </el-form-item>
+            <el-form-item label="密码:">
+                <el-input v-model="userMngform.Pwd" type="password" style="width: 150px;"></el-input>
+            </el-form-item>
+            <el-form-item label="用户类型:">
+                <el-select v-model="userMngform.UserType" placeholder="请选择" @change="onChg">
+                    <el-option
+                            v-for="item in uTypeList"
+                            :label="item"
+                            :value="item">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="部门用户类别:">
+                <el-radio v-model="userMngform.CorpRole" label="领导">领导</el-radio>
+                <el-radio v-model="userMngform.CorpRole" label="成员">成员</el-radio>
+
+            </el-form-item>
+            <el-form-item label="用户状态:">
+                <el-radio v-model="userMngform.Status" label="启用">启用</el-radio>
+                <el-radio v-model="userMngform.Status" label="禁用">禁用</el-radio>
+
+            </el-form-item>
+            <el-form-item label="监察员:">
+                <el-radio v-model="userMngform.ISQSInspector" label="YES">YES</el-radio>
+                <el-radio v-model="userMngform.ISQSInspector" label="NO">NO</el-radio>
+            </el-form-item>
+            <el-form-item label="保存:">
+               <el-button type="success" size="small" @click="SaveUser">保存</el-button>
+            </el-form-item>
+        </el-form>
+    </el-dialog>
+</div>
+<script>
+    var v = new Vue({
+        el: '#app',
+        data () {
+            return {
+                CorpList:[],
+                curCorp:'',
+                tableData:[],
+                userMngform:{
+                    nameDis:false,
+                    type:'',
+                    UserType:''
+                },
+                showUserMng:false,
+                uTypeList:[
+                    '普通用户','管理用户','局方用户'
+                ]
+            }
+        },
+        mounted(){
+            this.GetCorpList();
+        },
+        methods: {
+            gyAjaxPost(url, data, onSuccess, onError) {
+                var _this = this;
+                axios({
+                    method: 'post',
+                    url: url,
+                    data: data
+                }).then(function (response) {
+                    onSuccess(_this, response);
+                }).catch(function (error) {
+                    if (onError != null)
+                        onError(_this, error);
+                });
+            },
+            GetCorpList(){
+                var  _t =this;
+                this.gyAjaxPost("/SafetyMng/CorpMng/GetCorpList",
+                    '',
+                    function (_this,response) {
+                        _t.CorpList = response.data;
+                    },null);
+            },
+            onChg(v){
+               this.getUserList();
+            },
+            getUserList(){
+                var  _t =this;
+                this.gyAjaxPost("/SafetyMng/UserMng/getUserListByCorp",
+                    'Corp='+_t.curCorp,
+                    function (_this,response) {
+                        _t.tableData = response.data;
+                    },null);
+            },
+            calcuType(uType){
+                if(uType=='普通用户'){
+                    return 'default';
+                }else if(uType=='管理用户'){
+                    return 'danger';
+                }else if(uType=='局方用户'){
+                    return 'info';
+                }
+            },
+            calcStatus(s){
+                if(s=='启用'){
+                    return 'success';
+                }else if(s=='禁用'){
+                    return 'danger';
+                }
+            },
+            UserMng(index,type){
+                if(type=='New'){
+                    if(this.curCorp=='') {
+                        this.$message('请选择要增加用户的部门!');
+                        return;
+                    }else{
+                        this.userMngform.Corp = this.curCorp;
+                    }
+                }
+                this.showUserMng = true;
+                if(type=='Mdf'){
+                    this.userMngform.nameDis = true;
+                    this.userMngform = this.tableData[index];
+                }
+                this.userMngform.type = type;
+            },
+            SaveUser(){
+                var  _t =this;
+                this.gyAjaxPost("/SafetyMng/UserMng/SaveUser",
+                    this.userMngform,
+                    function (_this,response) {
+                        _t.$message(response.data);
+                        _t.getUserList();
+                    },null);
+            }
+
+        }
+    })
+</script>
+</body>
+</html>

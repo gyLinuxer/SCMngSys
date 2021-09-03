@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+    <link rel="stylesheet" href="__PUBLIC__/css/el-ui.css">
+    <script src="__PUBLIC__/js/vue.js"></script>
+    <script src="__PUBLIC__/js/axios.min.js"></script>
+    <script src="__PUBLIC__/js/el-index.js"></script>
+    <script src="__PUBLIC__/js/vue-router.js"></script>
+    <script src="__PUBLIC__/js/jquery.js"></script>
+</head>
+<body class="container-fluid">
+<div id="app">
+    <el-tabs   v-model="activeName" @tab-click="">
+
+        <el-tab-pane label="所有未关闭的危险源" name="first" v-if="ISMeSuperCorp=='YES'">
+            <template>
+                <el-table
+                        :data="JCY_WXYList"
+                        style="margin-top: 10px;min-height:800px"
+                        max-height="800"
+                        cell-style="{ textAlign: 'center' }"
+                        border
+                >
+                    <el-table-column
+                            prop="SMSCode"
+                            label="危险源编号"
+                            width="80">
+                        <template slot-scope="scope">
+                            <el-tag size="small" effect="dark" type="info">{{scope.row.SMSCode}}</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="SMSSource"
+                            label="识别途径"
+                            width="120">
+                        <template slot-scope="scope">
+                            <el-tag size="small" effect="dark" >{{scope.row.SMSSource}}</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="DutyCorp"
+                            label="对应部门"
+                            width="">
+                    </el-table-column>
+                    <el-table-column
+                            prop="FXMS"
+                            label="危险源描述"
+                            width="">
+                    </el-table-column>
+                    <el-table-column
+                            prop="WHMS"
+                            label="可能的危害"
+                            width="">
+                    </el-table-column>
+                    <el-table-column
+                            prop="Status"
+                            label="状态"
+                            width="">
+                        <template slot-scope="scope">
+                            <span v-show="scope.row.Status!='整改中'">{{scope.row.Status}}</span>
+                            <el-link type="warning" v-show="scope.row.Status=='整改中'" @click="OpenReform(scope.row)">{{scope.row.Status}}</el-link>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop=""
+                            width="250"
+                            label="打分及措施制定人设置">
+                        <template slot-scope="scope">
+                            <p style="margin-bottom: 10px">
+                                <el-link type="warning">措施制定人:</el-link>
+                                <el-button plain size="mini" v-show="scope.row.CanSet == '1'"  type="success" v-show="scope.row.YFCS==''" style="margin-left: 10px;" @click="CSMakerQR(scope.$index,JCY_WXYList)">确认</el-button>
+                            <p>
+                                <el-radio-group v-model="JCY_WXYList[scope.$index].WhoMakeCS" @change="onCSMakerChange(v,scope.row.SMSCode)" :disabled="scope.row.YFCS!=''">
+                                    <el-radio label="执法部门"></el-radio>
+                                    <el-radio label="责任单位"></el-radio>
+                                </el-radio-group>
+                            </p>
+                            <p>
+
+                            </p>
+                            <p>
+                                <el-link type="success">风险评定进度:</el-link>
+                                <el-tag size="small"  type="primary">有{{scope.row.FSAvg.CNT1}}人打分 / 共{{scope.row.FSAvg.CNT_ALL}}人</el-tag>
+                            </p>
+                            <p>
+                                <span  >严重性:</span><el-tag size="small" effect="dark" type="info">{{scope.row.FSAvg.YZX1_Avg}}</el-tag> 可能性:<el-tag size="small" effect="dark" type="info">{{scope.row.FSAvg.KNX1_Avg}}</el-tag> 风险:<span style="width: 60px;border: 1px solid;font-size: medium;font-weight: bolder" :style="scope.row.FSAvg.FXDJ1_Color">{{scope.row.FSAvg.FXDJ1}}级</span>
+                            </p>
+                            <p>
+                                <el-link type="danger">措施评定进度:</el-link>
+                                <el-tag size="small" type="primary">有{{scope.row.FSAvg.CNT2}}人打分 / 共{{scope.row.FSAvg.CNT_ALL}}人</el-tag>
+                            </p>
+                            <p>
+                                <span>严重性:</span><el-tag size="small" effect="dark" type="info">{{scope.row.FSAvg.YZX2_Avg}}</el-tag> 可能性:<el-tag size="small" effect="dark" type="info">{{scope.row.FSAvg.KNX2_Avg}}</el-tag> 风险:<span style="width: 60px;font-weight: bolder;font-size: medium;" :style="scope.row.FSAvg.FXDJ2_Color">{{scope.row.FSAvg.FXDJ2}}级</span>
+                            </p>
+                            <p >
+                                <el-button plain size="mini" v-show="scope.row.CanSet == '1'" type="warning" style="margin-left: 40px;" @click="showFXPDDialog(scope.row.SMSCode)">设置</el-button>
+                            </p>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop=""
+                            width="100"
+                            label="打分">
+                        <template slot-scope="scope">
+                            <div v-show="scope.row.isEvaler == 1">
+                                <p>
+                                    <el-link type="primary">风险评级</el-link>
+                                </p>
+                                <p>
+                                    严重性:<el-tag size="small" effect="dark" type="info">{{scope.row.MyEvalRet.YZX1}}</el-tag>
+                                </p>
+                                <p>
+                                    可能性:<el-tag size="small" effect="dark" type="info">{{scope.row.MyEvalRet.KNX1}}</el-tag>
+                                </p>
+                                <p>
+                                    <el-link type="success">措施评级</el-link>
+
+                                </p>
+                                <p>
+                                    严重性:<el-tag size="small" effect="dark" type="info">{{scope.row.MyEvalRet.YZX2}}</el-tag>
+                                </p>
+                                <p>
+                                    可能性:<el-tag size="small" effect="dark" type="info">{{scope.row.MyEvalRet.KNX2}}</el-tag>
+                                </p>
+                                <p>
+                                    <el-link type="warning" :underline="true" herf="#" @click="openFXMatrix" >风险矩阵</el-link>
+                                </p>
+                                <p>
+                                    <el-button plain size="mini" type="info" @click="showDFDialog(scope.row.SMSCode)">打分</el-button>
+                                </p>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            width="300"
+                            label="措施及原因分析">
+                        <template slot-scope="scope">
+                            <p>
+                                <el-link type="primary">直接原因:</el-link>
+                                {{scope.row.ZJYY}}
+                            </p>
+                            <p>
+                                <el-link type="success">根本原因:</el-link>
+                                {{scope.row.GBYY}}
+                            </p>
+                            <p>
+                                <el-link type="warning">纠正措施:</el-link>
+                                {{scope.row.JZCS}}
+                            </p>
+
+                            <p>
+                                <el-link type="danger">预防措施:</el-link>
+                                {{scope.row.YFCS}}
+                            </p>
+                            <p style="text-align: right">
+                                <el-button plain size="mini" type="info" v-show="CSZDBtnShow(scope.$index,JCY_WXYList)" @click="YYCSDialogShow(scope.$index,JCY_WXYList)">制定</el-button>
+                            </p>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column
+                            prop=""
+                            label="">
+                        <template slot-scope="scope">
+                            <el-button size="mini" @click="DelSMS_YH('SMS',scope.row.SMSCode)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+
+                <el-dialog title="增加风险" :visible.sync="FXDialogShow" :modal="false">
+                    <el-form :model="form">
+                        <el-form-item label="风险描述" >
+                            <el-input v-model="curFX.FXMS" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="可能的危害" >
+                            <el-input v-model="curFX.WHMS" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="对应部门" >
+                            <el-select v-model="curFX.CorpSelList" multiple placeholder="请选择">
+                                <el-option
+                                        v-for="item in Corps"
+                                        :key="item.Corp"
+                                        :label="item.Corp"
+                                        :value="item.Corp">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="FXDialogShow = false">取 消</el-button>
+                        <el-button type="primary" @click="AddFXByQsID()">确 定</el-button>
+                    </div>
+                </el-dialog>
+
+
+                <el-dialog title="原因分析及措施制定" :visible.sync="CSYZDialogShow" :modal="false">
+                    <el-form >
+                        <el-form-item label="直接原因" >
+                            <el-input v-model="YYCSDialog.ZJYY" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="根本原因" >
+                            <el-input v-model="YYCSDialog.GBYY" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="纠正措施" >
+                            <el-input v-model="YYCSDialog.JZCS" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="完成期限">
+                            <el-date-picker
+                                    v-model="YYCSDialog.JZQX"
+                                    type="date"
+                                    value-format="yyyy-MM-dd"
+                                    placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="预防措施" >
+                            <el-input v-model="YYCSDialog.YFCS" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="完成期限">
+                            <el-date-picker
+                                    v-model="YYCSDialog.YFQX"
+                                    type="date"
+                                    value-format="yyyy-MM-dd"
+                                    placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button type="primary" @click="SMSYYCSMake">确 定</el-button>
+                    </div>
+                </el-dialog>
+
+                <el-dialog title="打分" :visible.sync="DFDialogShow" width="25%" :modal="false">
+                    <el-form >
+                        <el-form-item label="SMS代码" >
+                            <el-input v-model="DFDialog.SMSCode" disabled style="width: 150px;"></el-input>
+                        </el-form-item>
+                        <el-form-item label="打分类型" >
+                            <el-input v-model="DFDialog.DFType" disabled style="width: 150px;"></el-input>
+                        </el-form-item>
+                        <el-form-item label="严重性：" >
+                            <el-input v-model="DFDialog.YZX" style="width: 150px;"></el-input>
+                            ({{DFDialog.YZXMin}},{{DFDialog.YZXMax}}]
+                        </el-form-item>
+                        <el-form-item label="可能性：" >
+                            <el-input v-model="DFDialog.KNX" style="width: 150px;"></el-input>
+                            ({{DFDialog.KNXMin}},{{DFDialog.KNXMax}}]
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button type="primary" @click="SMSDF">确 定</el-button>
+                    </div>
+                </el-dialog>
+
+                <el-dialog title="风险等级评定" :visible.sync="FXDJPDDialogShow" width="55%" :modal="false">
+                    <el-form  label-width="80px">
+                        <el-form-item label="拟评分人">
+                            <el-select v-model="curSMSEvalerSel" placeholder="请选择" style="width: 100px;">
+                                <el-option
+                                        v-for="item in SMSEvalerCanSelList"
+                                        :key="item.id"
+                                        :label="item.Name"
+                                        :value="item.Name">
+                                </el-option>
+                            </el-select>
+                            <el-button type="primary" @click="AddSMSEvaler">增加</el-button>
+                            <el-button type="success" @click="FXPJQR" plain>完成风险评价</el-button>
+                            <el-button type="danger" @click="SMSCSCXZD" plain>措施重新制定</el-button>
+                            <el-button type="warning" @click="SMSWCCSPJ" plain>完成措施评价</el-button>
+                        </el-form-item>
+                        <el-table
+                                :data="curSMSEvalerList"
+                                style="width: 100%">
+                            <el-table-column
+                                    type="index"
+                                    label="序号"
+                                    width="">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="Evaler"
+                                    label="姓名"
+                                    width="">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="KNX1"
+                                    label="可能性">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="YZX1"
+                                    label="严重性">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="KNX2"
+                                    label="可能性">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="YZX2"
+                                    label="严重性">
+                            </el-table-column>
+                            <el-table-column
+                                    prop=""
+                                    label="删除">
+                                <template slot-scope="scope">
+                                    <el-button type="info" @click="DelSMSEvaler(scope.row.Evaler)" size="mini" plain>删除</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-form>
+                </el-dialog>
+            </template>
+        </el-tab-pane>
+        <el-tab-pane label="本部门未关闭危险源" name="second">
+            <template>
+                <el-table
+                        :data="MyCorpWXYList"
+                        style="width:150%;margin-top:10px;min-height:800px;"
+                        max-height="800"
+                        border
+                >
+                    <el-table-column
+                            prop="SMSCode"
+                            label="危险源编号"
+                            width="100">
+                        <template slot-scope="scope">
+                            <el-tag size="small" effect="dark" type="info">{{scope.row.SMSCode}}</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="SMSSource"
+                            label="识别途径"
+                            width="200">
+                        <template slot-scope="scope">
+                            <el-tag size="small" effect="dark" >{{scope.row.SMSSource}}</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="ClaimCorp"
+                            label="监督部门"
+                            width="100">
+                    </el-table-column>
+                    <el-table-column
+                            prop="DutyCorp"
+                            label="责任部门"
+                            width="100">
+                    </el-table-column>
+                    <el-table-column
+                            prop="FXMS"
+                            label="危险源描述"
+                            width="300">
+                    </el-table-column>
+                    <el-table-column
+                            prop="WHMS"
+                            label="可能的危害"
+                            width="300">
+                    </el-table-column>
+                    <el-table-column
+                            prop="Status"
+                            label="状态"
+                            width="150">
+                        <template slot-scope="scope">
+                            <span v-show="scope.row.Status!='整改中'">{{scope.row.Status}}</span>
+                            <el-link type="warning" v-show="scope.row.Status=='整改中'" @click="OpenReform(scope.row)">{{scope.row.Status}}</el-link>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop=""
+                            width="460"
+                            label="打分及措施制定人设置">
+                        <template slot-scope="scope">
+                            <p style="margin-bottom: 10px">
+                                <el-link type="warning">措施制定人:</el-link>
+                                <el-radio-group v-model="MyCorpWXYList[scope.$index].WhoMakeCS" @change="onCSMakerChange(v,scope.row.SMSCode)" :disabled=" scope.row.CanSet =='0' ">
+                                    <el-radio label="执法部门"></el-radio>
+                                    <el-radio label="责任单位"></el-radio>
+                                </el-radio-group>
+                                <el-button plain size="mini" v-show="scope.row.CanSet == '1'" type="success" v-show="scope.row.YFCS==''" style="margin-left: 10px;" @click="CSMakerQR(scope.$index,MyCorpWXYList)">确认</el-button>
+                            </p>
+                            <p>
+                                <el-link type="success">风险评定进度:</el-link>
+                                <el-tag size="small"  type="primary">有{{scope.row.FSAvg.CNT1}}人打分 / 共{{scope.row.FSAvg.CNT_ALL}}人</el-tag>
+                            </p>
+                            <p>
+                                <span style="margin-left: 85px;" >严重性:</span><el-tag size="small" effect="dark" type="info">{{scope.row.FSAvg.YZX1_Avg}}</el-tag> 可能性:<el-tag size="small" effect="dark" type="info">{{scope.row.FSAvg.KNX1_Avg}}</el-tag> 风险:<span style="width: 60px;border: 1px solid;font-size: medium;font-weight: bolder" :style="scope.row.FSAvg.FXDJ1_Color">{{scope.row.FSAvg.FXDJ1}}级</span>
+                            </p>
+                            <p>
+                                <el-link type="danger">措施评定进度:</el-link>
+                                <el-tag size="small" type="primary">有{{scope.row.FSAvg.CNT2}}人打分 / 共{{scope.row.FSAvg.CNT_ALL}}人</el-tag>
+                            </p>
+                            <p>
+                                <span style="margin-left: 85px;" >严重性:</span><el-tag size="small" effect="dark" type="info">{{scope.row.FSAvg.YZX2_Avg}}</el-tag> 可能性:<el-tag size="small" effect="dark" type="info">{{scope.row.FSAvg.KNX2_Avg}}</el-tag> 风险:<span style="width: 60px;font-weight: bolder;font-size: medium;" :style="scope.row.FSAvg.FXDJ2_Color">{{scope.row.FSAvg.FXDJ2}}级</span>
+                            </p>
+                            <p style="text-align: right;">
+                                <el-button plain size="mini" v-show="scope.row.CanSet == '1'" type="warning" style="margin-left: 40px;" @click="showFXPDDialog(scope.row.SMSCode)">打分设置</el-button>
+                            </p>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop=""
+                            width="290"
+                            label="打分">
+                        <template slot-scope="scope">
+                            <div v-show="scope.row.isEvaler == 1">
+                                <p>
+                                    <el-link type="primary">风险评级</el-link>
+                                    严重性:<el-tag size="small" effect="dark" type="info">{{scope.row.MyEvalRet.YZX1}}</el-tag> 可能性:<el-tag size="small" effect="dark" type="info">{{scope.row.MyEvalRet.KNX1}}</el-tag> <el-button plain size="mini" type="info" @click="showDFDialog(scope.row.SMSCode)">打分</el-button>
+                                </p>
+                                <p>
+                                    <el-link type="success">措施评级</el-link>
+                                    严重性:<el-tag size="small" effect="dark" type="info">{{scope.row.MyEvalRet.YZX2}}</el-tag> 可能性:<el-tag size="small" effect="dark" type="info">{{scope.row.MyEvalRet.KNX2}}</el-tag>
+                                </p>
+                                <p>
+                                    <el-link type="warning" @click="openFXMatrix" :underline="true" herf="#">风险矩阵</el-link>
+                                </p>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            width="500"
+                            label="措施及原因分析">
+                        <template slot-scope="scope">
+                            <p>
+                                <el-link type="primary">直接原因:</el-link>
+                                {{scope.row.ZJYY}}
+                            </p>
+                            <p>
+                                <el-link type="success">根本原因:</el-link>
+                                {{scope.row.GBYY}}
+                            </p>
+                            <p>
+                                <el-link type="warning">纠正措施:</el-link>
+                                {{scope.row.JZCS}}
+                            </p>
+
+                            <p>
+                                <el-link type="danger">预防措施:</el-link>
+                                {{scope.row.YFCS}}
+                            </p>
+                            <p style="text-align: right">
+                                <el-button plain size="mini" type="info" v-show="CSZDBtnShow(scope.$index,MyCorpWXYList)" @click="YYCSDialogShow(scope.$index,MyCorpWXYList)">制定</el-button>
+                            </p>
+                        </template>
+                    </el-table-column>
+
+
+                    <el-table-column
+                            prop=""
+                            label="">
+                        <template slot-scope="scope">
+                            <el-button size="mini">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+
+
+                <el-dialog title="原因分析及措施制定" :visible.sync="CSYZDialogShow" :modal="false">
+                    <el-form >
+                        <el-form-item label="直接原因" >
+                            <el-input v-model="YYCSDialog.ZJYY" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="根本原因" >
+                            <el-input v-model="YYCSDialog.GBYY" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="纠正措施" >
+                            <el-input v-model="YYCSDialog.JZCS" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="完成期限">
+                            <el-date-picker
+                                    v-model="YYCSDialog.JZQX"
+                                    type="date"
+                                    value-format="yyyy-MM-dd"
+                                    placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="预防措施" >
+                            <el-input v-model="YYCSDialog.YFCS" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="完成期限">
+                            <el-date-picker
+                                    v-model="YYCSDialog.YFQX"
+                                    type="date"
+                                    value-format="yyyy-MM-dd"
+                                    placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button type="primary" @click="SMSYYCSMake">确 定</el-button>
+                    </div>
+                </el-dialog>
+
+                <el-dialog title="打分" :visible.sync="DFDialogShow" width="25%" :modal="false">
+                    <el-form >
+                        <el-form-item label="SMS代码" >
+                            <el-input v-model="DFDialog.SMSCode" disabled style="width: 150px;"></el-input>
+                        </el-form-item>
+                        <el-form-item label="打分类型" >
+                            <el-input v-model="DFDialog.DFType" disabled style="width: 150px;"></el-input>
+                        </el-form-item>
+                        <el-form-item label="严重性：" >
+                            <el-input v-model="DFDialog.YZX" style="width: 150px;"></el-input>
+                            ({{DFDialog.YZXMin}},{{DFDialog.YZXMax}}]
+                        </el-form-item>
+                        <el-form-item label="可能性：" >
+                            <el-input v-model="DFDialog.KNX" style="width: 150px;"></el-input>
+                            ({{DFDialog.KNXMin}},{{DFDialog.KNXMax}}]
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button type="primary" @click="SMSDF">确 定</el-button>
+                    </div>
+                </el-dialog>
+
+                <el-dialog title="风险等级评定" :visible.sync="FXDJPDDialogShow" width="55%" :modal="false">
+                    <el-form  label-width="80px">
+                        <el-form-item label="拟评分人">
+                            <el-select v-model="curSMSEvalerSel" placeholder="请选择" style="width: 100px;">
+                                <el-option
+                                        v-for="item in SMSEvalerCanSelList"
+                                        :key="item.id"
+                                        :label="item.Name"
+                                        :value="item.Name">
+                                </el-option>
+                            </el-select>
+                            <el-button type="primary" @click="AddSMSEvaler">增加</el-button>
+                            <el-button type="success" @click="FXPJQR" plain>完成风险评价</el-button>
+                            <el-button type="danger" @click="SMSCSCXZD" plain>措施重新制定</el-button>
+                            <el-button type="warning" @click="SMSWCCSPJ" plain>完成措施评价</el-button>
+                        </el-form-item>
+                        <el-table
+                                :data="curSMSEvalerList"
+                                style="width: 100%">
+                            <el-table-column
+                                    type="index"
+                                    label="序号"
+                                    width="">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="Evaler"
+                                    label="姓名"
+                                    width="">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="KNX1"
+                                    label="可能性">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="YZX1"
+                                    label="严重性">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="KNX2"
+                                    label="可能性">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="YZX2"
+                                    label="严重性">
+                            </el-table-column>
+                            <el-table-column
+                                    prop=""
+                                    label="删除">
+                                <template slot-scope="scope">
+                                    <el-button type="info" @click="DelSMSEvaler(scope.row.Evaler)" size="mini" plain>删除</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-form>
+                </el-dialog>
+            </template>
+        </el-tab-pane>
+        <el-tab-pane label="需要我打分的危险源" name="third">
+            <template>
+                <el-table
+                        :data="NeedMeEvalWXYList"
+                        style="width:100%;margin-top:10px;"
+                        border
+                >
+                    <el-table-column
+                            prop="SMSCode"
+                            label="危险源编号"
+                            width="80">
+                        <template slot-scope="scope">
+                            <el-tag size="small" effect="dark" type="info">{{scope.row.SMSCode}}</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="SMSSource"
+                            label="识别途径"
+                            width="120">
+                        <template slot-scope="scope">
+                            <el-tag size="small" effect="dark" >{{scope.row.SMSSource}}</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="ClaimCorp"
+                            label="监督部门"
+                            width="">
+                    </el-table-column>
+                    <el-table-column
+                            prop="DutyCorp"
+                            label="对应部门"
+                            width="">
+                    </el-table-column>
+                    <el-table-column
+                            prop="FXMS"
+                            label="危险源描述"
+                            width="">
+                    </el-table-column>
+                    <el-table-column
+                            prop="WHMS"
+                            label="可能的危害"
+                            width="">
+                    </el-table-column>
+                    <el-table-column
+                            prop="Status"
+                            label="状态"
+                            width=""
+                    >
+                        <template slot-scope="scope">
+                            <span v-show="scope.row.Status!='整改中'">{{scope.row.Status}}</span>
+                            <el-link type="warning" v-show="scope.row.Status=='整改中'" @click="OpenReform(scope.row)">{{scope.row.Status}}</el-link>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop=""
+                            width="400"
+                            label="打分及措施制定人设置">
+                        <template slot-scope="scope">
+                            <p style="margin-bottom: 10px">
+                                <el-link type="warning">措施制定人:</el-link>
+                                <el-radio-group v-model="NeedMeEvalWXYList[scope.$index].WhoMakeCS" @change="onCSMakerChange(v,scope.row.SMSCode)" :disabled="scope.row.CanSet =='0'">
+                                    <el-radio label="执法部门"></el-radio>
+                                    <el-radio label="责任单位"></el-radio>
+                                </el-radio-group>
+                                <el-button plain size="mini" v-show="scope.row.CanSet == '1'" type="success" v-show="scope.row.YFCS==''" style="margin-left: 10px;" @click="CSMakerQR(scope.$index,NeedMeEvalWXYList)">确认</el-button>
+                            </p>
+                            <p>
+                                <el-link type="success">风险评定进度:</el-link>
+                                <el-tag size="small"  type="primary">有{{scope.row.FSAvg.CNT1}}人打分 / 共{{scope.row.FSAvg.CNT_ALL}}人</el-tag>
+                            </p>
+                            <p>
+                                <span style="margin-left: 85px;" >严重性:</span><el-tag size="small" effect="dark" type="info">{{scope.row.FSAvg.YZX1_Avg}}</el-tag> 可能性:<el-tag size="small" effect="dark" type="info">{{scope.row.FSAvg.KNX1_Avg}}</el-tag> 风险:<span style="width: 60px;border: 1px solid;font-size: medium;font-weight: bolder" :style="scope.row.FSAvg.FXDJ1_Color">{{scope.row.FSAvg.FXDJ1}}级</span>
+                            </p>
+                            <p>
+                                <el-link type="danger">措施评定进度:</el-link>
+                                <el-tag size="small" type="primary">有{{scope.row.FSAvg.CNT2}}人打分 / 共{{scope.row.FSAvg.CNT_ALL}}人</el-tag>
+                            </p>
+                            <p>
+                                <span style="margin-left: 85px;" >严重性:</span><el-tag size="small" effect="dark" type="info">{{scope.row.FSAvg.YZX2_Avg}}</el-tag> 可能性:<el-tag size="small" effect="dark" type="info">{{scope.row.FSAvg.KNX2_Avg}}</el-tag> 风险:<span style="width: 60px;font-weight: bolder;font-size: medium;" :style="scope.row.FSAvg.FXDJ2_Color">{{scope.row.FSAvg.FXDJ2}}级</span>
+                            </p>
+                            <p style="text-align: right;">
+                                <el-button plain size="mini"  v-show="scope.row.CanSet == '1'" type="warning" style="margin-left: 40px;" v-show="showDFSZBtn(scope.$index,NeedMeEvalWXYList)"  @click="showFXPDDialog(scope.row.SMSCode)">打分设置</el-button>
+                            </p>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop=""
+                            width="290"
+                            label="打分">
+                        <template slot-scope="scope">
+                            <div v-show="scope.row.isEvaler == 1">
+                                <p>
+                                    <el-link type="primary">风险评级</el-link>
+                                    严重性:<el-tag size="small" effect="dark" type="info">{{scope.row.MyEvalRet.YZX1}}</el-tag> 可能性:<el-tag size="small" effect="dark" type="info">{{scope.row.MyEvalRet.KNX1}}</el-tag> <el-button plain size="mini" type="info" @click="showDFDialog(scope.row.SMSCode)">打分</el-button>
+                                </p>
+                                <p>
+                                    <el-link type="success">措施评级</el-link>
+                                    严重性:<el-tag size="small" effect="dark" type="info">{{scope.row.MyEvalRet.YZX2}}</el-tag> 可能性:<el-tag size="small" effect="dark" type="info">{{scope.row.MyEvalRet.KNX2}}</el-tag>
+                                </p>
+                                <p>
+                                    <el-link type="warning"  @click="openFXMatrix" :underline="true" herf="#">风险矩阵</el-link>
+                                </p>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            width="400"
+                            label="措施及原因分析">
+                        <template slot-scope="scope">
+                            <p>
+                                <el-link type="primary">直接原因:</el-link>
+                                {{scope.row.ZJYY}}
+                            </p>
+                            <p>
+                                <el-link type="success">根本原因:</el-link>
+                                {{scope.row.GBYY}}
+                            </p>
+                            <p>
+                                <el-link type="warning">纠正措施:</el-link>
+                                {{scope.row.JZCS}}
+                            </p>
+
+                            <p>
+                                <el-link type="danger">预防措施:</el-link>
+                                {{scope.row.YFCS}}
+                            </p>
+                            <p style="text-align: right">
+                                <el-button plain size="mini" type="info" v-show="CSZDBtnShow(scope.$index,NeedMeEvalWXYList)" @click="YYCSDialogShow(scope.$index,NeedMeEvalWXYList)">制定</el-button>
+                            </p>
+                        </template>
+                    </el-table-column>
+
+                </el-table>
+
+                <el-dialog title="原因分析及措施制定" :visible.sync="CSYZDialogShow" :modal="false">
+                    <el-form >
+                        <el-form-item label="直接原因" >
+                            <el-input v-model="YYCSDialog.ZJYY" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="根本原因" >
+                            <el-input v-model="YYCSDialog.GBYY" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="纠正措施" >
+                            <el-input v-model="YYCSDialog.JZCS" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="完成期限">
+                            <el-date-picker
+                                    v-model="YYCSDialog.JZQX"
+                                    type="date"
+                                    value-format="yyyy-MM-dd"
+                                    placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="预防措施" >
+                            <el-input v-model="YYCSDialog.YFCS" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="完成期限">
+                            <el-date-picker
+                                    v-model="YYCSDialog.YFQX"
+                                    type="date"
+                                    value-format="yyyy-MM-dd"
+                                    placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button type="primary" @click="SMSYYCSMake">确 定</el-button>
+                    </div>
+                </el-dialog>
+
+                <el-dialog title="打分" :visible.sync="DFDialogShow" width="25%" :modal="false">
+                    <el-form >
+                        <el-form-item label="SMS代码" >
+                            <el-input v-model="DFDialog.SMSCode" disabled style="width: 150px;"></el-input>
+                        </el-form-item>
+                        <el-form-item label="打分类型" >
+                            <el-input v-model="DFDialog.DFType" disabled style="width: 150px;"></el-input>
+                        </el-form-item>
+                        <el-form-item label="严重性：" >
+                            <el-input v-model="DFDialog.YZX" style="width: 150px;"></el-input>
+                            ({{DFDialog.YZXMin}},{{DFDialog.YZXMax}}]
+                        </el-form-item>
+                        <el-form-item label="可能性：" >
+                            <el-input v-model="DFDialog.KNX" style="width: 150px;"></el-input>
+                            ({{DFDialog.KNXMin}},{{DFDialog.KNXMax}}]
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button type="primary" @click="SMSDF">确 定</el-button>
+                    </div>
+                </el-dialog>
+
+                <el-dialog title="风险等级评定" :visible.sync="FXDJPDDialogShow" width="55%" :modal="false">
+                    <el-form  label-width="80px">
+                        <el-form-item label="拟评分人">
+                            <el-select v-model="curSMSEvalerSel" placeholder="请选择" style="width: 100px;">
+                                <el-option
+                                        v-for="item in SMSEvalerCanSelList"
+                                        :key="item.id"
+                                        :label="item.Name"
+                                        :value="item.Name">
+                                </el-option>
+                            </el-select>
+                            <el-button type="primary" @click="AddSMSEvaler">增加</el-button>
+                            <el-button type="success" @click="FXPJQR" plain>完成风险评价</el-button>
+                            <el-button type="danger" @click="SMSCSCXZD" plain>措施重新制定</el-button>
+                            <el-button type="warning" @click="SMSWCCSPJ" plain>完成措施评价</el-button>
+                        </el-form-item>
+                        <el-table
+                                :data="curSMSEvalerList"
+                                style="width: 100%">
+                            <el-table-column
+                                    type="index"
+                                    label="序号"
+                                    width="">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="Evaler"
+                                    label="姓名"
+                                    width="">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="KNX1"
+                                    label="可能性">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="YZX1"
+                                    label="严重性">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="KNX2"
+                                    label="可能性">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="YZX2"
+                                    label="严重性">
+                            </el-table-column>
+                            <el-table-column
+                                    prop=""
+                                    label="删除">
+                                <template slot-scope="scope">
+                                    <el-button type="info" @click="DelSMSEvaler(scope.row.Evaler)" size="mini" plain>删除</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-form>
+                </el-dialog>
+            </template>
+        </el-tab-pane>
+    </el-tabs>
+</div>
+
+<script>
+    var TabCount = 1;
+    var v = new Vue({
+        el: '#app',
+        data(){
+            return {
+                YHCSZDialogShow:false,
+                YHSZDialogShow:false,
+                curYH:{
+
+                },
+                activeName:'first',
+                MyCorp:'{$MyCorp}',
+                ISMeSuperCorp:'{$ISMeSuperCorp}',
+                MyCorpRole:'{$MyCorpRole}',
+                FXDialogShow:false,
+                FXDJPDDialogShow:false,
+                DFDialogShow:false,
+                CSYZDialogShow:false,
+                curFX:{
+                    FXMS:'',
+                    WHMS:'',
+                    CorpSelList:[]
+                },
+                isJudging:false,
+                FXJudgeTab:[],
+                curJudgeStep:{},
+                TimeLineStep:[],
+                Corps:[],
+                curSMSEvalerSel:'',
+                SMSEvalerCanSelList:[],
+                curSMSCode:'',
+                curSMSEvalerList:[],
+                DFDialog:{
+                    SMSCode:'',
+                    YZX:'',
+                    KNX:'',
+                    YZXMin:'',
+                    YZXMax:'',
+                    KNXMin:'',
+                    KNXMax:''
+                },
+                YYCSDialog:{
+                    ZJYY:'',
+                    GBYY:'',
+                    JZCS:'',
+                    YFCS:'',
+                    SMSCode :'',
+                    YFQX:'',
+                    JZQX:''
+                },
+
+                JCY_WXYList:[],
+                MyCorpWXYList:[],
+                NeedMeEvalWXYList:[]
+            }
+        },
+        mounted(){
+            if(this.ISMeSuperCorp!='YES'){
+                this.activeName = 'second';
+            }
+            if(this.ISMeSuperCorp =='YES'){
+                this.JCY_GetAllWXYListByCorpGroup();
+            }
+            this.GetSMSList();
+            this.GetSMSEvalerCanSelList();
+        },
+        methods: {
+            GetSMSList(){
+                this.GetCorpWXYList();
+                this.GetNeedMeEvalSMSList();
+                this.GetMyCanControlCorps();
+            },
+            gyAjaxPost(url, data, onSuccess, onError) {
+                var _this = this;
+                axios({
+                    method: 'post',
+                    url: url,
+                    data: data
+                }).then(function (response) {
+                    onSuccess(_this, response);
+                }).catch(function (error) {
+                    if (onError != null)
+                        onError(_this, error);
+                });
+            },
+            JCY_GetAllWXYListByCorpGroup(){
+                var _this = this;
+                this.gyAjaxPost("/SafetyMng/FXMng/JCY_GetAllWXYListByCorpGroup",
+                    '',
+                    function (_this, response) {
+                        _this.JCY_WXYList = response.data;
+                    }, null);
+            },
+            GetCorpWXYList(){
+                var _this = this;
+                this.gyAjaxPost("/SafetyMng/FXMng/GetCorpWXYList",
+                    '',
+                    function (_this, response) {
+                        _this.MyCorpWXYList = response.data;
+                    }, null);
+            },
+            GetNeedMeEvalSMSList(){
+                var _this = this;
+                this.gyAjaxPost("/SafetyMng/FXMng/GetNeedMeEvalSMSList",
+                    '',
+                    function (_this, response) {
+                        _this.NeedMeEvalWXYList = response.data;
+                    }, null);
+            }
+            ,
+            dateFtt(fmt, date) { //author: meizz
+                var o = {
+                    "M+": date.getMonth() + 1,                 //月份
+                    "d+": date.getDate(),                    //日
+                    "h+": date.getHours(),                   //小时
+                    "m+": date.getMinutes(),                 //分
+                    "s+": date.getSeconds(),                 //秒
+                    "q+": Math.floor((date.getMonth() + 3) / 3), //季度
+                    "S": date.getMilliseconds()             //毫秒
+                };
+                if (/(y+)/.test(fmt))
+                    fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+                for (var k in o)
+                    if (new RegExp("(" + k + ")").test(fmt))
+                        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                return fmt;
+            },
+            GetMyCanControlCorps() {
+                var _this = this;
+                this.gyAjaxPost("/SafetyMng/CorpMng/GetMyCanControlCorps",
+                    '',
+                    function (_this, response) {
+                        _this.Corps = response.data;
+                    }, null);
+            },
+            GetSMSEvalerCanSelList() {
+                var _this = this;
+                this.gyAjaxPost("/SafetyMng/CorpMng/GetMyCanControlUsers",
+                    'QuestionID=' + this.curFX.QuestionID,
+                    function (_this, response) {
+                        _this.SMSEvalerCanSelList = response.data;
+                    }, null);
+            },
+            GetSMSEvalerList() {
+                var _this = this;
+                this.gyAjaxPost("/SafetyMng/FXMng/GetSMSEvalerList",
+                    'SMSCode=' + this.curSMSCode,
+                    function (_this, response) {
+                        _this.curSMSEvalerList = response.data;
+                    }, null);
+            },
+            showFXPDDialog(SMSCode) {
+                this.curSMSCode = SMSCode;
+                this.FXDJPDDialogShow = true;
+                this.GetSMSEvalerList();
+            },
+            AddSMSEvaler() {
+                var _this = this;
+                this.gyAjaxPost("/SafetyMng/FXMng/AddSMSEvaler",
+                    'SMSCode=' + this.curSMSCode + '&Evaler=' + this.curSMSEvalerSel,
+                    function (_this, response) {
+                        _this.GetSMSEvalerList();
+                        _this.GetSMSList();
+                    }, null);
+            },
+            DelSMSEvaler(Evaler) {
+                var _this = this;
+                this.gyAjaxPost("/SafetyMng/FXMng/DelSMSEvaler",
+                    'SMSCode=' + this.curSMSCode + '&Evaler=' + Evaler,
+                    function (_this, response) {
+                        _this.$message(response.data);
+                        _this.GetSMSEvalerList();
+                        _this.GetSMSList();
+                    }, null);
+            },
+            onCSMakerChange(v, Maker) {
+                console.log(v + Maker);
+            },
+            showDFDialog(SMSCode) {
+                var _this = this;
+                this.gyAjaxPost("/SafetyMng/FXMng/GetDFFSBySMSCode",
+                    'SMSCode=' + SMSCode,
+                    function (_this, response) {
+                        $DFRow = response.data;
+                        if ($DFRow['Status'] != 'OK') {
+                            _this.$message($DFRow['Status']);
+                        } else {
+                            _this.DFDialogShow = true;
+                            _this.DFDialog = $DFRow;
+                            _this.DFDialog.SMSCode = SMSCode;
+                        }
+                    }, null);
+            },
+            SMSDF() {
+                var _this = this;
+                this.gyAjaxPost("/SafetyMng/FXMng/SMSDF",
+                    'SMSCode=' + this.DFDialog.SMSCode
+                    + '&YZX=' + this.DFDialog.YZX
+                    + '&KNX=' + this.DFDialog.KNX,
+                    function (_this, response) {
+                        _this.$message(response.data);
+                    }, null);
+            },
+            CSMakerQR(index,SMSList) {
+                var _this = this;
+                this.gyAjaxPost("/SafetyMng/FXMng/CSMakerQR",
+                    'SMSCode=' + SMSList[index].SMSCode
+                    + '&WhoMakeCS=' + SMSList[index].WhoMakeCS,
+                    function (_this, response) {
+                        _this.$message(response.data);
+                    }, null);
+            },
+            YYCSDialogShow(index,SMSList) {
+                var _this = this;
+                this.YYCSDialog.SMSCode = SMSList[index].SMSCode;
+                this.gyAjaxPost("/SafetyMng/FXMng/GetSMSRow",
+                    'SMSCode=' + SMSList[index].SMSCode,
+                    function (_this, response) {
+                        _this.YYCSDialog.ZJYY = response.data.ZJYY;
+                        _this.YYCSDialog.GBYY = response.data.GBYY;
+                        _this.YYCSDialog.JZCS = response.data.JZCS;
+                        _this.YYCSDialog.YFCS = response.data.YFCS;
+                        _this.CSYZDialogShow = true;
+                    }, null);
+            },
+            CSZDBtnShow(index,List) {
+                $CorpType = List[index].CorpType;
+                console.log($CorpType);
+                console.log('index->'+index);
+                if ($CorpType >= 10 && List[index].WhoMakeCS == '执法部门') {
+                    return true;
+                }
+
+                if ($CorpType ==1 && List[index].WhoMakeCS == '责任单位') {
+                    return true;
+                }
+                return false;
+            },
+            showDFSZBtn(index,List){
+                $ClaimCorp = List[index].ClaimCorp;
+                if($ClaimCorp==this.MyCorp){
+                    return true;
+                }
+            },
+            SMSYYCSMake() {
+                var _this = this;
+                console.log(this.YYCSDialog);
+                this.gyAjaxPost("/SafetyMng/FXMng/SMSYYCSMake",
+                    this.YYCSDialog,
+                    function (_this, response) {
+                        _this.$message(response.data);
+                        _this.GetSMSList();
+                    }, null);
+            },
+            FXPJQR() {
+                var _this = this;
+                this.$confirm('确定已完成风险评价，并进入措施制定环节吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    _this.gyAjaxPost("/SafetyMng/FXMng/FXDJQR",
+                        'SMSCode='+_this.curSMSCode,
+                        function (_this, response) {
+                            _this.$message(response.data);
+                        }, null);
+                }).catch(() => {
+
+                });
+
+            },
+            SMSCSCXZD(){
+                var _this = this;
+                this.$confirm('确定重新制定措施吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    _this.gyAjaxPost("/SafetyMng/FXMng/SMSCSCXZD",
+                        'SMSCode='+_this.curSMSCode,
+                        function (_this, response) {
+                            _this.$message(response.data);
+                        }, null);
+                }).catch(() => {
+
+                });
+            },
+            SMSWCCSPJ(){
+                var _this = this;
+                this.$confirm('确定完成措施评价?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    _this.gyAjaxPost("/SafetyMng/FXMng/SMSWCCSPJ",
+                        'SMSCode='+_this.curSMSCode,
+                        function (_this, response) {
+                            _this.$message(response.data);
+                        }, null);
+                }).catch(() => {
+
+                });
+            },
+            CalcPGColor(isOK){
+                if(isOK=='YES'){
+                    return 'success';
+                }else{
+                    return 'danger';
+                }
+            },
+            GetMyCanControlCorps() {
+                var _this = this;
+                this.gyAjaxPost("/SafetyMng/CorpMng/GetMyCanControlCorps",
+                    '',
+                    function (_this, response) {
+                        _this.Corps = response.data;
+                    }, null);
+            },
+            openFXMatrix(){
+                window.open('/SafetyMng/FXMng/showFXMatrix');
+            },
+            OpenReform(SMSRow){
+                var openType = 'Child',
+                    ClaimCorp = SMSRow.ClaimCorp,
+                    DutyCorp = SMSRow.DutyCorp;
+
+               if(ClaimCorp == this.MyCorp ){
+                   if(DutyCorp == this.MyCorp){
+                       if(this.MyCorpRole =='领导'){
+                           openType = 'Parent';
+                       }else{
+                           openType = 'Child';
+                       }
+                   }else{
+                       openType = 'Parent';
+                   }
+               }else if(DutyCorp == this.MyCorp){
+                   openType = 'Child';
+                }else{
+                   openType ='';
+               }
+
+               if(openType!=''){
+                   var _this = this;
+                   this.gyAjaxPost("/SafetyMng/Reform/GetReformByCode",
+                       'ReformCode='+SMSRow.RelatedReformCode,
+                       function (_this, response) {
+                           Reform = response.data;
+                           TaskId = '';
+                           ReformId = Reform.id;
+                           if(openType=='Parent'){
+                                TaskId = Reform.ParentTaskID;
+                           }else{
+                                TaskId = Reform.ChildTaskID;
+                           }
+                           window.open('/SafetyMng/Reform/Index/TaskID/'+TaskId+'/ReformID/'+ReformId+'/opType/Mdf');
+                       }, null);
+               }
+
+
+            },
+            DelSMS_YH(type,code){
+                var _this = this;
+                this.$prompt('请输入删除密码:', '提示').then(({ value }) => {
+                    $url =  "/SafetyMng/FXMng/DelSMS";
+                    $data = 'Code='+ code  + '&Pwd='+value;
+                    if(type=='AQYH'){
+                        $url =  "/SafetyMng/FXMng/DelAQYH";
+                    }
+                    _this.gyAjaxPost($url, $data,
+                        function (_this, response) {
+                            if(response.data == 'OK'){
+                                _this.$message('删除成功!');
+                                _this.GetSMSListByQuestionID();
+                            }else{
+                                _this.$message(response.data);
+                            }
+                        }, null);
+                }).catch(() => {
+
+                });
+            }
+
+        }});
+</script>
+
+</body>
+</html>

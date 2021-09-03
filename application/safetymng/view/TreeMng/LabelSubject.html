@@ -1,0 +1,364 @@
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="author" content="author">
+    <!-- 网页描述 -->
+    <meta name="description" content="hello">
+    <!-- 关键字使用","分隔 -->
+    <meta name="keywords" content="a,b,c">
+    <!-- 禁止浏览器从本地机的缓存中调阅页面内容 -->
+    <meta http-equiv="Pragma" content="no-cache">
+    <!-- 用来防止别人在框架里调用你的页面 -->
+    <meta http-equiv="Window-target" content="_top">
+    <!-- content的参数有all，none，index，noindex，follow，nofollow，默认是all -->
+    <meta name="robots" content="none">
+    <!-- 收藏图标 -->
+    <link rel="Shortcut Icon" href="favicon.ico" rel="external nofollow" >
+    <!-- 网页不会被缓存 -->
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <!-- 解决部分兼容性问题，如果安装了GCF，则使用GCF来渲染页面，如果未安装GCF，则使用最高版本的IE内核进行渲染。 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 页面按原比例显示 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--[if lt IE 9]>
+    <![endif]-->
+    <!-- The styles -->
+    <link id="bs-css" href="__PUBLIC__/css/bootstrap-cerulean.min.css" rel="stylesheet">
+    <link href='__PUBLIC__/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+
+    <link href='__PUBLIC__/css/MyCss.css' rel='stylesheet'>
+
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+
+    <link href="__PUBLIC__/css/bootstrap-editable.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/ui-dialog.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="__PUBLIC__/js/jquery.js"></script>
+    <script src="__PUBLIC__/js/bootstrap.js"></script>
+
+    <script src="__PUBLIC__/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- library for cookie management -->
+    <script src="__PUBLIC__/js/bootstrap-datetimepicker.zh-CN.js"></script>
+
+    <!-- data table plugin -->
+
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+
+    <link href="__PUBLIC__/css/select2.min.css" rel="stylesheet" />
+    <script src="__PUBLIC__/js/select2.min.js"></script>
+    <link href="__PUBLIC__/css/bootstrap-datetimepicker.css" rel="stylesheet">
+
+
+
+    <script src="__PUBLIC__/js/GY.js"></script>
+    <script src="__PUBLIC__/layer/layer.js"></script>
+    <script src="__PUBLIC__/js/jquery.ztree.all.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/jquery.ztree.exhide.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/fuzzysearch.js"></script>
+
+    <script type="text/javascript" src="__PUBLIC__/js/jquery.ztree.exedit.js"></script>
+    <style>
+        .select2-container .select2-selection--single{
+            height:36px;
+            line-height: 36px;
+        }
+        .ztree li span.button.add {margin-left:2px; margin-right: -1px; background-position:-144px 0; vertical-align:top; *vertical-align:middle}
+
+        div[RowDiv]{
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body class="container-fluid">
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-sm-6" style="border-right: dashed 1px;min-height: 800px;">
+            <div class="row" >
+                <div class="col-xs-1" style="width: 100px;">
+                    <label class="control-label">树列表:</label>
+                </div>
+                <div class="col-xs-8">
+                    <input name="" id="TreeSelect" list="WarningUserList" class="form-control "/>
+                    <datalist id="WarningUserList" >
+                        {volist name="TreeList" id = "vo"}
+                            <option value="{$vo.NodeName}">{$vo.NodeCode}</option>
+                        {/volist}
+                    </datalist>
+                </div>
+            </div>
+            <div class="row" RowDiv>
+                <div class="col-xs-1" style="width: 100px;"><label class="control-label">节点搜索:</label></div>
+                <div class="col-xs-8"><input id="NodeName"  class="form-control"/></div>
+            </div>
+            <div class="row" RowDiv>
+                <div class="col-xs-1" style="width: 100px;"><label class="control-label">操作:</label></div>
+                <div class="col-xs-3"><a Expand v="0" class="btn btn-sm btn-warning">合上</a></div>
+                <div class="col-xs-3"><a Expand v="1" class="btn btn-sm btn-primary">展开</a></div>
+            </div>
+            <ul id="tree" class="ztree" style="margin-top: 20px;">
+
+            </ul>
+        </div>
+
+            <div class="col-sm-6" id = "SubjectNodesDiv">
+                <h4 style="text-align: center;">已粘贴的标签</h4>
+                <div class="row">
+                    <div class="col-xs-4"><label>粘贴对象:</label></div>
+                    <div class="col-xs-8">{$Title}</div>
+                </div>
+            </div>
+            <input type="hidden" id="TypeIN" value="{$Type}">
+            <input type="hidden" id="idIN" value="{$SubjectID}">
+
+    </div>
+
+<script>
+
+    var setting = {
+        view: {
+            fontCss: getFontCss
+        },
+        edit: {
+
+        },
+        data: {
+            //这个是关键不然页面不会显示
+            simpleData: {
+                enable: true,
+                idkey: "id",
+                pidKey: "pId",
+                name:'name',
+            }
+        },
+        callback: {
+            onCheck: OnNodeCheck,
+        },
+        check:{
+            enable:true,
+            chkboxType: { "Y": "", "N": "" }
+        }
+    };
+
+    function getFontCss(treeId, treeNode) {
+        return treeNode.highlight==true ? {color:"#A60000", "font-weight":"bold"} : {color:"#333", "font-weight":"normal"};
+    }
+
+    function LabelSubject(NodeCode,NodeName,TreeCode,Checked,OnFinish,obj) {
+        $o =  {'NodeCode':NodeCode,
+            'SubjectType':$('#TypeIN').val(),
+            'id':$('#idIN').val(),
+            'Checked':Checked,
+        };
+
+        $.ajax({
+            url:"/SafetyMng/TreeMng/AJAX_LabelSubject",
+            data: JSON.stringify($o),
+            type:'post',
+            dataType:"json",
+            success:function (data,textStatus) {
+                if(data['Ret']!='success'){
+                    layer.alert(data['msg']);
+                }else{
+                    if(data['opt']=='add'){
+                        if($('#LB'+TreeCode).length==0){
+                            if($('#TB'+TreeCode).length==0){
+                                InitSubjectLabeledNodes(TreeCode);
+                            }else{
+                                $('<tr id="TR'+NodeCode+'" ><td><label class="label label-default" NodeCode = "'+NodeCode+'" NodeLB id="LB'+NodeCode+'" style="margin-left: 4px;">'
+                                    +NodeName+'</label><br/></td><td><span style="font-size:xx-small;">'
+                                    +data['AdderName']+data['AddTime']+'</span</td><td><a RMNode NodeCode = "'+NodeCode+'" TreeCode = "'+TreeCode+'" class="btn btn-xs btn-success">x</a></td></trid>').appendTo('#TB'+TreeCode);
+                            }
+                        }
+                    }
+                    if(data['opt']=='rm'){
+                        $('#TR'+NodeCode).remove();
+                    }
+                    InitLBAndRMClick();
+                    if(OnFinish !=undefined && OnFinish!=null){
+                          OnFinish(obj);
+                    }
+                }
+            },
+            error:function (XMLHttpRequest,textStatus,errorThrown) {
+                layer.alert('请求失败!请联系李光耀.');
+            }
+        });
+
+    }
+
+    function OnNodeCheck(event, treeId, treeNode) {
+
+        if(treeNode.isParent){
+            return;
+        }
+
+        LabelSubject(treeNode.id,treeNode.name,treeNode.TreeCode,treeNode.checked,null,null);
+
+    }
+
+    var $CurTreeCode = '';
+
+    var nodes  = [];
+
+    function TreeInit() {
+        $.fn.zTree.init($("#tree"), setting, nodes);
+        fuzzySearch('tree','#NodeName',null,true); //初始化模糊搜索方法
+        var zTree = $.fn.zTree.getZTreeObj("tree");
+        zTree.expandAll(true);
+    }
+    
+    function InitSubjectLabeledNodes($TreeCode) {
+
+        $o =  {'SubjectType':$('#TypeIN').val(),
+            'id':$('#idIN').val(),
+            'TreeCode':$TreeCode,
+        };
+
+        $.ajax({
+            url:"/SafetyMng/TreeMng/AJAX_GetSubjectLabeledTreeNodes",
+            data: JSON.stringify($o),
+            type:'post',
+            dataType:"json",
+            success:function (data,textStatus) {
+                if(data['Ret']!='success'){
+                    layer.alert(data['msg']);
+                }else{
+                    $Nodes = data['data'];
+                    if($Nodes.length ==0){
+                        return;
+                    }
+                    $CurTreeName = '';
+                    $CurTreeCode = '';
+                    PanelBodyStr ='';
+                    $.each( $Nodes, function(k, v){
+                        if(v.TreeName!=$CurTreeName){
+
+                            if($CurTreeName!=''){
+                                PanelBodyStr+='</table></div>';
+                                $(PanelBodyStr).appendTo('#Panel'+$CurTreeCode);
+                            }
+
+                            $CurTreeName = v.TreeName;
+                            $CurTreeCode = v.TreeCode;
+
+                            Panel = $('<div class="panel panel-info" id="Panel'+$CurTreeCode+'"  ><div class="panel-heading"><h3 class="panel-title"  >'+$CurTreeName+'</h3></div> </div>');
+
+                            PanelBodyStr = '<div class="panel-body" id="PanelBody'+$CurTreeCode+'" ><table id="TB'+$CurTreeCode+'" class="table">';
+                            $(Panel).appendTo('#SubjectNodesDiv');
+                        }
+                            PanelBodyStr+= '<tr id="TR'+v.NodeCode+'"><td><label class="label label-default" NodeCode = "'+v.NodeCode+'"  NodeLB id="LB'+v.NodeCode+'" style="margin-left: 4px;">'+v.NodeName+'</label><br/></td><td><span style="font-size:xx-small;"></span</td><td><a NodeCode = "'+v.NodeCode+'" TreeCode = "'+$CurTreeCode+'" RMNode class="btn btn-xs btn-success">x</a></td></tr>';
+
+
+                        console.log(v.NodeCode + v.NodeName +'-->'+v.TreeName);
+                    });
+                    if(PanelBodyStr!=''){
+                        PanelBodyStr+='</div>';
+                        $(PanelBodyStr).appendTo('#Panel'+$CurTreeCode);
+                    }
+
+                    InitLBAndRMClick();
+
+                }
+            },
+            error:function (XMLHttpRequest,textStatus,errorThrown) {
+                layer.alert('请求失败!请联系李光耀.');
+            }
+        });
+    }
+    var lastNode = null;
+    function InitLBAndRMClick() {
+
+        $('a[RMNode]').unbind('click');
+
+        $('label[NodeLB]').click(function () {
+            var zTree = $.fn.zTree.getZTreeObj("tree");
+
+            if(zTree ==undefined){
+                console.log('Tree not found');
+                return;
+            }
+
+            var NodeCode = $(this).attr('NodeCode');
+            var node  = zTree.getNodeByParam('id',NodeCode);
+            if(node != undefined && node != null){
+                node.highlight = true;
+                if(lastNode != null && lastNode!=undefined ){
+                    if(lastNode.id!=node.id){
+                        lastNode.highlight = false;
+                    }
+                }
+                zTree.updateNode(node);
+                zTree.updateNode(lastNode);
+                lastNode = node;
+            }
+        });
+
+        $('a[RMNode]').click(function () {
+            var NodeCode = $(this).attr('NodeCode');
+            LabelSubject(NodeCode,'',$(this).attr('TreeCode'),false,function (obj) {
+                var NodeCode = $(obj).attr('NodeCode');
+                var zTree = $.fn.zTree.getZTreeObj("tree");
+
+                if(zTree ==undefined){
+                    console.log('Tree not found');
+                    return;
+                }
+                var node  = zTree.getNodeByParam('id',NodeCode);
+                if(node != undefined && node != null){
+                    node.checked = false;
+                    zTree.updateNode(node);
+                }
+                $('#TR'+NodeCode).remove();
+            },this);
+        });
+    }
+
+    $(function () {
+        $('#TreeSelect').change(function () {
+                $('a[Tree]').removeClass('active');
+                $(this).addClass('active');
+
+                $o =  {'TreeName':$(this).val(),'SubjectType':$('#TypeIN').val(),
+                    'SubjectID':$('#idIN').val()};
+                $.ajax({
+                    url:"/SafetyMng/TreeMng/GetTreeNodeJsonData",
+                    data: JSON.stringify($o),
+                    type:'post',
+                    dataType:"json",
+                    success:function (data,textStatus) {
+                        if(data['Ret']=='Success'){
+                            nodes = data['data'];
+                            TreeInit();
+                        }else{
+                            layer.alert('获取树节点数据失败!');
+                        }
+                    },
+                    error:function (XMLHttpRequest,textStatus,errorThrown) {
+                        layer.alert('设置状态失败!');
+                    }
+                });
+
+        });
+         $('a[Expand]').click(function () {
+            var zTree = $.fn.zTree.getZTreeObj("tree");
+            if(zTree==undefined || zTree==null){
+                return;
+            }
+            $v = $(this).attr('v');
+            if($v=='1'){
+                zTree.expandAll(true);
+            }else{
+                zTree.expandAll(false);
+            }
+        });
+        InitSubjectLabeledNodes('');
+    });
+</script>
+</body>
+</html>

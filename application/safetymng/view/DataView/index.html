@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="__PUBLIC__/js/js/Highcharts-9.1.2/code/highcharts.js"></script>
+    <script src="__PUBLIC__/js/js/Highcharts-9.1.2/code/modules/sunburst.js"></script>
+    <link href="/static/css/bootstrap-table.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/el-ui.css">
+    <script src="/static/js/vue.js"></script>
+    <script src="/static/js/axios.min.js"></script>
+    <script src="/static/js/el-index.js"></script>
+</head>
+<body>
+<div id="app1">
+    <div class="row">
+        <div class="col-sm-4"><div id="YHcontainer" ></div></div>
+        <div class="col-sm-4"><div id="SMScontainer"></div></div>
+        <div class="col-sm-4"><div id="RFcontainer" ></div></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-11">
+            <div id="ALLcontainer"></div>
+        </div>
+        <div class="col-sm-1">
+            开始日期:
+            <input type="text"  class="form-control" style="width: 90px" v-model="curDay" />
+            多少天内:
+            <input type="number" v-model="DayLen" style="width: 90px" class="form-control"/>
+            绘图:
+            <button class="form-control" @click="DrTB">绘图</button>
+        </div>
+
+    </div>
+</div>
+<script>
+    // 图表配置
+    function gyAjaxPost(url, data, onSuccess, onError){
+        var _this = this;
+        axios({
+            method: 'post',
+            url: url,
+            data: data
+        }).then(function (response) {
+            onSuccess(_this, response);
+        }).catch(function (error) {
+            if (onError != null)
+                onError(_this, error);
+        });
+    }
+
+    function GetGroupCorpUnClosedAQYHCnt(){
+        Highcharts.setOptions({
+            lang: {
+                thousandsSep: ','
+            }
+        });
+
+        gyAjaxPost("/SafetyMng/FXMng/GetGroupCorpUnClosedAQYHCnt",
+            '',
+            function (_this, response) {
+                $Arr = response.data;
+                var AQYHList = [];
+                for($i=0;$i<$Arr.length;$i++){
+                    AQYHList.push({
+                        'id': $Arr[$i].Corp,
+                        'parent': $Arr[$i].ParentCorp,
+                        'value1':$Arr[$i].ZSYHCnt,
+                        'value':$Arr[$i].QBYHCnt,
+                    });
+                }
+
+                    //Highcharts.getOptions().colors.splice(0, 0, 'transparent');
+
+                    Highcharts.chart('YHcontainer', {
+                        chart: {
+                            height: '100%'
+                        },
+                        title: {
+                            text: '安全隐患旭日图'
+                        },
+                        subtitle: {
+                            text: '目前各部门尚未关闭的安全隐患'
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        series: [{
+                            type: "sunburst",
+                            data: AQYHList,
+                            allowDrillToNode: true,
+                            cursor: 'pointer',
+                            events: {
+                                click: function (e) {
+                                   /* console.log(
+                                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', e.xAxis[0].value),
+                                        e.yAxis[0].value
+                                    )*/
+                                }
+                            },
+                            dataLabels: {
+                                formatter: function () {
+                                    var shape = this.point.node.shapeArgs;
+
+                                    var innerArcFraction = (shape.end - shape.start) / (2 * Math.PI);
+                                    var perimeter = 2 * Math.PI * shape.innerR;
+
+                                    var innerArcPixels = innerArcFraction * perimeter;
+
+                                    if (innerArcPixels > 16) {
+                                        return this.point.name;
+                                    }
+                                }
+                            },
+                            levels: [{
+                                level: 2,
+                                colorByPoint: true,
+                                dataLabels: {
+                                    rotationMode: 'parallel'
+                                }
+                            },
+                                {
+                                    level: 3,
+                                    colorVariation: {
+                                        key: 'brightness',
+                                        to: -0.5
+                                    }
+                                }, {
+                                    level: 4,
+                                    colorVariation: {
+                                        key: 'brightness',
+                                        to: 0.5
+                                    }
+                                }]
+
+                        }],
+                        tooltip: {
+                            headerFormat: "",
+                            pointFormat: '<b>{point.id}</b>数量：<b>{point.value}</b>'
+                        }
+                    });
+            }, null);
+    }
+
+    function GetGroupCorpUnClosedSMSCnt(){
+        Highcharts.setOptions({
+            lang: {
+                thousandsSep: ','
+            }
+        });
+
+        gyAjaxPost("/SafetyMng/FXMng/GetGroupCorpUnClosedSMSCnt",
+            '',
+            function (_this, response) {
+                $Arr = response.data;
+                var SMSList = [];
+                for($i=0;$i<$Arr.length;$i++){
+                    SMSList.push({
+                        'id': $Arr[$i].Corp,
+                        'parent': $Arr[$i].ParentCorp,
+                        'value1':$Arr[$i].ZSSMSCnt,
+                        'value':$Arr[$i].QBSMSCnt,
+                    });
+                }
+
+                //Highcharts.getOptions().colors.splice(0, 0, 'transparent');
+
+                Highcharts.chart('SMScontainer', {
+                    chart: {
+                        height: '100%'
+                    },
+                    title: {
+                        text: '危险源旭日图'
+                    },
+                    subtitle: {
+                        text: '风险未降尚未低至可接收水平的危险源'
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: [{
+                        type: "sunburst",
+                        data: SMSList,
+                        allowDrillToNode: true,
+                        cursor: 'pointer',
+                        events: {
+                            click: function (event) {
+                                /*alert(
+                                    this.name + ' 被点击了\n' +
+                                    '最近点：' + event.point.category + '\n' +
+                                    'Alt 键: ' + event.altKey + '\n' +
+                                    'Ctrl 键: ' + event.ctrlKey + '\n' +
+                                    'Meta 键（win 键）： ' + event.metaKey + '\n' +
+                                    'Shift 键：' + event.shiftKey
+                                );*/
+                            }
+                        },
+                        dataLabels: {
+                            formatter: function () {
+                                var shape = this.point.node.shapeArgs;
+
+                                var innerArcFraction = (shape.end - shape.start) / (2 * Math.PI);
+                                var perimeter = 2 * Math.PI * shape.innerR;
+
+                                var innerArcPixels = innerArcFraction * perimeter;
+
+                                if (innerArcPixels > 16) {
+                                    return this.point.name;
+                                }
+                            }
+                        },
+                        levels: [{
+                            level: 2,
+                            colorByPoint: true,
+                            dataLabels: {
+                                rotationMode: 'parallel'
+                            }
+                        },
+                            {
+                                level: 3,
+                                colorVariation: {
+                                    key: 'brightness',
+                                    to: -0.5
+                                }
+                            }, {
+                                level: 4,
+                                colorVariation: {
+                                    key: 'brightness',
+                                    to: 0.5
+                                }
+                            }]
+
+                    }],
+                    tooltip: {
+                        headerFormat: "",
+                        pointFormat: '<b>{point.id}</b>数量：<b>{point.value}</b>'
+                    }
+                });
+            }, null);
+    }
+
+    function GetGroupCorpUnClosedRFCnt(){
+        Highcharts.setOptions({
+            lang: {
+                thousandsSep: ','
+            }
+        });
+
+        gyAjaxPost("/SafetyMng/FXMng/GetGroupCorpUnClosedRFCnt",
+            '',
+            function (_this, response) {
+                $Arr = response.data;
+                var RFList = [];
+                for($i=0;$i<$Arr.length;$i++){
+                    RFList.push({
+                        'id': $Arr[$i].Corp,
+                        'parent': $Arr[$i].ParentCorp,
+                        'value1':$Arr[$i].ZSRFCnt,
+                        'value':$Arr[$i].QBRFCnt,
+                    });
+                }
+
+                //Highcharts.getOptions().colors.splice(0, 0, 'transparent');
+
+                Highcharts.chart('RFcontainer', {
+                    chart: {
+                        height: '100%'
+                    },
+                    title: {
+                        text: '整改通知书旭日图'
+                    },
+                    subtitle: {
+                        text: '尚未整改完毕的整改通知书'
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: [{
+                        type: "sunburst",
+                        data: RFList,
+                        allowDrillToNode: true,
+                        cursor: 'pointer',
+                        events: {
+                            click: function (event) {
+                                /*alert(
+                                    this.name + ' 被点击了\n' +
+                                    '最近点：' + event.point.category + '\n' +
+                                    'Alt 键: ' + event.altKey + '\n' +
+                                    'Ctrl 键: ' + event.ctrlKey + '\n' +
+                                    'Meta 键（win 键）： ' + event.metaKey + '\n' +
+                                    'Shift 键：' + event.shiftKey
+                                );*/
+                            }
+                        },
+                        dataLabels: {
+                            formatter: function () {
+                                var shape = this.point.node.shapeArgs;
+
+                                var innerArcFraction = (shape.end - shape.start) / (2 * Math.PI);
+                                var perimeter = 2 * Math.PI * shape.innerR;
+
+                                var innerArcPixels = innerArcFraction * perimeter;
+
+                                if (innerArcPixels > 16) {
+                                    return this.point.name;
+                                }
+                            }
+                        },
+                        levels: [{
+                            level: 2,
+                            colorByPoint: true,
+                            dataLabels: {
+                                rotationMode: 'parallel'
+                            }
+                        },
+                            {
+                                level: 3,
+                                colorVariation: {
+                                    key: 'brightness',
+                                    to: -0.5
+                                }
+                            }, {
+                                level: 4,
+                                colorVariation: {
+                                    key: 'brightness',
+                                    to: 0.5
+                                }
+                            }]
+
+                    }],
+                    tooltip: {
+                        headerFormat: "",
+                        pointFormat: '<b>{point.id}</b>数量：<b>{point.value}</b>'
+                    }
+                });
+            }, null);
+    }
+
+    function GetGroupCorpAQYH_SMS_RF_AddQX() {
+
+    }
+
+    function setSize(width) {
+        chart.setSize(width, 300);
+    }
+
+    $(function () {
+        GetGroupCorpUnClosedAQYHCnt();
+        GetGroupCorpUnClosedSMSCnt();
+        GetGroupCorpUnClosedRFCnt();
+        GetGroupCorpAQYH_SMS_RF_AddQX();
+    });
+
+    var vue1 = new Vue({
+        el: '#app1',
+        data () {
+            return {
+                curDay:'',
+                DayLen:'60',
+                CT:Highcharts
+            }
+        },
+        mounted(){
+            this.initCurDay();
+            this.GetGroupCorpAQYH_SMS_RF_AddQX();
+        },
+        methods: {
+            initCurDay(){
+                var d = new Date();
+                this.curDay = d.getFullYear()+'-'+d.getMonth()+'-'+d.getDay();
+                console.log(this.curDay);
+            },
+            gyAjaxPost(url, data, onSuccess, onError) {
+                var _this = this;
+                axios({
+                    method: 'post',
+                    url: url,
+                    data: data
+                }).then(function (response) {
+                    onSuccess(_this, response);
+                }).catch(function (error) {
+                    if (onError != null)
+                        onError(_this, error);
+                });
+            },
+            DrTB() {
+                this.GetGroupCorpAQYH_SMS_RF_AddQX();
+            },
+            GetGroupCorpAQYH_SMS_RF_AddQX() {
+                var _this = this;
+                 _this.gyAjaxPost("/SafetyMng/FXMng/GetAQYH_SMS_RF_AddCntByDateSection",
+                   'StartDate='+_this.curDay+'&DayLen='+this.DayLen,
+                   function (_this, response) {
+                       var $Arr = response.data;
+                       var YH = [], SMS = [], RF = [], SE = [];
+                       var CG = [];
+
+                       for ($i = 0; $i < $Arr.length; $i++) {
+                           CG.push($Arr[$i].Corp);
+                       }
+                       console.log(CG);
+                       for ($i = 0; $i < $Arr.length; $i++) {
+                           YH.push($Arr[$i].AQYHCnt);
+                           SMS.push($Arr[$i].SMSCnt);
+                           RF.push($Arr[$i].RFCnt);
+                       }
+
+                       SE.push({
+                           'color':'#F15C80',
+                           'name': '安全隐患',
+                           'data': YH
+                       });
+
+                       SE.push({
+                           'color':'#E4D354',
+                           'name': '危险源',
+                           'data': SMS
+                       });
+
+                       SE.push({
+                           'color':'gray',
+                           'name': '整改通知书',
+                           'data': RF
+                       });
+
+                       _this.CT.setOptions({
+                           lang: {
+                               thousandsSep: ','
+                           }
+                       });
+
+                       var chart = _this.CT.chart('ALLcontainer', {
+                           chart: {
+                               type: 'column'
+                           },
+                           title: {
+                               text: '各部门安全隐患/危险源/整改通知书增长曲线'
+                           },
+                           subtitle: {
+                               text: ''
+                           },
+                           legend: {
+                               align: 'right',
+                               verticalAlign: 'middle',
+                               layout: 'vertical'
+                           },
+                           xAxis: {
+                               categories: CG,
+                               labels: {
+                                   x: -10
+                               }
+                           },
+                           yAxis: {
+                               allowDecimals: false,
+                               title: {
+                                   text: '增加数量'
+                               }
+                           },
+                           series: SE,
+                           responsive: {
+                               rules: [{
+                                   condition: {
+                                       maxWidth: 500
+                                   },
+                                   chartOptions: {
+                                       legend: {
+                                           align: 'center',
+                                           verticalAlign: 'bottom',
+                                           layout: 'horizontal'
+                                       },
+                                       yAxis: {
+                                           labels: {
+                                               align: 'left',
+                                               x: 0,
+                                               y: -5
+                                           },
+                                           title: {
+                                               text: null
+                                           }
+                                       },
+                                       subtitle: {
+                                           text: null
+                                       },
+                                       credits: {
+                                           enabled: false
+                                       }
+                                   }
+                               }]
+                           }
+                       });
+                   },null);
+            }
+        }});
+</script>
+</body>
+</html>

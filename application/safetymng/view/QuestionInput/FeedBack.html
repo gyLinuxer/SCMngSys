@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <div class="alert alert-success" role="alert"><strong>提示：</strong>您输入的安全信息我们已经收到，请等候我们的处理。</div>
+                        {neq name="Warning" value=""}<div class="alert alert-danger" role="alert"><strong>提示：</strong>{$Warning}</div>{/neq}
+                    </div>
+                </div>
+                <table border="1" bordercolor="gray" >
+                    <tr>
+                        <td style="width: 150px;" valign="top">
+                            <span style="font-size: large;color: #00A000;">安全信息标题:</span>
+                        </td>
+                        <td align="center;" >
+                            <span style="color: #0d7bdc;font-size: medium;">{$dataRow['QuestionTitle']}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 100px;" valign="top">
+                            <span style="font-size: large;color: #00A000;">安全信息来源:</span>
+                        </td>
+                        <td align="center;" >
+                            <span style="font-size: medium;">{$dataRow['QuestionSource']}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 100px;" valign="top">
+                            <span style="font-size: large;color: #00A000;">安全信息对象:</span>
+                        </td>
+                        <td align="center;" >
+                            <span style="font-size: medium;"><label class="label label-danger">{$dataRow['RelatedCorp']}</label></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 100px;" valign="top">
+                            <span style="font-size: large;color: #00A000;">问题依据:</span>
+                        </td>
+                        <td align="center;" >
+                            <span style="font-size: medium;">{$dataRow['Basis']}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 100px;" valign="top">
+                            <span style="font-size: large;color: #00A000;">发现人:</span>
+                        </td>
+                        <td align="center;">
+                            <span style="font-size: medium;">{$dataRow['Finder']}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 100px;" valign="top">
+                            <span style="font-size: large;color: #00A000;">发现时间:</span>
+                        </td>
+                        <td align="center;">
+                            <span style="font-size: medium;">{$dataRow['DateFound']}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 100px;" valign="top">
+                            <span style="font-size: large;color: #00A000;">安全信息描述:</span>
+                        </td>
+                        <td>
+                            <span>{$dataRow['QuestionInfo']|htmlspecialchars_decode}</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <span style="font-size: large;color: #00A000;">提交人:</span>
+                        </td>
+                        <td>
+                            <span style="margin-left: 10px;">{$dataRow['CreatorName']}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span style="font-size: large;color: #00A000;">提交时间:</span>
+                        </td>
+                        <td>
+                            <span style="margin-left: 10px;">{$dataRow['CreateTime']}</span>
+                        </td>
+                    </tr>
+                </table>
+
+        <!--end::Form-->
+
+
+</body>
+</html>

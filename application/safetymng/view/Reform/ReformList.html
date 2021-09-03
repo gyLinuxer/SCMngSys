@@ -1,0 +1,321 @@
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+
+              中国民用航空飞行学院洛阳分院　
+                       机务工程部　
+                        李光耀　
+                 email: gyLinuxer@163.com
+                    QQ: 447649795
+                  微信: 447649795
+-->
+
+    <meta charset="utf-8">
+    <title>安全管理系统v1.0</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="author" content="author">
+    <!-- 网页描述 -->
+    <meta name="description" content="hello">
+    <!-- 关键字使用","分隔 -->
+    <meta name="keywords" content="a,b,c">
+    <!-- 禁止浏览器从本地机的缓存中调阅页面内容 -->
+    <meta http-equiv="Pragma" content="no-cache">
+    <!-- 用来防止别人在框架里调用你的页面 -->
+    <meta http-equiv="Window-target" content="_top">
+    <!-- content的参数有all，none，index，noindex，follow，nofollow，默认是all -->
+    <meta name="robots" content="none">
+    <!-- 收藏图标 -->
+    <link rel="Shortcut Icon" href="favicon.ico" rel="external nofollow" >
+    <!-- 网页不会被缓存 -->
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <!-- 解决部分兼容性问题，如果安装了GCF，则使用GCF来渲染页面，如果未安装GCF，则使用最高版本的IE内核进行渲染。 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 页面按原比例显示 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--[if lt IE 9]>
+
+    <![endif]-->
+    <!-- The styles -->
+    <link id="bs-css" href="__PUBLIC__/css/bootstrap-cerulean.min.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/charisma-app.css" rel="stylesheet">
+    <link href='__PUBLIC__/bower_components/fullcalendar/dist/fullcalendar.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/fullcalendar/dist/fullcalendar.print.css' rel='stylesheet' media='print'>
+    <link href='__PUBLIC__/bower_components/chosen/chosen.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/colorbox/example3/colorbox.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+    <link href='__PUBLIC__/bower_components/bootstrap-tour/build/css/bootstrap-tour.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery.noty.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/noty_theme_default.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/elfinder.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/elfinder.theme.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery.iphone.toggle.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/uploadify.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/animate.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/doc.min.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/MyCss.css' rel='stylesheet'>
+    <link href='__PUBLIC__/css/jquery-ui.min.css' rel='stylesheet'>
+
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/bootstrap-editable.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/ui-dialog.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="__PUBLIC__/js/jquery.js"></script>
+    <script src="__PUBLIC__/js//bootstrap.js"></script>
+
+    <!-- include summernote css/js -->
+    <link href="__PUBLIC__/css/summernote.css" rel="stylesheet">
+    <script src="__PUBLIC__/js/summernote.js"></script>
+
+    <!-- library for cookie management -->
+    <script src="__PUBLIC__/js/jquery.cookie.js"></script>
+    <!-- calender plugin -->
+
+    <!-- data table plugin -->
+    <script src='__PUBLIC__/js/jquery.dataTables.min.js'></script>
+
+    <!-- select or dropdown enhancer -->
+    <script src="__PUBLIC__/bower_components/chosen/chosen.jquery.min.js"></script>
+    <!-- plugin for gallery image view -->
+    <script src="__PUBLIC__/bower_components/colorbox/jquery.colorbox-min.js"></script>
+    <!-- notification plugin -->
+    <script src="__PUBLIC__/js/jquery.noty.js"></script>
+    <!-- library for making tables responsive -->
+    <script src="__PUBLIC__/bower_components/responsive-tables/responsive-tables.js"></script>
+    <!-- tour plugin -->
+    <script src="__PUBLIC__/bower_components/bootstrap-tour/build/js/bootstrap-tour.min.js"></script>
+    <!-- star rating plugin -->
+    <!-- for iOS style toggle switch -->
+    <!-- autogrowing textarea plugin -->
+    <script src="__PUBLIC__/js/jquery.autogrow-textarea.js"></script>
+    <!-- multiple file upload plugin -->
+    <script src="__PUBLIC__/js/jquery.uploadify-3.1.min.js"></script>
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+    <script src="__PUBLIC__/js/jquery-ui.min.js"></script>
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+    <script src="__PUBLIC__/js//bootstrap-slider.min.js"></script>
+    <link href="__PUBLIC__/css/select2.min.css" rel="stylesheet" />
+    <script src="__PUBLIC__/js/select2.min.js"></script>
+    <link href="__PUBLIC__/css/bootstrap-datetimepicker.css" rel="stylesheet">
+    <script src="__PUBLIC__/js/dialog-plus-min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/js/jquery.treegrid.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/css/jquery.treegrid.css">
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/UEditor/ueditor.config.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/UEditor/ueditor.all.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="__PUBLIC__/UEditor/lang/zh-cn/zh-cn.js"></script>
+    <script src="__PUBLIC__/js/GY.js"></script>
+    <link href="__PUBLIC__/css/dialog.css" rel="stylesheet">
+    <script src="__PUBLIC__/js/dialog-plus.js"></script>
+    <script src="__PUBLIC__/layer/layer.js"></script>
+    <script src="__PUBLIC__/js/GY.js"></script>
+</head>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body class="container-full">
+<div class="form-group">
+    <div class="col-sm-12">
+        {neq name="Warning" value=""}<div class="alert alert-danger" role="alert"><strong>提示：</strong>{$Warning}</div>{/neq}
+    </div>
+</div>
+{php}
+    $TreeMng = new app\safetymng\controller\TreeMng();
+    $IsSuperCorp = $TreeMng->IsSuperCorp();
+{/php}
+<div class="row" style="">
+    <div class="col-sm-12">
+        <table class="table table-hover bootstrap-datatable datatable responsive">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th style="width: 150px;">整改通知单编号</th>
+                <th class="col-sm-3">标题</th>
+                <th  style="width: 80px;">责任单位</th>
+                <th>当前处理部门</th>
+                <th>当前状态</th>
+                <th>反馈状态</th>
+                <th>纠正证据</th>
+                <th>预防证据</th>
+                {eq name= "$IsSuperCorp" value="true"}
+                    <th>删除</th>
+                {/eq}
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="ReformList" id="vo"}
+            {php}
+                $RF = new app\safetymng\controller\Reform;
+                $showInfo =  $RF->GetReformMultiStatus($vo['id'],$vo);
+            {/php}
+            <tr>
+                <td>
+                    {$Count++}
+                </td>
+                <td>
+                    <span style="font-size: smaller;color: #00A000;">{$vo.Code}</span>
+                </td>
+                <td>
+
+                    <a href="#" JMP TaskID = "{$TaskID}" Code="RM{$vo.id}" rowId = "{$vo.id}">{$vo.ReformTitle}</a>
+
+                    <br/>
+                    {eq name="vo['ReformType']" value="SMS整改"}
+                        <label class="label label-warning" style="margin-left: 4px;"><span style="font-size: smaller;">{$vo.RelateCode} 危险源整改</span></label>
+                    {/eq}
+                    {eq name="vo['ReformType']" value="隐患整改"}
+                        <label class="label label-danger" style="margin-left: 4px;"><span style="font-size: smaller;">{$vo.RelateCode} 安全隐患整改</span></label>
+                    {/eq}
+                    {eq name= "$IsSuperCorp" value="true"}
+                    <div style="text-align: right;margin: 0px auto;">
+                        {php}
+                        $LabelRet  = $TreeMng->GetSubjectLabels('RF',$vo['id']);
+                        {/php}
+                        {volist name="LabelRet" id="vv"}
+                        <label class="label label-default" style="margin-left: 4px;"><span style="font-size: smaller;">{$vv.NodeName}</span></label>
+                        {/volist}
+                        <a RFID="{$vo['id']}" class="btn btn-xs btn-default" showLabelSubject style="margin-top: 4px;">+</a>
+                    </div>
+                    {/eq}
+                </td>
+                <td>
+                    {$vo.DutyCorp}
+                </td>
+                <td>
+
+                    {neq name= "$vo.CurDealCorp" value="$Think.session.Corp"}
+                        <label class="label label-warning">{$vo.CurDealCorp}</label>
+                    {/neq}
+                    {eq name= "$vo.CurDealCorp" value="$Think.session.Corp"}
+                        <label class="label label-default">{$vo.CurDealCorp}</label>
+                    {/eq}
+                </td>
+                <td>
+                    <label class="label label-{php}
+                            $RF = new app\safetymng\controller\Reform;
+
+                            echo $RF->GetReformStatusColor($vo['ReformStatus']);
+                     {/php}">
+                    {$vo.ReformStatus}
+                    </label>
+                </td>
+                <td>
+                    <label class="label label-{$showInfo['FeedBackInfoColor']}">{$showInfo['FeedBackInfo']}</label>
+                    <label class="label label-{$showInfo['FeedBackLeftDaysColor']}">{$showInfo['FeedBackLeftDays']}</label>
+                </td>
+                <td>
+                    <label class="label label-{$showInfo['CorrectiveInfoColor']}">{$showInfo['CorrectiveInfo']}</label>
+                    <label class="label label-{$showInfo['CorrectiveLeftDaysColor']}">{$showInfo['CorrectiveLeftDays']}</label>
+                </td>
+                <td>
+                    <label class="label label-{$showInfo['PrecautionInfoColor']}">{$showInfo['PrecautionInfo']}</label>
+                    <label class="label label-{$showInfo['PrecautionLeftDaysColor']}">{$showInfo['PrecautionLeftDays']}</label>
+                </td>
+
+                {eq name= "$IsSuperCorp" value="true"}
+                <td>
+                    <input type="checkbox" EnableDel style="margin-right: 10px;" rowId = "{$vo.id}" /><a BtnID="DelBtn{$vo.id}" DelBtn class="btn btn-sm btn-danger" rowId="{$vo.id}" disabled>删除</a>
+                </td>
+                {/eq}
+
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+        {eq name = "showZJBtn" value="YES"}
+            <div class="row">
+                <a class="btn btn-success " style="margin-left: 86%" ZJ >直接下发整改通知书</a>
+            </div>
+        {/eq}
+</div>
+<script>
+    var Count = {$ReformCount|default='0'};
+    var TabCount = 1;
+
+    $(function () {
+        //$("#aReformList",window.parent.document).text('整改通知书列表'+'<span class="badge">'+Count+'</span>');
+        //$("#aReformList",window.parent.document).empty();
+       // $("#aReformList",window.parent.document).text('关联的整改通知书');
+        //$('<span class="badge">'+Count+'</span>').appendTo($("#aReformList",window.parent.document));
+        $('a[XFZG]').click(function () {
+            window.location = '/SafetyMng/Reform/SendReform/TaskID/'+$(this).attr('TaskID')+'/ReformID/'+$(this).attr('rowID');
+        });
+
+
+        $('a[TXTZS],a[JMP]').click(function () {
+            PrivCode = $(this).attr('Code');
+            TaskID = $(this).attr('TaskID');
+            if($('#li'+PrivCode,window.parent.document).length ==0){
+
+               window.open('/SafetyMng/Reform/Index/TaskID/'+TaskID+'/ReformID/'+$(this).attr("rowId")+'/opType/Mdf');
+            }
+
+        });
+
+        $('a[ZJ]').click(function () {
+            window.open('/SafetyMng/Reform/Index/TaskID/{$TaskID}');
+        });
+
+       $('input[EnableDel]').click(function () {
+           if($(this).is(":checked")){
+               $("a[BtnID=DelBtn"+$(this).attr('rowId')+"]").removeAttr('disabled');
+           }else{
+               $("a[BtnID=DelBtn"+$(this).attr('rowId')+"]").attr('disabled','disabled');
+           }
+       });
+
+        $('a[CLoseBtn]').click(function () {
+            $TaskID = $(this).attr('TaskID');
+            $rowID = $(this).attr('rowID');
+            var dd = dialog({
+                    title: '提示',
+                    content: '您点击已阅之后，任务将会被关闭？确定吗？',
+                    width:440,
+                    left:300,
+                    top:300,
+                    okValue:'确定',
+                    ok: function () {
+                        window.location = '/SafetyMng/Reform/SendReform/TaskID/'+$TaskID+'/ReformID/'+$rowID;
+                    },
+                    cancelValue:'我再看看',
+                    cancel:function () {
+
+                    }
+                    }
+            );
+            dd.showModal();
+        });
+
+        {eq name= "$IsSuperCorp" value="true"}
+            $('a[DelBtn]').click(function () {
+                layer.open({
+                    title:'删除整改通知书',
+                    type: 2,
+                    content: "/SafetyMng/Reform/showDeleteReform/ReformID/"+$(this).attr("rowId"),
+                    area: ['400px', '400px']
+                });
+            });
+        {/eq}
+            $('a[showLabelSubject]').click(function () {
+                layer.open({
+                    type: 2,
+                    title: false,
+                    area: ['800px', '600px'],
+                    shade: 0.8,
+                    closeBtn: 0,
+                    scrollbar: false,
+                    shadeClose: true,
+                    content: '/SafetyMng/TreeMng/showLabelSubject/Type/RF/SubjectID/'+$(this).attr('RFID'),
+                    end:function () {
+                        window.location.reload();
+                    }
+                });
+            });
+
+
+    });
+</script>
+</body>
+</html>

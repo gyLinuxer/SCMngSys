@@ -1,0 +1,262 @@
+{__NOLAYOUT__}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安全管理系统</title>
+
+    <link href="__PUBLIC__/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <link href='__PUBLIC__/bower_components/responsive-tables/responsive-tables.css' rel='stylesheet'>
+
+    <link href='__PUBLIC__/css/MyCss.css' rel='stylesheet'>
+
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+
+    <link href="__PUBLIC__/css/bootstrap-editable.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/ui-dialog.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/zTreeStyle/zTreeStyle.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="__PUBLIC__/js/jquery.js"></script>
+    <script src="__PUBLIC__/js/bootstrap.js"></script>
+    <script src="__PUBLIC__/js/gyComm.js"></script>
+
+
+
+
+    <script src="__PUBLIC__/js/jquery-3.1.1.min.js"></script>
+    <script src="__PUBLIC__/js/bootstrap.min.js"></script>
+
+    <script src="__PUBLIC__/js/vue.js"></script>
+    <script src="__PUBLIC__/js/axios.min.js"></script>
+
+    <script src="__PUBLIC__/js/jquery.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/el-index2155/el-css.css">
+    <!-- 引入组件库 -->
+    <script src="__PUBLIC__/el-index2155/el-index.js"></script>
+    <style>
+        .select2-container .select2-selection--single{
+            height:36px;
+            line-height: 36px;
+        }
+        .ztree li span.button.add {margin-left:2px; margin-right: -1px; background-position:-144px 0; vertical-align:top; *vertical-align:middle}
+
+    </style>
+
+</head>
+<body>
+<div id="app">
+   <div class="row" DTRow style="margin-top: 10px;">
+       <table id="table" class="table table-hover"
+              data-toggle="table"
+              data-classes="table table-hover"
+              data-show-columns="true"
+              data-striped="true"
+              data-show-toggle="true"
+              data-search="true"
+              data-show-refresh="true"
+              data-toolbar="#toolbar"
+              style="width: 150%;min-width: 150%;margin-left: 10px;"
+       >
+
+           <thead>
+           <tr>
+               <th>序号</th>
+               <th>隐患代码</th>
+               <th>隐患等级</th>
+               <th>隐患状态</th>
+               <th>隐患来源</th>
+               <th>依据风险</th>
+               <th>隐患描述</th>
+               <th>隐患危害</th>
+               <th>识别部门</th>
+               <th>责任部门</th>
+               <th>隐患等级确定人</th>
+               <th>隐患等级确定时间</th>
+               <th>隐患措施制定者</th>
+               <th>直接原因</th>
+               <th>根本原因</th>
+               <th>纠正措施</th>
+               <th>预防措施</th>
+               <th>措施制定人</th>
+               <th>措施制定时间</th>
+               <th>措施审核人</th>
+               <th>措施审核时间</th>
+               <th>措施审核结果</th>
+               <th>措施措施拒绝理由</th>
+               <th>整改通知书</th>
+               <th>隐患内部代码</th>
+               <th>关联问题</th>
+           </tr>
+           </thead>
+           <tbody>
+           {volist name="AQYHList" id="vo"}
+           <tr>
+               <td>{++$QsCnt}</td>
+               <td><label class="label label-warning">{$vo.YHCode}</label></td>
+               <td>
+                   {php}
+                        $lbType = 'warning';
+                        if(isset($vo['YHDJ']) && $vo['YHDJ']=='重大隐患'){
+                               $lbType =  'danger';
+                        }
+                   {/php}
+                   {neq name="vo['YHDJ']" value=""}
+                    <label class="label label-{$lbType}"> {$vo.YHDJ}</label>
+                   {/neq}
+               </td>
+               <td>{$vo.Status}</td>
+               <td>
+                   <span style="color: #00A000">{$vo.YHSource}</span>
+               </td>
+               <td>
+                   <el-popover
+                           placement="right"
+                           width="400"
+                           trigger="click"
+                           @show="showFX('{$vo.FXCode}')"
+                   >
+                       <el-descriptions class="margin-top"  :column="2" size="small" border>
+                           <el-descriptions-item>
+                               <template slot="label">
+                                   <i class="el-icon-user"></i>
+                                   风险代码
+                               </template>
+                               {{curFX.FXCode}}
+                           </el-descriptions-item>
+
+                           <el-descriptions-item>
+                               <template slot="label">
+                                   <i class="el-icon-location-outline"></i>
+                                   风险类型
+                               </template>
+                               {{curFX.FXJudgeType}}
+                           </el-descriptions-item>
+                           <el-descriptions-item>
+                               <template slot="label">
+                                   <i class="el-icon-tickets"></i>
+                                   识别人
+                               </template>
+                               {{curFX.CreaterName}}
+                           </el-descriptions-item>
+                           <el-descriptions-item>
+                               <template slot="label">
+                                   <i class="el-icon-office-building"></i>
+                                   识别时间
+                               </template>
+                               {{curFX.CreateTime}}
+                           </el-descriptions-item>
+                           <el-descriptions-item>
+                               <template slot="label">
+                                   <i class="el-icon-tickets"></i>
+                                   判定人
+                               </template>
+                               {{curFX.JudgePerson}}
+                           </el-descriptions-item>
+                           <el-descriptions-item>
+                               <template slot="label">
+                                   <i class="el-icon-office-building"></i>
+                                   判定时间
+                               </template>
+                               {{curFX.JudgeTime}}
+                           </el-descriptions-item>
+                           <el-descriptions-item>
+                               <template slot="label">
+                                   <i class="el-icon-mobile-phone"></i>
+                                   责任部门
+                               </template>
+                               <span v-for="(item,i) in curFX.DutyCorps" style="margin-left: 5px;">{{item.Corp}}</span>
+                           </el-descriptions-item>
+                       </el-descriptions>
+                       <el-link slot="reference">
+                           {$vo.FXCode}
+                       </el-link >
+                   </el-popover>
+               </td>
+               <td>{$vo.YHMS}</td>
+               <td>{$vo.WHMS}</td>
+               <td>{$vo.ClaimCorp}</td>
+               <td>{$vo.DutyCorp}</td>
+               <td>{$vo.YHDJClaimer}</td>
+               <td>{$vo.YHDJClaimTime}</td>
+               <td>{$vo.WhoMakeCS}</td>
+               <td>{$vo.ZJYY}</td>
+               <td>{$vo.GBYY}</td>
+               <td>{$vo.JZCS}</td>
+               <td>{$vo.YFCS}</td>
+               <td>{$vo.CSCreater}</td>
+               <td>{$vo.CSCreateTime}</td>
+               <td>{$vo.CSEvalerName}</td>
+               <td>{$vo.CSEvalerTime}</td>
+               <td>{$vo.CSEvalIsOK}</td>
+               <td>{$vo.CSEvalIsOK}</td>
+               <td>{$vo.CSNotOKCause}</td>
+               <td>{$vo.YHCoreCode}</td>
+               <td><a onclick="window.open('/SafetyMng/QuestionInput/showQuestionInfoWithoutLayout/id/{$vo.QuestionID}');">查看</a></td>
+           </tr>
+           {/volist}
+           </tbody>
+       </table>
+   </div>
+</div>
+
+
+<!-- Mainly scripts -->
+<script src="__PUBLIC__/js/jquery-3.1.1.min.js"></script>
+<script src="__PUBLIC__/js/bootstrap.min.js"></script>
+<script src="__PUBLIC__/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="__PUBLIC__/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+<!-- Custom and plugin javascript -->
+<script src="__PUBLIC__/js/inspinia.js"></script>
+<script src="__PUBLIC__/js/plugins/pace/pace.min.js"></script>
+<script src="__PUBLIC__/js/jquery.ztree.all.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.ztree.exhide.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/fuzzysearch.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.ztree.exedit.js"></script>
+
+<script src="__PUBLIC__/js/select2.min.js"></script>
+<script>
+    new Vue({
+        el : '#app',
+        data () {
+            return {
+                curFX:{
+
+                }
+            }
+        },
+        methods : {
+            gyAjaxPost(url, data, onSuccess, onError) {
+                var _this = this;
+                axios({
+                    method: 'post',
+                    url: url,
+                    data: data
+                }).then(function (response) {
+                    onSuccess(_this, response);
+                }).catch(function (error) {
+                    if (onError != null)
+                        onError(_this, error);
+                });
+            },
+            showFX(code){
+                this.GetFXRow(code);
+            },
+            GetFXRow(code){
+                var _t =this;
+                this.gyAjaxPost("/SafetyMng/FXMng/GetFXByCode",
+                    'FXCode='+code,
+                    function (_this,response) {
+                        _t.curFX  = response.data[0];
+                    },null);
+            },
+
+        }});
+</script>
+</body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+{php}
+$TreeMng = new app\safetymng\controller\TreeMng();
+$IsSuperCorp = $TreeMng->IsSuperCorp();
+$IsLeader = (session('CorpRole')=='领导');
+$MyCorp = $TreeMng->GetCorp();
+{/php}
+<body class="container-full">
+<ul id="myTab" class="nav nav-tabs" >
+    <li id="ZFRWTab" class="active">
+        <a href="#ZFRW"  role="tab" data-toggle="tab">
+            <span>执法任务</span>
+            <span class="badge">{php}echo count($ZFRWList);{/php}</span>
+        </a>
+    </li>
+    <li id="UNRECVTab" class="">
+        <a href="#UNRECV" aria-controls="closetab" role="tab" data-toggle="tab">
+            <span>待接收任务️</span>
+            <span class="badge">{php}echo count($unRecvList);{/php}</span>
+        </a>
+    </li>
+    <li id="ZGRWTab" class="">
+        <a href="#ZGRW"  role="tab" data-toggle="tab">
+            <span>整改任务</span>
+            <span class="badge">{php}echo count($ZGRWList);{/php}</span>
+        </a>
+    </li>
+</ul>
+
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane " id="UNRECV" style="">
+        <div class="col-sm-12" style="margin-top: 5px;">
+            <table class="table table-hover bootstrap-datatable datatable responsive">
+                <thead>
+                <tr>
+                    <th>编号</th>
+                    <th>任务类型</th>
+                    <th>任务名称</th>
+                    <th>接收部门</th>
+                    <th>来自</th>
+                    {eq name="$Think.session.CorpRole" value="领导"}
+                    <th>分配任务</th>
+                    {/eq}
+                    <th>当前状态</th>
+                    <th>关闭</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="unRecvList" id="vo"}
+
+                <tr>
+                    <td>
+                        {++$RFCnt0}
+                    </td>
+                    <td>
+                        {php}
+                        $TC = new app\safetymng\controller\TaskCore;
+                        $color = "";
+                        $TaskType = "";
+                        if($vo["TaskType"]== $TC::QUESTION_SUBMITED ){
+                        $color = "label-default";
+                        $TaskType = "执法任务";
+                        }else if($vo["TaskType"]==$TC::QUESTION_REFORM){
+                        $color = "label-warning";
+                        $TaskType = "执法任务";
+                        }else if($vo["TaskType"]==$TC::REFORM_SUBTASK){
+                        $color = "label-danger";
+                        $TaskType = "整改任务";
+                        }else if($vo["TaskType"]==$TC::QUESTION_FAST_REFORM){
+                        $color = "label-danger";
+                        $TaskType = "执法任务";
+                        }else if($vo["TaskType"]==$TC::ONLINE_CheckTask){
+                        $color = "label-success";
+                        $TaskType = "法定自查";
+                        }
+                        echo  "<label class=\"label ".$color."\">".$TaskType."</span>";
+                        {/php}
+
+                    </td>
+                    <td class="col-sm-4">
+                        <a  href="{php} echo $TC::GetTaskMngUrlByTaskID($vo['id']);{/php}"  style="color: #00A000;" rowId = "{$vo.id}" showQuestionMng TaskID = "{$vo.id}">{$vo.TaskName}</a>
+                        <br/>
+                        <div style="text-align: right;margin: 0px auto;">
+                            <span style="font-size: xx-small;color: #0e90d2;">{$vo.TaskSource}</span>
+                        </div>
+
+                        <br>
+                        {php}
+                        $DCntList = $TC::GetAllCntByTaskID($vo['id']);
+                        {/php}
+                        <label class="label label-default" style="margin-left: 4px;"><span style="font-size: smaller;">风险:{$DCntList['FX']['All']-$DCntList['FX']['unClose']}/{$DCntList['FX']['All']}</span></label>
+                        <label class="label label-warning" style="margin-left: 4px;"><span style="font-size: smaller;">危险源:{$DCntList['WXY']['All']-$DCntList['WXY']['unClose']}/{$DCntList['WXY']['All']}</span></label>
+                        <label class="label label-danger" style="margin-left: 4px;"><span style="font-size: smaller;">安全隐患:{$DCntList['AQYH']['All']-$DCntList['AQYH']['unClose']}/{$DCntList['AQYH']['All']}</span></label>
+                        <label class="label label-info" style="margin-left: 4px;"><span style="font-size: smaller;">整改通知书:{$DCntList['RF']['All']-$DCntList['RF']['unClose']}/{$DCntList['RF']['All']}</span></label>
+                        <br/>
+                        {eq name= "$IsSuperCorp" value="true"}
+                        <br/>
+                        <div style="text-align: right;margin: 0px auto;">
+                            {php}
+                            $LabelRet  = $TreeMng->GetSubjectLabels('Task',$vo['id']);
+                            {/php}
+                            {volist name="LabelRet" id="vv"}
+                            <label class="label label-default" style="margin-left: 4px;"><span style="font-size: smaller;">{$vv.NodeName}</span></label>
+                            {/volist}
+                            <a TaskID="{$vo.id}" class="btn btn-xs btn-default" showLabelSubject style="margin-top: 4px;">+</a>
+                        </div>
+                        {/eq}
+                    </td>
+                    <td>
+                        {eq name="$vo.ReciveCorp" value="$MyCorp"}
+                        <label class="label label-danger">{$vo.ReciveCorp} </label>
+                        {/eq}
+                        {neq name="$vo.ReciveCorp" value="$MyCorp"}
+                        <label class="label label-default">{$vo.ReciveCorp} </label>
+                        {/neq}
+
+                    </td>
+                    <td>
+                        {$vo.SenderName}/{$vo.SenderCorp}
+                    </td>
+
+                    {eq name="$Think.session.CorpRole" value="领导"}
+
+                    <td>
+                        {if condition= "$vo.GroupMember == ''"}
+                        <a class="btn btn-default btn-sm" TaskAlign rowId = "{$vo.id}">分配任务</a>
+                        {else/}
+                        <span style="color: #48484c;">{$vo.GroupMember}</span><a class="btn btn-default btn-xs" TaskAlign rowId = "{$vo.id}">M</a>
+                        {/if}
+                    </td>
+                    {/eq}
+                    <td>
+                        {$vo.Status}
+                    </td>
+                    <td>
+                        <a class="btn btn-info btn-sm" CloseTask rowId = "{$vo.id}">关闭</a>
+                    </td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="tab-pane active" id="ZFRW" style="">
+        <div class="col-sm-12" style="margin-top: 5px;"">
+            <table class="table table-hover bootstrap-datatable datatable responsive">
+                <thead>
+                <tr>
+                    <th>编号</th>
+                    <th>任务类型</th>
+                    <th>任务名称</th>
+                    <th>接收部门</th>
+                    <th>来自</th>
+                    {eq name="$Think.session.CorpRole" value="领导"}
+                    <th>分配任务</th>
+                    {/eq}
+                    <th>当前状态</th>
+                    <th>关闭</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="ZFRWList" id="vo"}
+
+                <tr>
+                    <td>
+                        {++$RFCnt1}
+                    </td>
+                    <td>
+                        {php}
+                        $TC = new app\safetymng\controller\TaskCore;
+                        $color = "";
+                        $TaskType = "";
+                        if($vo["TaskType"]== $TC::QUESTION_SUBMITED ){
+                        $color = "label-default";
+                        $TaskType = "执法任务";
+                        }else if($vo["TaskType"]==$TC::QUESTION_REFORM){
+                        $color = "label-warning";
+                        $TaskType = "执法任务";
+                        }else if($vo["TaskType"]==$TC::REFORM_SUBTASK){
+                        $color = "label-danger";
+                        $TaskType = "整改任务";
+                        }else if($vo["TaskType"]==$TC::QUESTION_FAST_REFORM){
+                        $color = "label-danger";
+                        $TaskType = "执法任务";
+                        }else if($vo["TaskType"]==$TC::ONLINE_CheckTask){
+                        $color = "label-success";
+                        $TaskType = "法定自查";
+                        }
+                        echo  "<label class=\"label ".$color."\">".$TaskType."</span>";
+                        {/php}
+
+                    </td>
+                    <td class="col-sm-4">
+                        <a  href="{php} echo $TC::GetTaskMngUrlByTaskID($vo['id']);{/php}"  style="color: #00A000;" rowId = "{$vo.id}" showQuestionMng TaskID = "{$vo.id}">{$vo.TaskName}</a>
+                        <br/>
+                        <div style="text-align: right;margin: 0px auto;">
+                            <span style="font-size: xx-small;color: #0e90d2;">{$vo.TaskSource}</span>
+                        </div>
+
+                        <br>
+                        {php}
+                        $DCntList = $TC::GetAllCntByTaskID($vo['id']);
+                        {/php}
+                        <label class="label label-default" style="margin-left: 4px;"><span style="font-size: smaller;">风险:{$DCntList['FX']['All']-$DCntList['FX']['unClose']}/{$DCntList['FX']['All']}</span></label>
+                        <label class="label label-warning" style="margin-left: 4px;"><span style="font-size: smaller;">危险源:{$DCntList['WXY']['All']-$DCntList['WXY']['unClose']}/{$DCntList['WXY']['All']}</span></label>
+                        <label class="label label-danger" style="margin-left: 4px;"><span style="font-size: smaller;">安全隐患:{$DCntList['AQYH']['All']-$DCntList['AQYH']['unClose']}/{$DCntList['AQYH']['All']}</span></label>
+                        <label class="label label-info" style="margin-left: 4px;"><span style="font-size: smaller;">整改通知书:{$DCntList['RF']['All']-$DCntList['RF']['unClose']}/{$DCntList['RF']['All']}</span></label>
+                        <br/>
+                        {eq name= "$IsSuperCorp" value="true"}
+                        <br/>
+                        <div style="text-align: right;margin: 0px auto;">
+                            {php}
+                            $LabelRet  = $TreeMng->GetSubjectLabels('Task',$vo['id']);
+                            {/php}
+                            {volist name="LabelRet" id="vv"}
+                            <label class="label label-default" style="margin-left: 4px;"><span style="font-size: smaller;">{$vv.NodeName}</span></label>
+                            {/volist}
+                            <a TaskID="{$vo.id}" class="btn btn-xs btn-default" showLabelSubject style="margin-top: 4px;">+</a>
+                        </div>
+                        {/eq}
+                    </td>
+                    <td>
+                        {eq name="$vo.ReciveCorp" value="$MyCorp"}
+                        <label class="label label-danger">{$vo.ReciveCorp} </label>
+                        {/eq}
+                        {neq name="$vo.ReciveCorp" value="$MyCorp"}
+                        <label class="label label-default">{$vo.ReciveCorp} </label>
+                        {/neq}
+
+                    </td>
+                    <td>
+                        {$vo.SenderName}/{$vo.SenderCorp}
+                    </td>
+
+                    {eq name="$Think.session.CorpRole" value="领导"}
+
+                    <td>
+                        {if condition= "$vo.GroupMember == ''"}
+                        <a class="btn btn-default btn-sm" TaskAlign rowId = "{$vo.id}">分配任务</a>
+                        {else/}
+                        <span style="color: #48484c;">{$vo.GroupMember}</span><a class="btn btn-default btn-xs" TaskAlign rowId = "{$vo.id}">M</a>
+                        {/if}
+                    </td>
+                    {/eq}
+                    <td>
+                        {$vo.Status}
+                    </td>
+                    <td>
+                        <a class="btn btn-info btn-sm" CloseTask rowId = "{$vo.id}">关闭</a>
+                    </td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="tab-pane" id="ZGRW" style="">
+        <div class="col-sm-12" style="margin-top: 5px;">
+            <table class="table table-hover bootstrap-datatable datatable responsive">
+                <thead>
+                <tr>
+                    <th>编号</th>
+                    <th>任务类型</th>
+                    <th>任务名称</th>
+                    <th>接收部门</th>
+                    <th>来自</th>
+                    {eq name="$Think.session.CorpRole" value="领导"}
+                    <th>分配任务</th>
+                    {/eq}
+                    <th>当前状态</th>
+                    <th>关闭</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="ZGRWList" id="vo"}
+
+                <tr>
+                    <td>
+                        {++$RFCnt2}
+                    </td>
+                    <td>
+                        {php}
+                        $TC = new app\safetymng\controller\TaskCore;
+                        $color = "";
+                        $TaskType = "";
+                        if($vo["TaskType"]== $TC::QUESTION_SUBMITED ){
+                        $color = "label-default";
+                        $TaskType = "执法任务";
+                        }else if($vo["TaskType"]==$TC::QUESTION_REFORM){
+                        $color = "label-warning";
+                        $TaskType = "执法任务";
+                        }else if($vo["TaskType"]==$TC::REFORM_SUBTASK){
+                        $color = "label-danger";
+                        $TaskType = "整改任务";
+                        }else if($vo["TaskType"]==$TC::QUESTION_FAST_REFORM){
+                        $color = "label-danger";
+                        $TaskType = "执法任务";
+                        }else if($vo["TaskType"]==$TC::ONLINE_CheckTask){
+                        $color = "label-success";
+                        $TaskType = "法定自查";
+                        }
+                        echo  "<label class=\"label ".$color."\">".$TaskType."</span>";
+                        {/php}
+
+                    </td>
+                    <td class="col-sm-4">
+                        <a  href="{php} echo $TC::GetTaskMngUrlByTaskID($vo['id']);{/php}"  style="color: #00A000;" rowId = "{$vo.id}" showQuestionMng TaskID = "{$vo.id}">{$vo.TaskName}</a>
+                        <br/>
+                        <div style="text-align: right;margin: 0px auto;">
+                            <span style="font-size: xx-small;color: #0e90d2;">{$vo.TaskSource}</span>
+                        </div>
+
+                        <br>
+                        {php}
+                        $DCntList = $TC::GetAllCntByTaskID($vo['id']);
+                        {/php}
+                        <label class="label label-default" style="margin-left: 4px;"><span style="font-size: smaller;">风险:{$DCntList['FX']['All']-$DCntList['FX']['unClose']}/{$DCntList['FX']['All']}</span></label>
+                        <label class="label label-warning" style="margin-left: 4px;"><span style="font-size: smaller;">危险源:{$DCntList['WXY']['All']-$DCntList['WXY']['unClose']}/{$DCntList['WXY']['All']}</span></label>
+                        <label class="label label-danger" style="margin-left: 4px;"><span style="font-size: smaller;">安全隐患:{$DCntList['AQYH']['All']-$DCntList['AQYH']['unClose']}/{$DCntList['AQYH']['All']}</span></label>
+                        <label class="label label-info" style="margin-left: 4px;"><span style="font-size: smaller;">整改通知书:{$DCntList['RF']['All']-$DCntList['RF']['unClose']}/{$DCntList['RF']['All']}</span></label>
+                        <br/>
+                        {eq name= "$IsSuperCorp" value="true"}
+                        <br/>
+                        <div style="text-align: right;margin: 0px auto;">
+                            {php}
+                            $LabelRet  = $TreeMng->GetSubjectLabels('Task',$vo['id']);
+                            {/php}
+                            {volist name="LabelRet" id="vv"}
+                            <label class="label label-default" style="margin-left: 4px;"><span style="font-size: smaller;">{$vv.NodeName}</span></label>
+                            {/volist}
+                            <a TaskID="{$vo.id}" class="btn btn-xs btn-default" showLabelSubject style="margin-top: 4px;">+</a>
+                        </div>
+                        {/eq}
+                    </td>
+                    <td>
+                        {eq name="$vo.ReciveCorp" value="$MyCorp"}
+                        <label class="label label-danger">{$vo.ReciveCorp} </label>
+                        {/eq}
+                        {neq name="$vo.ReciveCorp" value="$MyCorp"}
+                        <label class="label label-default">{$vo.ReciveCorp} </label>
+                        {/neq}
+
+                    </td>
+                    <td>
+                        {$vo.SenderName}/{$vo.SenderCorp}
+                    </td>
+
+                    {eq name="$Think.session.CorpRole" value="领导"}
+
+                    <td>
+                        {if condition= "$vo.GroupMember == ''"}
+                        <a class="btn btn-default btn-sm" TaskAlign rowId = "{$vo.id}">分配任务</a>
+                        {else/}
+                        <span style="color: #48484c;">{$vo.GroupMember}</span><a class="btn btn-default btn-xs" TaskAlign rowId = "{$vo.id}">M</a>
+                        {/if}
+                    </td>
+                    {/eq}
+                    <td>
+                        {$vo.Status}
+                    </td>
+                    <td>
+                        <a class="btn btn-info btn-sm" CloseTask rowId = "{$vo.id}">关闭</a>
+                    </td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+        $("a[TaskAlign]").bind('click',function () {
+            layer.open({
+                title:'任务分配',
+                type: 2,
+                content: "/SafetyMng/TaskCore/showTaskAlign/TaskID/"+$(this).attr("rowId"),
+                area: ['300px', '500px'],
+                end:function () {
+                    window.location.reload();
+                }
+            });
+        });
+
+
+        $("a[CloseTask]").bind('click',function () {
+            layer.open({
+                title:'关闭任务',
+                type: 2,
+                shadeClose: true,
+                content: "/SafetyMng/TaskCore/showCloseTask/TaskID/"+$(this).attr("rowId"),
+                area: ['300px', '260px'],
+                end:function () {
+                    parent.window.location.reload();
+                }
+            });
+        });
+
+            $('a[showLabelSubject]').click(function () {
+                layer.open({
+                    type: 2,
+                    title: false,
+                    area: ['800px', '600px'],
+                    shade: 0.8,
+                    closeBtn: 0,
+                    scrollbar: false,
+                    shadeClose: true,
+                    content: '/SafetyMng/TreeMng/showLabelSubject/Type/Task/SubjectID/'+$(this).attr('TaskID'),
+                    end:function () {
+                        window.location.reload();
+                    }
+                });
+            });
+
+
+
+        });
+</script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据查询</title>
+    <script src="__PUBLIC__/js/vue.js"></script>
+    <script src="__PUBLIC__/js/axios.min.js"></script>
+    <style>
+        div[DTRow] {
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body class="container-fluid">
+<datalist id="QsSourceList">
+    {volist name="QsSourceList" id="v"}
+    <option value="{$v.SourceName}">{$v.CodePre}</option>
+    {/volist}
+</datalist>
+<datalist id="CorpList">
+    {volist name="CorpList" id="v"}
+    <option value="{$v.Corp}">{$v.id}</option>
+    {/volist}
+</datalist>
+<datalist id="CorpList2">
+
+</datalist>
+<datalist id="UserList">
+    {volist name="UserList" id="v"}
+    <option value="{$v.Name}">{$v.Corp}</option>
+    {/volist}
+</datalist>
+{php}
+$TreeMng = new app\safetymng\controller\TreeMng();
+{/php}
+<div id="myTabContent" class="tab-content">
+
+    <div class="tab-pane active" id="home1" style="">
+        <div class="form-group">
+
+        <div class="alert alert-success col-sm-12" role="alert"><strong>提示：</strong>安全信息查询</div>
+
+        </div>
+         <form id="QsForm" action="/SafetyMng/lgyQuery/QsQuery.html" method="post" enctype="application/x-www-form-urlencoded">
+             <input type="hidden" id="QsLabelCalc" name="QsLabelCalc" value="">
+            <div class="col-sm-10 col-sm-offset-1" style="margin-bottom: 10px;">
+                <div class="row" DTRow>
+                    <div class="col-sm-1"><label class="control-label" for="QsSource">问信息来源:</label></div>
+                    <div class="col-sm-4"><input class="form-control" name="QsSource" id="QsSource" list="QsSourceList" value="{$Think.post.QsSource}"/></div>
+                    <div class="col-sm-1 col-sm-offset-1"><label>标题:</label></div>
+                    <div class="col-sm-4"><input class="form-control" name="QsTitle" id="QsTitle" value="{$Think.post.QsTitle}"/></div>
+                    <div class="col-sm-1"><a QsSearch class="btn btn-warning">搜索</a></div>
+                </div>
+                <div class="row" DTRow>
+                    <div class="col-sm-1"><label class="control-label" for="QsInfo">描述:</label></div>
+                    <div class="col-sm-4"><input class="form-control" name="QsInfo" id="QsInfo" value="{$Think.post.QsInfo}"/></div>
+                    <div class="col-sm-1 col-sm-offset-1"><label>发现人:</label></div>
+                    <div class="col-sm-4"><input class="form-control" list="UserList" name="Finder" id="Finder" value="{$Think.post.Finder}"/></div>
+                </div>
+                <div class="row" DTRow>
+                    <div class="col-sm-1"><label class="control-label" for="DutyCorp1">对应部门:</label></div>
+                    <div class="col-sm-2"><input class="form-control" name="DutyCorp1" id="DutyCorp1" autocomplete="off" placeholder="父部门" list="CorpList" value="{$Think.post.DutyCorp1}" /></div>
+                    <div class="col-sm-2"><input class="form-control" name="DutyCorp2" id="DutyCorp2"  autocomplete="off" placeholder="子部门" list="CorpList2" value="{$Think.post.DutyCorp2}" /></div>
+                    <div class="col-sm-1 col-sm-offset-1"><label>发现日期:</label></div>
+                    <div class="col-sm-2"><input Date class="form-control" name="SDate" id="SDate" value="{$Think.post.SDate}"/></div>
+                    <div class="col-sm-2"><input Date class="form-control" name="EDate" id="EDate" value="{$Think.post.EDate}"/></div>
+                </div>
+                <div class="row" DTRow style="min-height: 30px;height: 30px;">
+                    <div class="col-sm-1"><label class="control-label" for="DutyCorp1"><span style="color: #00A000;">标签系统:</span></label></div>
+                    <div class="col-sm-10 wrapper" >
+                        <div  id="QsLabelForCalcList" >
+
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <a QsID="{$dataRow['id']}" class="btn btn-xs btn-success" showLabelSelectForCalc style="margin-top: 4px;">+</a>
+                    </div>
+
+                </div>
+            </div>
+         </form>
+        <div class="row" DTRow style="margin-top: 10px;">
+            <table id="table" class="table table-hover"
+                   data-toggle="table"
+            data-classes="table table-hover"
+            data-show-columns="true"
+            data-striped="true"
+            data-show-toggle="true"
+            data-search="true"
+            data-show-refresh="true"
+            data-toolbar="#toolbar"
+            data-height="500">
+
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th class="col-sm-2">问题来源</th>
+                    <th class="col-sm-4">问题名称</th>
+                    <th>问题部门</th>
+                    <th>发现人</th>
+                    <th>发现日期</th>
+                    <th>关联的通知书</th>
+                </tr>
+                </thead>
+                <tbody>
+                {php}
+                $CT = new app\safetymng\controller\CheckTask();
+                $TC = new app\safetymng\controller\TaskCore();
+                $RF = new app\safetymng\controller\Reform();
+                {/php}
+                {volist name="Qs_Ret" id="vo"}
+                <tr>
+                    <td>{++$QsCnt}</td>
+                    <td>{$vo.QuestionSource}</td>
+                    <td>
+                        <a QsHover TaskID="{$vo.TaskID}" QsID="{$vo.id}">{$vo.QuestionTitle}</a>
+                        <br/>
+                        <div style="text-align: right;margin: 0px auto;">
+                            {php}
+                            $LabelRet  = $TreeMng->GetSubjectLabels('Qs',$vo['id']);
+                            {/php}
+                            {volist name="LabelRet" id="vv"}
+                                <label class="label label-default" style="margin-left: 4px;"><span style="font-size: smaller;">{$vv.NodeName}</span></label>
+                            {/volist}
+                        </div>
+                    </td>
+                    <td>{$vo.RelatedCorp}</td>
+                    <td>{$vo.Finder}</td>
+                    <td>{$vo.DateFound}</td>
+                    <td>
+                        {php}
+                            $RF_Related = $RF->GetReformListByQuestionID($vo['id']);
+                        {/php}
+                        {volist name="RF_Related" id = "vv"}
+                            <a style="color: brown;" RFID = "{$vv.id}"  PTaskID = "{$vv.ParentTaskID}">{$vv.DutyCorp}</a>
+                        {/volist}
+                    </td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+<script>
+
+    var QsLabel = {$QsLabelCalc|default='[]'};//[{NodeCode:'',NodeName:'',MatchType:0/1,CalcType:0/1,TreeCode:,TreeName:}]
+
+
+    function updateDutyCorp2() {
+        $v = $('#DutyCorp1').val();
+        axios({
+            method: 'get',
+            url: '/SafetyMng/CorpMng/GetCorpAllLevelChildrenRows_JSON/ParentCorp/'+$v,
+            data: ''
+        }).then(function (response) {
+            List = response.data;
+            $('#CorpList2').empty();
+            for(i=0;i<List.length;i++){
+                vv = List[i];
+                $("<option value='"+vv+"'>"+vv+"</option>").appendTo('#CorpList2');
+            }
+            $("<option value='全部'>全部</option>").appendTo('#CorpList2');
+        }).catch(function (error) {
+
+        });
+    }
+
+    function showLabelForCalcInRequirePos($LabelVal,$PosID) {
+        $('#'+$PosID).empty();
+        lbStr = '';
+        for(i=0;i<$LabelVal.length;i++){
+            MatchType = '模';
+            CalcType = '且';
+             if($LabelVal[i].MatchType==1){
+                MatchType = '精';
+            }
+            if($LabelVal[i].CalcType==1){
+                CalcType = '或';
+            }
+            lbStr += '<label class="label label-success" style="margin-left: 14px;"><span style="font-size: smaller;">'+$LabelVal[i].NodeName+'</span></label>' +
+                '<label class="label label-'+(MatchType=='模'?'default':'danger')+'" style="margin-left: 4px;"><span style="font-size: smaller;">'+MatchType+'</span></label>'+
+                '<label class="label label-'+(CalcType=='且'?'default':'danger')+'" style="margin-left: 4px;"><span style="font-size: smaller;">'+CalcType+'</span></label>';
+        }
+        $(lbStr).appendTo('#'+$PosID);
+    }
+    
+    $(function () {
+
+        $(document).bind("contextmenu",function(e){
+            return false;});
+
+
+        $('a[QsHover]').mousedown(function(e){
+            if(3 == e.which){
+                window.open( '/SafetyMng/QuestionInput/showQuestionInfoWithoutLayout/id/'+$(this).attr('QsID'));
+            }else if(1 == e.which){
+                layer.closeAll();
+                layer.open({
+                    type: 2,
+                    title: false,
+                    closeBtn: 0, //不显示关闭按钮
+                    shade: [0],
+                    area: ['500px', '600px'],
+                    offset: 'rb', //右下角弹出
+                    shadeClose:true,
+                    anim: 2,
+                    content: '/SafetyMng/QuestionInput/showQuestionInfoWithoutLayout/id/'+$(this).attr('QsID'), //iframe的url，no代表不显示滚动条
+                    end: function(){ //此处用于演示
+
+                    }
+                });
+            }
+        });
+
+        $('a[RFID]').mousedown(function(e){
+            if(3 == e.which){
+                window.open( '/SafetyMng/Reform/Index/TaskID/'+$(this).attr('PTaskID')+'/ReformID/'+$(this).attr('RFID')+'/opType/Mdf');
+            }else if(1 == e.which){
+                layer.closeAll();
+                layer.open({
+                    type: 2,
+                    title: '资料详情',
+                    maxmin: true,
+                    area: ['720px', '750px'],
+                    content: '/SafetyMng/Reform/Index/TaskID/'+$(this).attr('PTaskID')+'/ReformID/'+$(this).attr('RFID')+'/opType/Mdf',
+                });
+            }
+        });
+
+        $('a[showLabelSelectForCalc]').click(function () {
+            layer.open({
+                type: 2,
+                title: false,
+                area: ['900px', '600px'],
+                shade: 0.8,
+                closeBtn: 0,
+                scrollbar: false,
+                shadeClose: true,
+                content: '/SafetyMng/TreeMng/showLabelSelectForCalc/CurLabelForCalcListJsVarName/QsLabel',
+                end:function () {
+                    showLabelForCalcInRequirePos(QsLabel,'QsLabelForCalcList');
+                }
+            });
+        });
+
+        $('a[QsSearch]').click(function () {
+            $('#QsLabelCalc').val(JSON.stringify(QsLabel));
+            $('#QsForm').submit();
+        });
+        showLabelForCalcInRequirePos(QsLabel,'QsLabelForCalcList');
+
+        updateDutyCorp2();
+
+        $('#DutyCorp1').change(function () {
+            updateDutyCorp2();
+        })
+
+    });
+
+</script>
+</body>
+</html>

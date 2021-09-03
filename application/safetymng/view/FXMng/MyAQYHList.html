@@ -1,0 +1,675 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="__PUBLIC__/css/bootstrap-table.css" rel="stylesheet">
+    <link rel="stylesheet" href="__PUBLIC__/css/el-ui.css">
+    <script src="__PUBLIC__/js/vue.js"></script>
+    <script src="__PUBLIC__/js/axios.min.js"></script>
+    <script src="__PUBLIC__/js/el-index.js"></script>
+    <script src="__PUBLIC__/js/vue-router.js"></script>
+    <script src="__PUBLIC__/js/jquery.js"></script>
+</head>
+<body class="container-fluid" >
+<div id="app">
+    <el-tabs v-model="activeName"   @tab-click="">
+        <el-tab-pane label="所有未关闭安全隐患" name="first" v-if="ISMeSuperCorp=='YES'" >
+            <template >
+                <el-row>
+                    <el-table
+                            :data="JCY_AQYHList"
+                            style="width: 100%;margin-top: 10px;min-height: 800px;"
+                            border
+                            max-height="800"
+                    >
+                        <el-table-column
+                                prop="YHCode"
+                                label="隐患编号"
+                                width="80">
+                            <template slot-scope="scope">
+                                <el-tag size="small" effect="dark" type="info">{{scope.row.YHCode}}</el-tag>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="YHSource"
+                                label="识别途径"
+                                width="120">
+                            <template slot-scope="scope">
+                                <el-tag size="small" effect="dark" >{{scope.row.YHSource}}</el-tag>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="ClaimCorp"
+                                label="监督部门"
+                                width="">
+                        </el-table-column>
+                        <el-table-column
+                                prop="DutyCorp"
+                                label="责任部门"
+                                width="">
+                        </el-table-column>
+                        <el-table-column
+                                prop="YHMS"
+                                label="隐患描述"
+                                width="">
+                        </el-table-column>
+                        <el-table-column
+                                prop="YHWH"
+                                label="隐患危害"
+                                width="">
+                        </el-table-column>
+                        <el-table-column
+                                prop="Status"
+                                label="状态"
+                                width="150">
+                            <template slot-scope="scope">
+                                <span v-show="scope.row.Status!='整改中'">{{scope.row.Status}}</span>
+                                <el-link type="warning" v-show="scope.row.Status=='整改中'" @click="OpenReform(scope.row)">{{scope.row.Status}}</el-link>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="隐患等级"
+                                label="隐患等级">
+                            <template slot-scope="scope">
+                                <el-tag :type="CalcYHDJTagType(scope.$index,JCY_AQYHList)">{{scope.row.YHDJ}}</el-tag>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop=""
+                                label="设置">
+                            <template slot-scope="scope">
+                                <el-button size="mini" v-show="scope.row.CanSet=='1'" @click="YHSZDialogShowFun(scope.$index,JCY_AQYHList)">评定</el-button>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop=""
+                                width="400"
+                                label="原因措施制定">
+                            <template slot-scope="scope">
+                                <p>
+                                    <el-link type="primary">直接原因:</el-link>
+                                    {{scope.row.ZJYY}}
+                                </p>
+                                <p>
+                                    <el-link type="success">根本原因:</el-link>
+                                    {{scope.row.GBYY}}
+                                </p>
+                                <p>
+                                    <el-link type="warning">纠正措施:</el-link>
+                                    {{scope.row.JZCS}}<span style="color: #00A000;font-size: x-small">{{scope.row.JZQX}}</span>
+                                </p>
+
+                                <p>
+                                    <el-link type="danger">预防措施:</el-link>
+                                    {{scope.row.YFCS}}<span style="color: #00A000;font-size: x-small">{{scope.row.YFQX}}</span>
+                                </p>
+                                <p>
+                                    <el-link >措施评估:</el-link>
+                                    <el-tag :type="CalcPGColor(scope.row.CSEvalIsOK)" size="mini">{{scope.row.CSEvalIsOK}}</el-tag>
+                                    <span v-show="scope.row.CSEvalIsOK=='NO'">{{scope.row.CSNotOKCause}}</span>
+                                </p>
+                                <p style="text-align: left">
+                                    <el-button plain size="mini" type="info" v-show="YHCSMakeBtnShow(scope.$index,JCY_AQYHList)" @click="YHZDDialogShow(scope.$index,JCY_AQYHList)">制定</el-button>
+                                </p>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column
+                                prop=""
+                                label="">
+                            <template slot-scope="scope">
+                                <el-button size="mini" @click="DelSMS_YH('AQYH',scope.row.YHCode)">删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-row>
+
+                <el-dialog title="隐患设置" :visible.sync="YHSZDialogShow" width="30%" :modal="false">
+                    <el-form :model="curYH">
+                        <el-form-item label="隐患等级设定:">
+                            <el-radio v-model="curYH.YHDJ" label="一般隐患">一般隐患</el-radio>
+                            <el-radio v-model="curYH.YHDJ" label="重大隐患">重大隐患</el-radio>
+                            <el-button  size="mini" plain @click="YHPD">确定</el-button>
+                        </el-form-item>
+                        <el-form-item label="措施制定人   :">
+                            <el-radio v-model="curYH.WhoMakeCS" label="执法部门">执法部门</el-radio>
+                            <el-radio v-model="curYH.WhoMakeCS" label="责任单位">责任单位</el-radio>
+                            <el-button  size="mini" plain @click="CKMakerQR">确定</el-button>
+                        </el-form-item>
+                        <el-form-item label="措施评估:">
+                            <el-radio v-model="curYH.CSEvalIsOK" label="YES">措施通过</el-radio>
+                            <el-radio v-model="curYH.CSEvalIsOK" label="NO">措施不通过</el-radio>
+                            <el-button size="mini" plain @click="YHCSPD">确定</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-dialog>
+
+                <el-dialog title="原因分析及措施制定" :visible.sync="YHCSZDialogShow" :modal="false">
+                    <el-form >
+                        <el-form-item label="直接原因" >
+                            <el-input v-model="curYH.ZJYY" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="根本原因" >
+                            <el-input v-model="curYH.GBYY" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="纠正措施" >
+                            <el-input v-model="curYH.JZCS" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="完成期限">
+                            <el-date-picker
+                                    v-model="curYH.JZQX"
+                                    type="date"
+                                    value-format="yyyy-MM-dd"
+                                    placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="预防措施" >
+                            <el-input v-model="curYH.YFCS" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="完成期限">
+                            <el-date-picker
+                                    v-model="curYH.YFQX"
+                                    type="date"
+                                    value-format="yyyy-MM-dd"
+                                    placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button type="primary" @click="YHCSMake">确 定</el-button>
+                    </div>
+                </el-dialog>
+            </template>
+        </el-tab-pane>
+        <el-tab-pane label="本部门未关闭安全隐患" name="second" >
+            <template >
+                <el-row>
+                    <el-table
+                            :data="Corp_AQYHList"
+                            style="width: 100%;margin-top: 10px;min-height: 800px"
+                            border
+                            max-height="800"
+                    >
+                        <el-table-column
+                                prop="YHCode"
+                                label="隐患编号"
+                                width="80">
+                            <template slot-scope="scope">
+                                <el-tag size="small" effect="dark" type="info">{{scope.row.YHCode}}</el-tag>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="YHSource"
+                                label="识别途径"
+                                width="120">
+                            <template slot-scope="scope">
+                                <el-tag size="small" effect="dark" >{{scope.row.YHSource}}</el-tag>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="ClaimCorp"
+                                label="监督部门"
+                                width="">
+                        </el-table-column>
+                        <el-table-column
+                                prop="DutyCorp"
+                                label="责任部门"
+                                width="">
+                        </el-table-column>
+                        <el-table-column
+                                prop="YHMS"
+                                label="隐患描述"
+                                width="">
+                        </el-table-column>
+
+                        <el-table-column
+                                prop="YHWH"
+                                label="隐患危害"
+                                width="">
+                        </el-table-column>
+                        <el-table-column
+                                prop="Status"
+                                label="状态"
+                                width="150">
+                            <template slot-scope="scope">
+                                <span v-show="scope.row.Status!='整改中'">{{scope.row.Status}}</span>
+                                <el-link type="warning" v-show="scope.row.Status=='整改中'" @click="OpenReform(scope.row)">{{scope.row.Status}}</el-link>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="隐患等级"
+                                label="隐患等级"
+                                width=""
+                        >
+                            <template slot-scope="scope">
+                                <el-tag :type="CalcYHDJTagType(scope.$index,Corp_AQYHList)">{{scope.row.YHDJ}}</el-tag>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column
+                                prop=""
+                                label="设置">
+                            <template slot-scope="scope">
+                                <el-button size="mini" v-show="scope.row.CanSet=='1'" @click="YHSZDialogShowFun(scope.$index,Corp_AQYHList)">评定</el-button>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop=""
+                                width="400"
+                                label="原因措施制定">
+                            <template slot-scope="scope">
+                                <p>
+                                    <el-link type="primary">直接原因:</el-link>
+                                    {{scope.row.ZJYY}}
+                                </p>
+                                <p>
+                                    <el-link type="success">根本原因:</el-link>
+                                    {{scope.row.GBYY}}
+                                </p>
+                                <p>
+                                    <el-link type="warning">纠正措施:</el-link>
+                                    {{scope.row.JZCS}}  <span style="color: #00A000;font-size: x-small">{{scope.row.YFQX}}</span>
+                                </p>
+
+                                <p>
+                                    <el-link type="danger">预防措施:</el-link>
+                                    {{scope.row.YFCS}}    <span style="color: #00A000;font-size: x-small">{{scope.row.YFQX}}</span>
+                                </p>
+                                <p>
+                                    <el-link >措施评估:</el-link>
+                                    <el-tag :type="CalcPGColor(scope.row.CSEvalIsOK)" size="mini">{{scope.row.CSEvalIsOK}}</el-tag>
+                                    <span v-show="scope.row.CSEvalIsOK=='NO'">{{scope.row.CSNotOKCause}}</span>
+                                </p>
+                                <p style="text-align: left">
+                                    <el-button plain size="mini" type="info" v-show="YHCSMakeBtnShow(scope.$index,Corp_AQYHList)" @click="YHZDDialogShow(scope.$index,Corp_AQYHList)">制定</el-button>
+                                </p>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column
+                                prop=""
+                                label="">
+                            <template slot-scope="scope">
+                                <el-button size="mini">删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-row>
+
+                <el-dialog title="隐患设置" :visible.sync="YHSZDialogShow" width="45%" :modal="false">
+                    <el-form :model="curYH">
+                        <el-form-item label="隐患等级设定:">
+                            <el-radio v-model="curYH.YHDJ" label="一般隐患">一般隐患</el-radio>
+                            <el-radio v-model="curYH.YHDJ" label="重大隐患">重大隐患</el-radio>
+                            <el-button  size="mini" plain @click="YHPD">确定</el-button>
+                        </el-form-item>
+                        <el-form-item label="措施制定人   :">
+                            <el-radio v-model="curYH.WhoMakeCS" label="执法部门">执法部门</el-radio>
+                            <el-radio v-model="curYH.WhoMakeCS" label="责任单位">责任单位</el-radio>
+                            <el-button  size="mini" plain @click="CKMakerQR">确定</el-button>
+                        </el-form-item>
+                        <el-form-item label="措施评估:">
+                            <el-radio v-model="curYH.CSEvalIsOK" label="YES">措施通过</el-radio>
+                            <el-radio v-model="curYH.CSEvalIsOK" label="NO">措施不通过</el-radio>
+                            <el-button size="mini" plain @click="YHCSPD">确定</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-dialog>
+
+                <el-dialog title="原因分析及措施制定" :visible.sync="YHCSZDialogShow" :modal="false">
+                    <el-form >
+                        <el-form-item label="直接原因" >
+                            <el-input v-model="curYH.ZJYY" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="根本原因" >
+                            <el-input v-model="curYH.GBYY" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="纠正措施" >
+                            <el-input v-model="curYH.JZCS" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="完成期限">
+                            <el-date-picker
+                                    v-model="curYH.JZQX"
+                                    type="date"
+                                    value-format="yyyy-MM-dd"
+                                    placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="预防措施" >
+                            <el-input v-model="curYH.YFCS" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="完成期限">
+                            <el-date-picker
+                                    v-model="curYH.YFQX"
+                                    type="date"
+                                    value-format="yyyy-MM-dd"
+                                    placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button type="primary" @click="YHCSMake">确 定</el-button>
+                    </div>
+                </el-dialog>
+            </template>
+        </el-tab-pane>
+    </el-tabs>
+</div>
+<script>
+    var TabCount = 1;
+    var v = new Vue({
+        el: '#app',
+        data(){
+            return {
+                YHCSZDialogShow:false,
+                YHSZDialogShow:false,
+                ISMeSuperCorp:'{$ISMeSuperCorp}',
+                curYH:{
+
+                },
+                activeName :'first',
+                MyName:'{$MyName}',
+                MyCorp:'{$MyCorp}',
+                MyCorpRole:'{$MyCorpRole}',
+                FXDialogShow:false,
+                FXDJPDDialogShow:false,
+                DFDialogShow:false,
+                CSYZDialogShow:false,
+                Corps:[],
+                JCY_AQYHList:[],
+                Corp_AQYHList:[],
+                curSMSEvalerSel:'',
+                SMSEvalerCanSelList:[],
+                curSMSCode:'',
+                curSMSEvalerList:[],
+                DFDialog:{
+                    SMSCode:'',
+                    YZX:'',
+                    KNX:'',
+                    YZXMin:'',
+                    YZXMax:'',
+                    KNXMin:'',
+                    KNXMax:''
+                },
+                YYCSDialog:{
+                    ZJYY:'',
+                    GBYY:'',
+                    JZCS:'',
+                    YFCS:'',
+                    SMSCode :'',
+                    YFQX:'',
+                    JZQX:''
+                }
+            }
+        },
+        mounted(){
+            if(this.ISMeSuperCorp!='YES'){
+                this.activeName = 'second';
+            }
+            this.GetMyCanControlCorps();
+            this.GetAllYHList();
+        },
+        methods: {
+            GetAllYHList(){
+                this.JCY_GetAllAQYHList();
+                this.Corp_GetAllAQYHList();
+            },
+            gyAjaxPost(url, data, onSuccess, onError) {
+                var _this = this;
+                axios({
+                    method: 'post',
+                    url: url,
+                    data: data
+                }).then(function (response) {
+                    onSuccess(_this, response);
+                }).catch(function (error) {
+                    if (onError != null)
+                        onError(_this, error);
+                });
+            },
+            dateFtt(fmt, date) { //author: meizz
+                var o = {
+                    "M+": date.getMonth() + 1,                 //月份
+                    "d+": date.getDate(),                    //日
+                    "h+": date.getHours(),                   //小时
+                    "m+": date.getMinutes(),                 //分
+                    "s+": date.getSeconds(),                 //秒
+                    "q+": Math.floor((date.getMonth() + 3) / 3), //季度
+                    "S": date.getMilliseconds()             //毫秒
+                };
+                if (/(y+)/.test(fmt))
+                    fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+                for (var k in o)
+                    if (new RegExp("(" + k + ")").test(fmt))
+                        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                return fmt;
+            },
+            GetMyCanControlCorps() {
+                var _this = this;
+                this.gyAjaxPost("/SafetyMng/CorpMng/GetMyCanControlCorps",
+                    '',
+                    function (_this, response) {
+                        _this.Corps = response.data;
+                    }, null);
+            },
+            showFXPDDialog(SMSCode) {
+                this.curSMSCode = SMSCode;
+                this.FXDJPDDialogShow = true;
+                this.GetSMSEvalerList();
+            },
+            onCSMakerChange(v, Maker) {
+                console.log(v + Maker);
+            },
+            CalcYHDJTagType(index,YHList){
+                var YHDJ = YHList[index];
+                if(YHDJ=='一般隐患'){
+                    return 'warning';
+                }else if(YHDJ=='重大隐患'){
+                    return 'danger';
+                }
+                return 'primary';
+            },
+            YHSZDialogShowFun(index,YHList){
+                var _this =this;
+                var YHCode = YHList[index].YHCode;
+                _this.gyAjaxPost("/SafetyMng/FXMng/GetYHByYHCode",
+                    'YHCode='+YHCode,
+                    function (_this, response) {
+                        _this.curYH = response.data;
+                        _this.YHSZDialogShow = true;
+                    }, null);
+            },
+            YHPD(){
+                var _this =this;
+                _this.gyAjaxPost("/SafetyMng/FXMng/YHPD",
+                    'YHCode='+_this.curYH.YHCode+'&YHDJ='+_this.curYH.YHDJ,
+                    function (_this, response) {
+                        _this.$message(response.data);
+                        _this.GetAllYHList();
+                    }, null);
+            },
+            CKMakerQR(){
+                var _this =this;
+                _this.gyAjaxPost("/SafetyMng/FXMng/YHCSMakerQR",
+                    'YHCode='+_this.curYH.YHCode+'&CSMaker='+_this.curYH.WhoMakeCS,
+                    function (_this, response) {
+                        _this.$message(response.data);
+                        _this.GetAllYHList();
+                    }, null);
+            },
+            YHCSMakeBtnShow(index,YHList){
+                var WhoMakeCS = YHList[index].WhoMakeCS;
+
+
+                if(YHList[index].Status!='措施制定中'){
+                    return false;
+                }
+
+                if(WhoMakeCS=='执法部门' && this.MyCorp == YHList[index].ClaimCorp){
+                    return true;
+                }
+
+                if(WhoMakeCS=='责任单位' && this.MyCorp == YHList[index].DutyCorp){
+                    return true;
+                }
+
+                return false;
+            },
+            YHZDDialogShow(index,YHList){
+                var _this =this;
+                var YHCode = YHList[index].YHCode;
+                _this.gyAjaxPost("/SafetyMng/FXMng/GetYHByYHCode",
+                    'YHCode='+YHCode,
+                    function (_this, response) {
+                        _this.curYH = response.data;
+                        _this.YHCSZDialogShow = true;
+                    }, null);
+            },
+            YHCSMake(){
+                var _this =this;
+                var YHCode = _this.curYH.YHCode;
+                _this.gyAjaxPost("/SafetyMng/FXMng/YHCSMake",
+                    _this.curYH,
+                    function (_this, response) {
+                        _this.curYH = response.data;
+                        _this.YHCSZDialogShow = true;
+                        _this.GetAllYHList();
+                    }, null);
+            },
+            YHCSPD(){
+                var _this = this;
+                var YHCode = _this.curYH.YHCode;
+                var CSNotOKCause = '';
+                var isOK  = _this.curYH.CSEvalIsOK;
+
+                if( isOK == 'NO' ){
+                    _this.$prompt('请输入措施不通过理由', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                    }).then(({ value }) => {
+                        CSNotOKCause = value;
+                        if(CSNotOKCause==''){
+                            _this.$message('措施不通过理由不能为空!');
+                            return;
+                        }
+                        _this.gyAjaxPost("/SafetyMng/FXMng/YHCSEval",
+                            'CSIsOK='+isOK+'&CSNotOKCause='+CSNotOKCause+'&YHCode='+_this.curYH.YHCode,
+                            function (_this, response) {
+                                _this.$message(response.data);
+                                _this.GetAllYHList();
+                            }, null);
+                    }).catch(() => {
+
+                    });
+                    return;
+                }
+
+                _this.gyAjaxPost("/SafetyMng/FXMng/YHCSEval",
+                    'CSIsOK='+isOK+'&CSNotOKCause='+CSNotOKCause+'&YHCode='+_this.curYH.YHCode,
+                    function (_this, response) {
+                        _this.$message(response.data);
+                        _this.GetAllYHList();
+                    }, null);
+
+
+            },
+            CalcPGColor(isOK){
+                if(isOK=='YES'){
+                    return 'success';
+                }else{
+                    return 'danger';
+                }
+            },
+            showDFSZBtn(index,List){
+                $ClaimCorp = List[index].ClaimCorp;
+                if($ClaimCorp==this.MyCorp){
+                    return true;
+                }
+            },
+            JCY_GetAllAQYHList(){
+                var _this =this;
+                _this.gyAjaxPost("/SafetyMng/FXMng/JCY_GetAllAQYHList",
+                    '',
+                    function (_this, response) {
+                        _this.JCY_AQYHList = response.data;
+                    }, null);
+            },
+            Corp_GetAllAQYHList(){
+                var _this =this;
+                _this.gyAjaxPost("/SafetyMng/FXMng/GetCorpAQYHList",
+                    '',
+                    function (_this, response) {
+                        _this.Corp_AQYHList = response.data;
+                    }, null);
+            }
+            ,
+            OpenReform(YHRow){
+                var openType = 'Child',
+                    ClaimCorp = YHRow.ClaimCorp,
+                    DutyCorp = YHRow.DutyCorp;
+
+                if(ClaimCorp == this.MyCorp ){
+                    if(DutyCorp == this.MyCorp){
+                        if(this.MyCorpRole =='领导'){
+                            openType = 'Parent';
+                        }else{
+                            openType = 'Child';
+                        }
+                    }else{
+                        openType = 'Parent';
+                    }
+                }else if(DutyCorp == this.MyCorp){
+                    openType = 'Child';
+                }else{
+                    openType ='';
+                }
+
+                if(openType!=''){
+                    var _this = this;
+                    this.gyAjaxPost("/SafetyMng/Reform/GetReformByCode",
+                        'ReformCode='+YHRow.RelatedReformCode,
+                        function (_this, response) {
+                            Reform = response.data;
+                            TaskId = '';
+                            ReformId = Reform.id;
+                            if(openType=='Parent'){
+                                TaskId = Reform.ParentTaskID;
+                            }else{
+                                TaskId = Reform.ChildTaskID;
+                            }
+                            window.open('/SafetyMng/Reform/Index/TaskID/'+TaskId+'/ReformID/'+ReformId+'/opType/Mdf');
+                        }, null);
+                }
+
+
+            },
+            DelSMS_YH(type,code){
+                var _this = this;
+                this.$prompt('请输入删除密码:', '提示').then(({ value }) => {
+                    $url =  "/SafetyMng/FXMng/DelSMS";
+                    $data = 'Code='+ code  + '&Pwd='+value;
+                    if(type=='AQYH'){
+                        $url =  "/SafetyMng/FXMng/DelAQYH";
+                    }
+                    _this.gyAjaxPost($url, $data,
+                        function (_this, response) {
+                            if(response.data == 'OK'){
+                                _this.$message('删除成功!');
+                                _this.GetAllYHList();
+                            }else{
+                                _this.$message(response.data);
+                            }
+                        }, null);
+                }).catch(() => {
+
+                });
+            }
+
+
+        }});
+
+</script>
+
+</body>
+</html>
